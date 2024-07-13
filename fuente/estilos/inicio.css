@@ -1,0 +1,152 @@
+@font-face {
+    font-family: "DejaVuSans";
+    src: url("../tipografías/DejaVuSans.ttf");
+}
+
+body {
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+pre {
+    margin: 0;
+}
+
+#visualización {
+    padding: 0.5rem;
+}
+
+#propiedades {
+    font-family: DejaVuSans;
+    padding: 0.5rem;
+    background-color: color-mix(in srgb, black, white 12%);
+}
+
+.tipo {
+    margin: 0.25rem;
+    font-size: 1.25rem;
+}
+
+.verificación {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+}
+
+.verificación p {
+    font-size: 0.9rem;
+    margin: auto 0.5rem;
+}
+
+.verificación input {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.verificación .marca {
+    position: relative;
+    display: inline-block;
+    left: 0;
+    height: 1.1rem;
+    width: 1.1rem;
+    border-radius: 0.3rem;
+    background-color: color-mix(in srgb, black, white 6%);
+}
+
+.verificación .marca:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 0.4rem;
+    top: 0.2rem;
+    width: 0.2rem;
+    height: 0.5rem;
+    border: solid white;
+    border-width: 0 0.15rem 0.15rem 0;
+    transform: rotate(45deg);
+}
+
+.verificación input:checked~.marca:after {
+    display: block;
+}
+
+.propiedad {
+    padding: 0.6rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    border-radius: 0.3rem;
+    background-color: color-mix(in srgb, black, white 6%);
+}
+
+.propiedad p {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.propiedad input {
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 0.3rem;
+    color: #ffffff;
+    margin-bottom: 0.1rem;
+    background-color: color-mix(in srgb, black, white 12%);
+    border: none;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.seleccionado {
+    background-color: #993800 !important;
+}
+
+.creado {
+    transition: background-color 500ms linear;
+}
+
+.editado {
+    transition: background-color 200ms linear;
+}
+
+.Ámbito {
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    background-color: color-mix(in srgb, black, white 4%);
+}
+
+.Ámbito div:first-of-type {
+    border-radius: 0.4rem 0.4rem 0 0;
+}
+
+.Ámbito div:last-of-type {
+    border-radius: 0 0 0.4rem 0.4rem;
+}
+
+.Ámbito div:only-of-type {
+    border-radius: 0.3rem;
+}
+
+.Ámbito .Nueva-línea {
+    padding: 0.25rem;
+    background-color: color-mix(in srgb, black, white 5%);
+}
+
+.Ámbito .Número {
+    background-color: color-mix(in srgb, black, white 6%);
+}
+
+.Ámbito:not(:has(.Nueva-línea:hover)):not(:has(.Número:hover)):hover {
+    border: 1px solid #FFA028;
+}
+
+.Nueva-línea:hover {
+    border: 1px solid #FFA028;
+}
+
+.Número:hover {
+    border: 1px solid #FFA028;
+}
