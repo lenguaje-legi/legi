@@ -17,36 +17,79 @@ pre {
     padding: 0.5rem;
 }
 
+#visualización .seleccionado {
+    background-color: #993800 !important;
+}
+
+#visualización .creado {
+    transition: background-color 500ms linear;
+}
+
+#visualización .editado {
+    transition: background-color 200ms linear;
+}
+
+#visualización>.Tipo {
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    background-color: color-mix(in srgb, black, white 4%);
+}
+
+#visualización .Tipo div:first-of-type {
+    border-radius: 0.4rem 0.4rem 0 0;
+}
+
+#visualización .Tipo div:last-of-type {
+    border-radius: 0 0 0.4rem 0.4rem;
+}
+
+#visualización .Tipo div:only-of-type {
+    border-radius: 0.3rem;
+}
+
+#visualización .Tipo .Tipo {
+    background-color: color-mix(in srgb, black, white 6%);
+}
+
+#visualización .Tipo .Nueva-línea {
+    padding: 0.25rem;
+    background-color: color-mix(in srgb, black, white 5%);
+}
+
+#visualización .Tipo:hover:not(:has(.Tipo:hover)) {
+    border: 1px solid #FFA028;
+}
+
 #propiedades {
     font-family: DejaVuSans;
     padding: 0.5rem;
     background-color: color-mix(in srgb, black, white 12%);
 }
 
-.tipo {
+#propiedades .tipo {
     margin: 0.25rem;
     font-size: 1.25rem;
 }
 
-.verificación {
+#propiedades .verificación {
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
     display: flex;
 }
 
-.verificación p {
+#propiedades .verificación p {
     font-size: 0.9rem;
     margin: auto 0.5rem;
 }
 
-.verificación input {
+#propiedades .verificación input {
     position: absolute;
     opacity: 0;
     height: 0;
     width: 0;
 }
 
-.verificación .marca {
+#propiedades .verificación .marca {
     position: relative;
     display: inline-block;
     left: 0;
@@ -56,7 +99,7 @@ pre {
     background-color: color-mix(in srgb, black, white 6%);
 }
 
-.verificación .marca:after {
+#propiedades .verificación .marca:after {
     content: "";
     position: absolute;
     display: none;
@@ -69,11 +112,11 @@ pre {
     transform: rotate(45deg);
 }
 
-.verificación input:checked~.marca:after {
+#propiedades .verificación input:checked~.marca:after {
     display: block;
 }
 
-.propiedad {
+#propiedades .propiedad {
     padding: 0.6rem;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
@@ -82,14 +125,14 @@ pre {
     background-color: color-mix(in srgb, black, white 6%);
 }
 
-.propiedad p {
+#propiedades .propiedad p {
     margin-top: 0;
     margin-bottom: 0.25rem;
     font-size: 0.75rem;
 }
 
-.propiedad input,
-.propiedad textarea {
+#propiedades .propiedad input,
+#propiedades .propiedad textarea {
     box-sizing: border-box;
     width: 100%;
     border-radius: 0.3rem;
@@ -101,66 +144,7 @@ pre {
     font-size: 0.9rem;
 }
 
-.propiedad textarea {
+#propiedades .propiedad textarea {
     resize: vertical;
     white-space: nowrap;
-}
-
-.seleccionado {
-    background-color: #993800 !important;
-}
-
-.creado {
-    transition: background-color 500ms linear;
-}
-
-.editado {
-    transition: background-color 200ms linear;
-}
-
-.Ámbito {
-    border-radius: 0.3rem;
-    padding: 0.5rem;
-    background-color: color-mix(in srgb, black, white 4%);
-}
-
-.Ámbito div:first-of-type {
-    border-radius: 0.4rem 0.4rem 0 0;
-}
-
-.Ámbito div:last-of-type {
-    border-radius: 0 0 0.4rem 0.4rem;
-}
-
-.Ámbito div:only-of-type {
-    border-radius: 0.3rem;
-}
-
-.Ámbito .Nueva-línea {
-    padding: 0.25rem;
-    background-color: color-mix(in srgb, black, white 5%);
-}
-
-.Ámbito .Número {
-    background-color: color-mix(in srgb, black, white 6%);
-}
-
-.Ámbito .Texto {
-    background-color: color-mix(in srgb, black, white 6%);
-}
-
-.Ámbito:not(:has(.Nueva-línea:hover)):not(:has(.Número:hover)):not(:has(.Texto:hover)):hover {
-    border: 1px solid #FFA028;
-}
-
-.Nueva-línea:hover {
-    border: 1px solid #FFA028;
-}
-
-.Número:hover {
-    border: 1px solid #FFA028;
-}
-
-.Texto:hover {
-    border: 1px solid #FFA028;
 }

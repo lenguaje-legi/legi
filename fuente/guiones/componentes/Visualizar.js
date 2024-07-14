@@ -1,13 +1,12 @@
 import van from 'vanjs-core'
-import Ámbito from './Ámbito.js'
+import Tipo from './Tipo.js'
 const { add } = van
 
 export default () => {
   const visualización = document.querySelector('#visualización')
   visualización.innerHTML = ''
-  add(visualización, Ámbito({
+  add(visualización, Tipo({
     bloquesDeEspacios: 0,
-    indicador: [0],
-    nivel: 0
+    indicador: [0]
   }))
 }

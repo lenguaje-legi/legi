@@ -4,19 +4,53 @@ import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { div, pre } = van.tags
 
-export default ({ bloquesDeEspacios, indicador, valor, asignación }) => {
-  const tipo = get(Código.val, indicador).tipo
+const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
+  if (!tipo) {
+    tipo = get(Código.val, indicador).tipo
+  }
 
   if (asignación) {
     valor = `$${asignación} = ${valor}`
   }
 
+  if (tipo === 'Ámbito') {
+    bloquesDeEspacios = bloquesDeEspacios + 1
+
+    const ámbito = get(Código.val, indicador)
+
+    let devolver = ''
+
+    if (ámbito.devolver) {
+      devolver = 'return '
+    }
+
+    const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
+      const código = []
+      código.push(Tipo({
+        bloquesDeEspacios,
+        indicador: [...indicador, 'código', indicadorDelElemento],
+        valor
+      }))
+
+      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', indicadorDelElemento + 1] }))
+
+      return código
+    })
+
+    valor = [
+      pre(`${devolver}function () {`),
+      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', 0] }),
+      código,
+      pre('};')
+    ]
+  }
+
   if (tipo === 'Número') {
-    valor = `${'    '.repeat(bloquesDeEspacios)}${valor};`
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`)
   }
 
   if (tipo === 'Texto') {
-    valor = `${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
       if (valor === '') {
         return ''
       }
@@ -26,17 +60,24 @@ export default ({ bloquesDeEspacios, indicador, valor, asignación }) => {
       })
 
       return valor.join('\n')
-    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`
+    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`)
   }
 
   return div(
     {
-      'data-indicador': JSON.stringify(indicador),
-      class: tipo,
+      'data-indicador': (() => {
+        if (tipo === 'Nueva línea') {
+          return ''
+        }
+        return JSON.stringify(indicador)
+      })(),
+      class: `Tipo ${tipo.replaceAll(' ', '-')}`,
       onclick: (click) => {
         Seleccionar({ click, indicador, tipo })
       }
     },
-    pre(valor)
+    valor
   )
 }
+
+export default Tipo

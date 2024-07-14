@@ -1593,10 +1593,10 @@ function set(object, path, value) {
   return object == null ? object : baseSet(object, path, value);
 }
 
-const { div: div$4, button } = van.tags;
+const { div: div$2, button } = van.tags;
 
 var AgregarTipo = ({ tipo, indicador }) => {
-  return div$4(
+  return div$2(
     button({
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`);
@@ -1637,7 +1637,7 @@ var AgregarTipo = ({ tipo, indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$3, input, textarea, span } = van.tags;
+const { p, h2, div: div$1, input, textarea, span } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1678,11 +1678,11 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
   };
 
   if (tipo === undefined) {
-    editarPropiedades = div$3();
+    editarPropiedades = div$1();
   }
 
   if (tipo === 'Nueva línea') {
-    editarPropiedades = div$3(
+    editarPropiedades = div$1(
       AgregarTipo({
         tipo: 'Número',
         indicador
@@ -1714,7 +1714,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       }
 
       if (propiedad === 'devolver') {
-        return div$3(
+        return div$1(
           {
             class: 'verificación'
           },
@@ -1757,7 +1757,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
         }
       }, 0);
 
-      return div$3(
+      return div$1(
         {
           class: 'propiedad'
         },
@@ -1849,36 +1849,55 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const { div: div$2 } = van.tags;
+const { div, pre } = van.tags;
 
-var NuevaLínea = ({ bloquesDeEspacios, indicador }) => {
-  const tipo = 'Nueva línea';
-
-  return div$2(
-    {
-      class: 'Nueva-línea',
-      onclick: click => {
-        Seleccionar({ click, indicador, tipo });
-      }
-    }
-  )
-};
-
-const { div: div$1, pre: pre$1 } = van.tags;
-
-var Tipo = ({ bloquesDeEspacios, indicador, valor, asignación }) => {
-  const tipo = get(Código.val, indicador).tipo;
+const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
+  if (!tipo) {
+    tipo = get(Código.val, indicador).tipo;
+  }
 
   if (asignación) {
     valor = `$${asignación} = ${valor}`;
   }
 
+  if (tipo === 'Ámbito') {
+    bloquesDeEspacios = bloquesDeEspacios + 1;
+
+    const ámbito = get(Código.val, indicador);
+
+    let devolver = '';
+
+    if (ámbito.devolver) {
+      devolver = 'return ';
+    }
+
+    const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
+      const código = [];
+      código.push(Tipo({
+        bloquesDeEspacios,
+        indicador: [...indicador, 'código', indicadorDelElemento],
+        valor
+      }));
+
+      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', indicadorDelElemento + 1] }));
+
+      return código
+    });
+
+    valor = [
+      pre(`${devolver}function () {`),
+      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', 0] }),
+      código,
+      pre('};')
+    ];
+  }
+
   if (tipo === 'Número') {
-    valor = `${'    '.repeat(bloquesDeEspacios)}${valor};`;
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`);
   }
 
   if (tipo === 'Texto') {
-    valor = `${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
       if (valor === '') {
         return ''
       }
@@ -1888,59 +1907,23 @@ var Tipo = ({ bloquesDeEspacios, indicador, valor, asignación }) => {
       });
 
       return valor.join('\n')
-    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`;
+    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`);
   }
 
-  return div$1(
+  return div(
     {
-      'data-indicador': JSON.stringify(indicador),
-      class: tipo,
+      'data-indicador': (() => {
+        if (tipo === 'Nueva línea') {
+          return ''
+        }
+        return JSON.stringify(indicador)
+      })(),
+      class: `Tipo ${tipo.replaceAll(' ', '-')}`,
       onclick: (click) => {
         Seleccionar({ click, indicador, tipo });
       }
     },
-    pre$1(valor)
-  )
-};
-
-const { div, pre } = van.tags;
-
-var Ámbito = ({ bloquesDeEspacios, indicador }) => {
-  bloquesDeEspacios = bloquesDeEspacios + 1;
-
-  const ámbito = get(Código.val, indicador);
-
-  let devolver = '';
-
-  if (ámbito.devolver) {
-    devolver = 'return ';
-  }
-
-  const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
-    const código = [];
-    código.push(Tipo({
-      bloquesDeEspacios,
-      indicador: [...indicador, 'código', indicadorDelElemento],
-      valor
-    }));
-
-    código.push(NuevaLínea({ bloquesDeEspacios, indicador: [...indicador, 'código', indicadorDelElemento + 1] }));
-
-    return código
-  });
-
-  return div(
-    {
-      'data-indicador': JSON.stringify(indicador),
-      class: 'Ámbito',
-      onclick: click => {
-        Seleccionar({ click, indicador });
-      }
-    },
-    pre(`${devolver}function () {`),
-    NuevaLínea({ bloquesDeEspacios, indicador: [...indicador, 'código', 0] }),
-    código,
-    pre('};')
+    valor
   )
 };
 
@@ -1949,10 +1932,9 @@ const { add } = van;
 var Visualizar = () => {
   const visualización = document.querySelector('#visualización');
   visualización.innerHTML = '';
-  add(visualización, Ámbito({
+  add(visualización, Tipo({
     bloquesDeEspacios: 0,
-    indicador: [0],
-    nivel: 0
+    indicador: [0]
   }));
 };
 
