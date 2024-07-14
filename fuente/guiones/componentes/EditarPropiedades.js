@@ -1,10 +1,10 @@
-import AgregarNúmero from './AgregarNúmero.js'
+import AgregarTipo from './AgregarTipo.js'
 import Visualizar from './Visualizar.js'
 import van from 'vanjs-core'
 import { capitalize, get } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { add } = van
-const { p, h2, div, input, span } = van.tags
+const { p, h2, div, input, textarea, span } = van.tags
 
 export default ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades')
@@ -49,13 +49,23 @@ export default ({ tipo, indicador } = {}) => {
   }
 
   if (tipo === 'Nueva línea') {
-    editarPropiedades = AgregarNúmero({ indicador })
+    editarPropiedades = div(
+      AgregarTipo({
+        tipo: 'Número',
+        indicador
+      }),
+      AgregarTipo({
+        tipo: 'Texto',
+        indicador
+      })
+    )
   }
 
   if (tipo !== undefined && tipo !== 'Nueva línea') {
     editarPropiedades = Object.keys(get(Código.val, indicador)).map(propiedad => {
       let valor
       let confirmado = false
+      const { tipo } = get(Código.val, indicador)
 
       if (typeof get(Código.val, indicador)[propiedad] === 'object') {
         return null
@@ -100,13 +110,34 @@ export default ({ tipo, indicador } = {}) => {
         )
       }
 
+      let casilla = input
+
+      if (tipo === 'Texto') {
+        casilla = textarea
+      }
+
+      setTimeout(() => {
+        if (tipo === 'Texto' && propiedad === 'valor') {
+          const casilla = document.querySelector(`#propiedades [data-propiedad='${propiedad}']`)
+          casilla.style.height = ''
+          casilla.style.height = `${casilla.scrollHeight}px`
+        }
+      }, 0)
+
       return div(
         {
           class: 'propiedad'
         },
         p(capitalize(propiedad)),
-        input({
+        casilla({
           value: get(Código.val, indicador)[propiedad],
+          'data-propiedad': propiedad,
+          oninput: ({ target }) => {
+            if (tipo === 'Texto' && propiedad === 'valor') {
+              target.style.height = ''
+              target.style.height = `${target.scrollHeight}px`
+            }
+          },
           onfocus: ({ target }) => {
             valor = target.value
             console.log('Se inició un cambio')
@@ -122,7 +153,17 @@ export default ({ tipo, indicador } = {}) => {
             console.log('Se aplicó un cambio')
             actualizarPropiedad({ valor, propiedad, target })
           },
-          onkeyup: ({ target, key }) => {
+          onkeydown: event => {
+            const { key, shiftKey } = event
+            if (key === 'Enter' && !shiftKey) {
+              event.preventDefault()
+            }
+          },
+          onkeyup: ({ target, key, shiftKey }) => {
+            if (key === 'Enter' && shiftKey) {
+              return
+            }
+
             if (key !== undefined && key !== 'Enter') {
               return
             }

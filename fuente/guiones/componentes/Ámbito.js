@@ -1,6 +1,6 @@
 import NuevaLínea from './NuevaLínea.js'
 import Seleccionar from './Seleccionar.js'
-import Número from './Número.js'
+import Tipo from './Tipo.js'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
 import { get } from 'lodash-es'
@@ -19,13 +19,11 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
     const código = []
-    if (tipo === 'Número') {
-      código.push(Número({
-        bloquesDeEspacios,
-        indicador: [...indicador, 'código', indicadorDelElemento],
-        valor
-      }))
-    }
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'código', indicadorDelElemento],
+      valor
+    }))
 
     código.push(NuevaLínea({ bloquesDeEspacios, indicador: [...indicador, 'código', indicadorDelElemento + 1] }))
 

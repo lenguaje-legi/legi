@@ -88,7 +88,8 @@ pre {
     font-size: 0.75rem;
 }
 
-.propiedad input {
+.propiedad input,
+.propiedad textarea {
     box-sizing: border-box;
     width: 100%;
     border-radius: 0.3rem;
@@ -98,6 +99,11 @@ pre {
     border: none;
     padding: 0.5rem;
     font-size: 0.9rem;
+}
+
+.propiedad textarea {
+    resize: vertical;
+    white-space: nowrap;
 }
 
 .seleccionado {
@@ -139,7 +145,11 @@ pre {
     background-color: color-mix(in srgb, black, white 6%);
 }
 
-.Ámbito:not(:has(.Nueva-línea:hover)):not(:has(.Número:hover)):hover {
+.Ámbito .Texto {
+    background-color: color-mix(in srgb, black, white 6%);
+}
+
+.Ámbito:not(:has(.Nueva-línea:hover)):not(:has(.Número:hover)):not(:has(.Texto:hover)):hover {
     border: 1px solid #FFA028;
 }
 
@@ -148,5 +158,9 @@ pre {
 }
 
 .Número:hover {
+    border: 1px solid #FFA028;
+}
+
+.Texto:hover {
     border: 1px solid #FFA028;
 }

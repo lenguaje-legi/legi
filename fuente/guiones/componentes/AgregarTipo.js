@@ -1,23 +1,32 @@
 import EditarPropiedades from './EditarPropiedades.js'
 import Visualizar from './Visualizar.js'
 import van from 'vanjs-core'
-import { get, set } from 'lodash-es'
+import { get, set, lowerFirst } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { div, button } = van.tags
 
-export default ({ indicador }) => {
+export default ({ tipo, indicador }) => {
   return div(
     button({
       onclick: () => {
-        console.log('Se agregó un número')
+        console.log(`Se agregó un tipo: ${tipo}`)
 
-        const tipo = 'Número'
-        const nuevoNúmero = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
+        let valor
+
+        if (tipo === 'Número') {
+          valor = 0
+        }
+
+        if (tipo === 'Texto') {
+          valor = ''
+        }
+
+        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
           tipo,
-          valor: 0
+          valor
         })
 
-        set(Código.val, indicador.toSpliced(-1), nuevoNúmero)
+        set(Código.val, indicador.toSpliced(-1), nuevoTipo)
 
         Visualizar()
         EditarPropiedades({ tipo, indicador })
@@ -33,6 +42,6 @@ export default ({ indicador }) => {
           document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('creado')
         }, 1000)
       }
-    }, 'Agregar número')
+    }, `Agregar ${lowerFirst(tipo)}`)
   )
 }

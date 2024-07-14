@@ -1499,6 +1499,25 @@ function capitalize(string) {
 }
 
 /**
+ * Converts the first character of `string` to lower case.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category String
+ * @param {string} [string=''] The string to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.lowerFirst('Fred');
+ * // => 'fred'
+ *
+ * _.lowerFirst('FRED');
+ * // => 'fRED'
+ */
+var lowerFirst = createCaseFirst('toLowerCase');
+
+/**
  * The base implementation of `_.set`.
  *
  * @private
@@ -1576,19 +1595,28 @@ function set(object, path, value) {
 
 const { div: div$4, button } = van.tags;
 
-var AgregarNúmero = ({ indicador }) => {
+var AgregarTipo = ({ tipo, indicador }) => {
   return div$4(
     button({
       onclick: () => {
-        console.log('Se agregó un número');
+        console.log(`Se agregó un tipo: ${tipo}`);
 
-        const tipo = 'Número';
-        const nuevoNúmero = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
+        let valor;
+
+        if (tipo === 'Número') {
+          valor = 0;
+        }
+
+        if (tipo === 'Texto') {
+          valor = '';
+        }
+
+        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
           tipo,
-          valor: 0
+          valor
         });
 
-        set(Código.val, indicador.toSpliced(-1), nuevoNúmero);
+        set(Código.val, indicador.toSpliced(-1), nuevoTipo);
 
         Visualizar();
         EditarPropiedades({ tipo, indicador });
@@ -1604,12 +1632,12 @@ var AgregarNúmero = ({ indicador }) => {
           document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('creado');
         }, 1000);
       }
-    }, 'Agregar número')
+    }, `Agregar ${lowerFirst(tipo)}`)
   )
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$3, input, span } = van.tags;
+const { p, h2, div: div$3, input, textarea, span } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1630,7 +1658,6 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
       target.value = Number(target.value);
     }
-   
 
     if (target.value !== 'true' && target.value !== 'false') {
       get(Código.val, indicador)[propiedad] = target.value;
@@ -1655,13 +1682,23 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
   }
 
   if (tipo === 'Nueva línea') {
-    editarPropiedades = AgregarNúmero({ indicador });
+    editarPropiedades = div$3(
+      AgregarTipo({
+        tipo: 'Número',
+        indicador
+      }),
+      AgregarTipo({
+        tipo: 'Texto',
+        indicador
+      })
+    );
   }
 
   if (tipo !== undefined && tipo !== 'Nueva línea') {
     editarPropiedades = Object.keys(get(Código.val, indicador)).map(propiedad => {
       let valor;
       let confirmado = false;
+      const { tipo } = get(Código.val, indicador);
 
       if (typeof get(Código.val, indicador)[propiedad] === 'object') {
         return null
@@ -1706,13 +1743,34 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
         )
       }
 
+      let casilla = input;
+
+      if (tipo === 'Texto') {
+        casilla = textarea;
+      }
+
+      setTimeout(() => {
+        if (tipo === 'Texto' && propiedad === 'valor') {
+          const casilla = document.querySelector(`#propiedades [data-propiedad='${propiedad}']`);
+          casilla.style.height = '';
+          casilla.style.height = `${casilla.scrollHeight}px`;
+        }
+      }, 0);
+
       return div$3(
         {
           class: 'propiedad'
         },
         p(capitalize(propiedad)),
-        input({
+        casilla({
           value: get(Código.val, indicador)[propiedad],
+          'data-propiedad': propiedad,
+          oninput: ({ target }) => {
+            if (tipo === 'Texto' && propiedad === 'valor') {
+              target.style.height = '';
+              target.style.height = `${target.scrollHeight}px`;
+            }
+          },
           onfocus: ({ target }) => {
             valor = target.value;
             console.log('Se inició un cambio');
@@ -1728,7 +1786,17 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
             console.log('Se aplicó un cambio');
             actualizarPropiedad({ valor, propiedad, target });
           },
-          onkeyup: ({ target, key }) => {
+          onkeydown: event => {
+            const { key, shiftKey } = event;
+            if (key === 'Enter' && !shiftKey) {
+              event.preventDefault();
+            }
+          },
+          onkeyup: ({ target, key, shiftKey }) => {
+            if (key === 'Enter' && shiftKey) {
+              return
+            }
+
             if (key !== undefined && key !== 'Enter') {
               return
             }
@@ -1798,19 +1866,35 @@ var NuevaLínea = ({ bloquesDeEspacios, indicador }) => {
 
 const { div: div$1, pre: pre$1 } = van.tags;
 
-var Número = ({ bloquesDeEspacios, indicador, valor, asignación }) => {
-  const tipo = 'Número';
+var Tipo = ({ bloquesDeEspacios, indicador, valor, asignación }) => {
+  const tipo = get(Código.val, indicador).tipo;
 
   if (asignación) {
     valor = `$${asignación} = ${valor}`;
   }
 
-  valor = `${'    '.repeat(bloquesDeEspacios)}${valor};`;
+  if (tipo === 'Número') {
+    valor = `${'    '.repeat(bloquesDeEspacios)}${valor};`;
+  }
+
+  if (tipo === 'Texto') {
+    valor = `${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
+      if (valor === '') {
+        return ''
+      }
+
+      valor = valor.split('\n').map(valor => {
+        return `${'    '.repeat(bloquesDeEspacios + 1)}${valor}`
+      });
+
+      return valor.join('\n')
+    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`;
+  }
 
   return div$1(
     {
       'data-indicador': JSON.stringify(indicador),
-      class: 'Número',
+      class: tipo,
       onclick: (click) => {
         Seleccionar({ click, indicador, tipo });
       }
@@ -1834,13 +1918,11 @@ var Ámbito = ({ bloquesDeEspacios, indicador }) => {
 
   const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
     const código = [];
-    if (tipo === 'Número') {
-      código.push(Número({
-        bloquesDeEspacios,
-        indicador: [...indicador, 'código', indicadorDelElemento],
-        valor
-      }));
-    }
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'código', indicadorDelElemento],
+      valor
+    }));
 
     código.push(NuevaLínea({ bloquesDeEspacios, indicador: [...indicador, 'código', indicadorDelElemento + 1] }));
 
@@ -1871,7 +1953,7 @@ var Visualizar = () => {
     bloquesDeEspacios: 0,
     indicador: [0],
     nivel: 0
-  })); 
+  }));
 };
 
 const Código = van.state([
