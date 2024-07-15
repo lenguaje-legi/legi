@@ -148,3 +148,23 @@ pre {
     resize: vertical;
     white-space: nowrap;
 }
+
+#propiedades fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+#propiedades .lógica div {
+    display: flex;
+}
+
+#propiedades .lógica input {
+    margin: 0.5rem 0rem;
+    margin-left: 0.5rem;
+}
+
+#propiedades .lógica p {
+    font-size: 0.9rem;
+    margin: auto 0.5rem;
+}

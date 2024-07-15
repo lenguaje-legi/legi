@@ -4,7 +4,7 @@ import van from 'vanjs-core'
 import { capitalize, get } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { add } = van
-const { p, h2, div, input, textarea, span } = van.tags
+const { p, h2, div, fieldset, input, textarea, span } = van.tags
 
 export default ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades')
@@ -57,6 +57,10 @@ export default ({ tipo, indicador } = {}) => {
       AgregarTipo({
         tipo: 'Texto',
         indicador
+      }),
+      AgregarTipo({
+        tipo: 'Lógica',
+        indicador
       })
     )
   }
@@ -107,6 +111,56 @@ export default ({ tipo, indicador } = {}) => {
             }
           }),
           p(capitalize(propiedad))
+        )
+      }
+
+      if (tipo === 'Lógica') {
+        return div(
+          {
+            class: 'lógica'
+          },
+          fieldset(
+            div(
+              input({
+                type: 'radio',
+                name: 'lógica',
+                checked: (() => {
+                  if (get(Código.val, indicador)[propiedad] === true) {
+                    return true
+                  }
+                })(),
+                value: true,
+                onchange: ({ target }) => {
+                  console.log('Se confirmó un cambio')
+                  if (target.checked) {
+                    target.value = true
+                  }
+                  actualizarPropiedad({ valor, propiedad, target })
+                }
+              }),
+              p('Cierto')
+            ),
+            div(
+              input({
+                type: 'radio',
+                name: 'lógica',
+                checked: (() => {
+                  if (get(Código.val, indicador)[propiedad] === false) {
+                    return true
+                  }
+                })(),
+                value: false,
+                onchange: ({ target }) => {
+                  console.log('Se confirmó un cambio')
+                  if (target.checked) {
+                    target.value = false
+                  }
+                  actualizarPropiedad({ valor, propiedad, target })
+                }
+              }),
+              p('Falso')
+            )
+          )
         )
       }
 

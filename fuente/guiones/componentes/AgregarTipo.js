@@ -21,6 +21,10 @@ export default ({ tipo, indicador }) => {
           valor = ''
         }
 
+        if (tipo === 'Lógica') {
+          valor = true
+        }
+
         const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
           tipo,
           valor

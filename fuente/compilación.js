@@ -1611,6 +1611,10 @@ var AgregarTipo = ({ tipo, indicador }) => {
           valor = '';
         }
 
+        if (tipo === 'Lógica') {
+          valor = true;
+        }
+
         const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
           tipo,
           valor
@@ -1637,7 +1641,7 @@ var AgregarTipo = ({ tipo, indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$1, input, textarea, span } = van.tags;
+const { p, h2, div: div$1, fieldset, input, textarea, span } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1690,6 +1694,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       AgregarTipo({
         tipo: 'Texto',
         indicador
+      }),
+      AgregarTipo({
+        tipo: 'Lógica',
+        indicador
       })
     );
   }
@@ -1740,6 +1748,56 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
             }
           }),
           p(capitalize(propiedad))
+        )
+      }
+
+      if (tipo === 'Lógica') {
+        return div$1(
+          {
+            class: 'lógica'
+          },
+          fieldset(
+            div$1(
+              input({
+                type: 'radio',
+                name: 'lógica',
+                checked: (() => {
+                  if (get(Código.val, indicador)[propiedad] === true) {
+                    return true
+                  }
+                })(),
+                value: true,
+                onchange: ({ target }) => {
+                  console.log('Se confirmó un cambio');
+                  if (target.checked) {
+                    target.value = true;
+                  }
+                  actualizarPropiedad({ valor, propiedad, target });
+                }
+              }),
+              p('Cierto')
+            ),
+            div$1(
+              input({
+                type: 'radio',
+                name: 'lógica',
+                checked: (() => {
+                  if (get(Código.val, indicador)[propiedad] === false) {
+                    return true
+                  }
+                })(),
+                value: false,
+                onchange: ({ target }) => {
+                  console.log('Se confirmó un cambio');
+                  if (target.checked) {
+                    target.value = false;
+                  }
+                  actualizarPropiedad({ valor, propiedad, target });
+                }
+              }),
+              p('Falso')
+            )
+          )
         )
       }
 
@@ -1908,6 +1966,10 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
 
       return valor.join('\n')
     })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`);
+  }
+
+  if (tipo === 'Lógica') {
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`);
   }
 
   return div(

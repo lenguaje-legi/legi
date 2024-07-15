@@ -63,6 +63,10 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
     })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`)
   }
 
+  if (tipo === 'Lógica') {
+    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`)
+  }
+
   return div(
     {
       'data-indicador': (() => {
