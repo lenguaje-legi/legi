@@ -13,6 +13,10 @@ export default ({ tipo, indicador }) => {
 
         let valor
 
+        if (tipo === 'Función') {
+          valor = []
+        }
+
         if (tipo === 'Número') {
           valor = 0
         }

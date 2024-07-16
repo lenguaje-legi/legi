@@ -51,6 +51,10 @@ export default ({ tipo, indicador } = {}) => {
   if (tipo === 'Nueva línea') {
     editarPropiedades = div(
       AgregarTipo({
+        tipo: 'Función',
+        indicador
+      }),
+      AgregarTipo({
         tipo: 'Número',
         indicador
       }),
@@ -208,13 +212,17 @@ export default ({ tipo, indicador } = {}) => {
             actualizarPropiedad({ valor, propiedad, target })
           },
           onkeydown: event => {
+            if (tipo !== 'Texto') {
+              return
+            }
+
             const { key, shiftKey } = event
-            if (key === 'Enter' && !shiftKey) {
+            if (key === 'Enter' && shiftKey) {
               event.preventDefault()
             }
           },
           onkeyup: ({ target, key, shiftKey }) => {
-            if (key === 'Enter' && shiftKey) {
+            if (tipo === 'Texto' && (key === 'Enter' && !shiftKey)) {
               return
             }
 

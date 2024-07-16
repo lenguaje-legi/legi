@@ -2,7 +2,7 @@ import Seleccionar from './Seleccionar.js'
 import van from 'vanjs-core'
 import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
-const { div, pre } = van.tags
+const { div, pre, span } = van.tags
 
 const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
@@ -13,58 +13,112 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
     valor = `$${asignación} = ${valor}`
   }
 
-  if (tipo === 'Ámbito') {
+  if (tipo === 'Función') {
     bloquesDeEspacios = bloquesDeEspacios + 1
 
-    const ámbito = get(Código.val, indicador)
+    const función = get(Código.val, indicador)
 
     let devolver = ''
 
-    if (ámbito.devolver) {
+    if (función.devolver) {
       devolver = 'return '
     }
 
-    const código = ámbito.código.map(({ tipo, valor }, indicadorDelElemento) => {
+    const código = función.valor.map(({ valor }, indicadorDelElemento) => {
       const código = []
       código.push(Tipo({
         bloquesDeEspacios,
-        indicador: [...indicador, 'código', indicadorDelElemento],
+        indicador: [...indicador, 'valor', indicadorDelElemento],
         valor
       }))
 
-      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', indicadorDelElemento + 1] }))
+      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }))
 
       return código
     })
 
     valor = [
-      pre(`${devolver}function () {`),
-      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'código', 0] }),
+      pre(
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+        ),
+        `${devolver}function () {`
+      ),
+      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
       código,
-      pre('};')
+      pre(
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+        ),
+        '};'
+      )
     ]
   }
 
-  if (tipo === 'Número') {
-    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`)
+  if (tipo === 'Número' || tipo === 'Lógica') {
+    valor = pre(
+      span(
+        {
+          class: 'bloque-de-espacios'
+        },
+        `${'    '.repeat(bloquesDeEspacios)}`
+      ),
+      `${valor};`
+    )
   }
 
   if (tipo === 'Texto') {
-    valor = pre(`${'    '.repeat(bloquesDeEspacios)}<<<_\n${(() => {
-      if (valor === '') {
-        return ''
-      }
+    valor = [
+      pre(
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          '    '.repeat(bloquesDeEspacios)
+        ),
+        '<<<_'
+      ),
+      (() => {
+        if (valor === '') {
+          return ''
+        }
 
-      valor = valor.split('\n').map(valor => {
-        return `${'    '.repeat(bloquesDeEspacios + 1)}${valor}`
-      })
+        valor = valor.split('\n').map(valor => {
+          return pre(
+            {
+              class: 'texto'
+            },
+            span(
+              {
+                class: 'bloque-de-espacios'
+              },
+              '    '.repeat(bloquesDeEspacios + 1)
+            ),
+            valor
+          )
+        })
 
-      return valor.join('\n')
-    })()}\n${'    '.repeat(bloquesDeEspacios + 1)}_;`)
-  }
-
-  if (tipo === 'Lógica') {
-    valor = pre(`${'    '.repeat(bloquesDeEspacios)}${valor};`)
+        return valor
+      })(),
+      pre(
+        {
+          class: 'texto'
+        },
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          '    '.repeat(bloquesDeEspacios + 1)
+        ),
+        '_;'
+      )
+    ]
   }
 
   return div(

@@ -17,6 +17,11 @@ pre {
     padding: 0.5rem;
 }
 
+#visualización .bloque-de-espacios {
+    position: absolute;
+    z-index: -1;
+}
+
 #visualización .seleccionado {
     background-color: #993800 !important;
 }
@@ -29,10 +34,23 @@ pre {
     transition: background-color 200ms linear;
 }
 
+#visualización .Tipo {
+    padding: 0rem 0.5rem;
+}
+
 #visualización>.Tipo {
     border-radius: 0.3rem;
-    padding: 0.5rem;
+    padding: 0.25rem 0.5rem;
     background-color: color-mix(in srgb, black, white 4%);
+}
+
+#visualización .Tipo .Tipo,
+#visualización .texto {
+    margin-left: 1.3rem;
+}
+
+#visualización .texto::after {
+    content: " ";
 }
 
 #visualización .Tipo div:first-of-type {

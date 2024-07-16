@@ -3,9 +3,9 @@ import van from 'vanjs-core'
 
 export const Código = van.state([
   {
-    tipo: 'Ámbito',
+    tipo: 'Función',
     devolver: true,
-    código: []
+    valor: []
   }
 ])
 
