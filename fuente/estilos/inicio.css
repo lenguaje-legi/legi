@@ -5,7 +5,6 @@
 
 body {
     margin: 0;
-    background-color: #000000;
     color: #ffffff;
 }
 
@@ -15,11 +14,46 @@ pre {
 
 #visualización {
     padding: 0.5rem;
+    background-color: rgb(75, 75, 75);
 }
 
 #visualización .bloque-de-espacios {
     position: absolute;
     z-index: -1;
+}
+
+#visualización .devolver {
+    color: rgb(255, 100, 100);
+}
+
+#visualización .función {
+    color: rgb(150, 255, 100);
+}
+
+#visualización .paréntesis {
+    color: rgba(255, 150, 0, 0.2);
+}
+
+#visualización .llave,
+#visualización .inicio-de-texto,
+#visualización .final-de-texto {
+    color: rgba(255, 255, 0, 0.2);
+}
+
+#visualización .punto-y-coma {
+    color: rgba(0, 255, 0, 0.2);
+}
+
+#visualización .Número {
+    color: rgb(255, 100, 255);
+}
+
+#visualización .Texto {
+    color: rgb(255, 255, 100);
+}
+
+#visualización .Lógica {
+    color: rgb(255, 150, 100);
 }
 
 #visualización .seleccionado {
@@ -36,16 +70,17 @@ pre {
 
 #visualización .Tipo {
     padding: 0rem 0.5rem;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 #visualización>.Tipo {
     border-radius: 0.3rem;
     padding: 0.25rem 0.5rem;
-    background-color: color-mix(in srgb, black, white 4%);
 }
 
 #visualización .Tipo .Tipo,
-#visualización .texto {
+#visualización .texto,
+#visualización .final-de-texto {
     margin-left: 1.3rem;
 }
 
@@ -65,13 +100,9 @@ pre {
     border-radius: 0.3rem;
 }
 
-#visualización .Tipo .Tipo {
-    background-color: color-mix(in srgb, black, white 6%);
-}
-
-#visualización .Tipo .Nueva-línea {
+#visualización .Nueva-línea {
     padding: 0.25rem;
-    background-color: color-mix(in srgb, black, white 5%);
+    background-color: rgba(0, 25, 0, 0.2);
 }
 
 #visualización .Tipo:hover:not(:has(.Tipo:hover)) {

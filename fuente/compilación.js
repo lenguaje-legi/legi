@@ -1962,7 +1962,30 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
           },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
         ),
-        `${devolver}function () {`
+        span(
+          {
+            class: 'devolver'
+          },
+          devolver
+        ),
+        span(
+          {
+            class: 'función'
+          },
+          'function'
+        ),
+        span(
+          {
+            class: 'paréntesis'
+          },
+          ' ()'
+        ),
+        span(
+          {
+            class: 'llave'
+          },
+          ' {'
+        )
       ),
       Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
       código,
@@ -1973,7 +1996,18 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
           },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
         ),
-        '};'
+        span(
+          {
+            class: 'llave'
+          },
+          '}'
+        ),
+        span(
+          {
+            class: 'punto-y-coma'
+          },
+          ';'
+        )
       )
     ];
   }
@@ -1986,7 +2020,13 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
         },
         `${'    '.repeat(bloquesDeEspacios)}`
       ),
-      `${valor};`
+      valor,
+      span(
+        {
+          class: 'punto-y-coma'
+        },
+        ';'
+      )
     );
   }
 
@@ -1999,7 +2039,12 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
           },
           '    '.repeat(bloquesDeEspacios)
         ),
-        '<<<_'
+        span(
+          {
+            class: 'inicio-de-texto'
+          },
+          '<<<_'
+        )
       ),
       (() => {
         if (valor === '') {
@@ -2024,16 +2069,24 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
         return valor
       })(),
       pre(
-        {
-          class: 'texto'
-        },
         span(
           {
             class: 'bloque-de-espacios'
           },
           '    '.repeat(bloquesDeEspacios + 1)
         ),
-        '_;'
+        span(
+          {
+            class: 'final-de-texto'
+          },
+          '_'
+        ),
+        span(
+          {
+            class: 'punto-y-coma'
+          },
+          ';'
+        )
       )
     ];
   }
