@@ -17,6 +17,10 @@ export default ({ tipo, indicador }) => {
           valor = []
         }
 
+        if (tipo === 'Lista') {
+          valor = []
+        }
+
         if (tipo === 'Número') {
           valor = 0
         }

@@ -34,6 +34,10 @@ pre {
     color: rgba(255, 150, 0, 0.2);
 }
 
+#visualización .corchete {
+    color: rgb(100, 150, 255);
+}
+
 #visualización .llave,
 #visualización .inicio-de-texto,
 #visualización .final-de-texto {

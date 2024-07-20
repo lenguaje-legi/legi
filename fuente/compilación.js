@@ -1607,6 +1607,10 @@ var AgregarTipo = ({ tipo, indicador }) => {
           valor = [];
         }
 
+        if (tipo === 'Lista') {
+          valor = [];
+        }
+
         if (tipo === 'Número') {
           valor = 0;
         }
@@ -1693,6 +1697,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     editarPropiedades = div$1(
       AgregarTipo({
         tipo: 'Función',
+        indicador
+      }),
+      AgregarTipo({
+        tipo: 'Lista',
         indicador
       }),
       AgregarTipo({
@@ -2001,6 +2009,64 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
             class: 'llave'
           },
           '}'
+        ),
+        span(
+          {
+            class: 'punto-y-coma'
+          },
+          ';'
+        )
+      )
+    ];
+  }
+
+  if (tipo === 'Lista') {
+    bloquesDeEspacios = bloquesDeEspacios + 1;
+
+    const lista = get(Código.val, indicador);
+
+    const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
+      const código = [];
+      código.push(Tipo({
+        bloquesDeEspacios,
+        indicador: [...indicador, 'valor', indicadorDelElemento],
+        valor
+      }));
+
+      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }));
+
+      return código
+    });
+
+    valor = [
+      pre(
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+        ),
+        span(
+          {
+            class: 'corchete'
+          },
+          '['
+        )
+      ),
+      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
+      código,
+      pre(
+        span(
+          {
+            class: 'bloque-de-espacios'
+          },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+        ),
+        span(
+          {
+            class: 'corchete'
+          },
+          ']'
         ),
         span(
           {

@@ -55,6 +55,10 @@ export default ({ tipo, indicador } = {}) => {
         indicador
       }),
       AgregarTipo({
+        tipo: 'Lista',
+        indicador
+      }),
+      AgregarTipo({
         tipo: 'Número',
         indicador
       }),
