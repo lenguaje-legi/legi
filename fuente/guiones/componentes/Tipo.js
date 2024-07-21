@@ -7,6 +7,7 @@ import Lista from './tipos/Lista.js'
 import Lógica from './tipos/Lógica.js'
 import Número from './tipos/Número.js'
 import Texto from './tipos/Texto.js'
+import Comentario from './tipos/Comentario.js'
 const { div } = van.tags
 
 export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
@@ -36,6 +37,10 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
 
   if (tipo === 'Texto') {
     valor = Texto({ bloquesDeEspacios, valor })
+  }
+
+  if (tipo === 'Comentario') {
+    valor = Comentario({ bloquesDeEspacios, valor })
   }
 
   return div(

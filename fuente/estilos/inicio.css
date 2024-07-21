@@ -48,6 +48,10 @@ pre {
     color: rgba(0, 255, 0, 0.2);
 }
 
+#visualización .signo-de-número {
+    color: rgba(0, 255, 255, 0.2);
+}
+
 #visualización .Número {
     color: rgb(255, 100, 255);
 }
@@ -58,6 +62,10 @@ pre {
 
 #visualización .Lógica {
     color: rgb(255, 150, 100);
+}
+
+#visualización .Comentario {
+    color: rgb(225, 225, 225);
 }
 
 #visualización .seleccionado {

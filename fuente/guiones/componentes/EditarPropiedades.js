@@ -69,6 +69,10 @@ export default ({ tipo, indicador } = {}) => {
       AgregarTipo({
         tipo: 'Lógica',
         indicador
+      }),
+      AgregarTipo({
+        tipo: 'Comentario',
+        indicador
       })
     )
   }
@@ -174,7 +178,7 @@ export default ({ tipo, indicador } = {}) => {
 
       let casilla = input
 
-      if (tipo === 'Texto') {
+      if (tipo === 'Texto' || tipo === 'Comentario') {
         casilla = textarea
       }
 
@@ -216,7 +220,7 @@ export default ({ tipo, indicador } = {}) => {
             actualizarPropiedad({ valor, propiedad, target })
           },
           onkeydown: event => {
-            if (tipo !== 'Texto') {
+            if (tipo !== 'Texto' && tipo !== 'Comentario') {
               return
             }
 
@@ -226,7 +230,7 @@ export default ({ tipo, indicador } = {}) => {
             }
           },
           onkeyup: ({ target, key, shiftKey }) => {
-            if (tipo === 'Texto' && (key === 'Enter' && !shiftKey)) {
+            if ((tipo === 'Texto' || tipo === 'Comentario') && (key === 'Enter' && !shiftKey)) {
               return
             }
 

@@ -33,6 +33,10 @@ export default ({ tipo, indicador }) => {
           valor = true
         }
 
+        if (tipo === 'Comentario') {
+          valor = ''
+        }
+
         const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
           tipo,
           valor
