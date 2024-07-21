@@ -9,6 +9,12 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador)
 
+  let devolver = ''
+
+  if (lista.devolver) {
+    devolver = 'return '
+  }
+
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = []
     código.push(Tipo({
@@ -29,6 +35,12 @@ export default ({ bloquesDeEspacios, indicador }) => {
           class: 'bloque-de-espacios'
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span(
+        {
+          class: 'devolver'
+        },
+        devolver
       ),
       span(
         {

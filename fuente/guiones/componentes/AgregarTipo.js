@@ -11,36 +11,40 @@ export default ({ tipo, indicador }) => {
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`)
 
-        let valor
+        const propiedades = {
+          tipo
+        }
 
         if (tipo === 'Función') {
-          valor = []
+          propiedades.devolver = false
+          propiedades.valor = []
         }
 
         if (tipo === 'Lista') {
-          valor = []
+          propiedades.devolver = false
+          propiedades.valor = []
         }
 
         if (tipo === 'Número') {
-          valor = 0
+          propiedades.devolver = false
+          propiedades.valor = 0
         }
 
         if (tipo === 'Texto') {
-          valor = ''
+          propiedades.devolver = false
+          propiedades.valor = ''
         }
 
         if (tipo === 'Lógica') {
-          valor = true
+          propiedades.devolver = false
+          propiedades.valor = true
         }
 
         if (tipo === 'Comentario') {
-          valor = ''
+          propiedades.valor = ''
         }
 
-        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
-          tipo,
-          valor
-        })
+        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, propiedades)
 
         set(Código.val, indicador.toSpliced(-1), nuevoTipo)
 

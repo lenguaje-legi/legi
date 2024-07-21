@@ -1,7 +1,17 @@
 import van from 'vanjs-core'
+import { Código } from '../../inicio.js'
+import { get } from 'lodash-es'
 const { pre, span } = van.tags
 
-export default ({ bloquesDeEspacios, valor }) => {
+export default ({ bloquesDeEspacios, indicador, valor }) => {
+  const texto = get(Código.val, indicador)
+
+  let devolver = ''
+
+  if (texto.devolver) {
+    devolver = 'return '
+  }
+
   return [
     pre(
       span(
@@ -9,6 +19,12 @@ export default ({ bloquesDeEspacios, valor }) => {
           class: 'bloque-de-espacios'
         },
         '    '.repeat(bloquesDeEspacios)
+      ),
+      span(
+        {
+          class: 'devolver'
+        },
+        devolver
       ),
       span(
         {

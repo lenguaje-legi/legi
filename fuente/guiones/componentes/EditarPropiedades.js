@@ -17,7 +17,7 @@ export default ({ tipo, indicador } = {}) => {
       get(Código.val, indicador)[propiedad] = target.value === 'true'
     }
 
-    if (get(Código.val, indicador).tipo === 'Número') {
+    if (get(Código.val, indicador).tipo === 'Número' && propiedad === 'valor') {
       if (target.value.trim() === '' || isNaN(target.value)) {
         target.value = valor
         return null
@@ -97,6 +97,10 @@ export default ({ tipo, indicador } = {}) => {
       }
 
       if (propiedad === 'devolver') {
+        if (JSON.stringify(indicador) === '[0]') {
+          return null
+        }
+
         return div(
           {
             class: 'verificación'

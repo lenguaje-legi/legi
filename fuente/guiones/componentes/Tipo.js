@@ -28,15 +28,15 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   }
 
   if (tipo === 'Lógica') {
-    valor = Lógica({ bloquesDeEspacios, valor })
+    valor = Lógica({ bloquesDeEspacios, indicador, valor })
   }
 
   if (tipo === 'Número') {
-    valor = Número({ bloquesDeEspacios, valor })
+    valor = Número({ bloquesDeEspacios, indicador, valor })
   }
 
   if (tipo === 'Texto') {
-    valor = Texto({ bloquesDeEspacios, valor })
+    valor = Texto({ bloquesDeEspacios, indicador, valor })
   }
 
   if (tipo === 'Comentario') {

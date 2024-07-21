@@ -1601,36 +1601,40 @@ var AgregarTipo = ({ tipo, indicador }) => {
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`);
 
-        let valor;
+        const propiedades = {
+          tipo
+        };
 
         if (tipo === 'Función') {
-          valor = [];
+          propiedades.devolver = false;
+          propiedades.valor = [];
         }
 
         if (tipo === 'Lista') {
-          valor = [];
+          propiedades.devolver = false;
+          propiedades.valor = [];
         }
 
         if (tipo === 'Número') {
-          valor = 0;
+          propiedades.devolver = false;
+          propiedades.valor = 0;
         }
 
         if (tipo === 'Texto') {
-          valor = '';
+          propiedades.devolver = false;
+          propiedades.valor = '';
         }
 
         if (tipo === 'Lógica') {
-          valor = true;
+          propiedades.devolver = false;
+          propiedades.valor = true;
         }
 
         if (tipo === 'Comentario') {
-          valor = '';
+          propiedades.valor = '';
         }
 
-        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, {
-          tipo,
-          valor
-        });
+        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, propiedades);
 
         set(Código.val, indicador.toSpliced(-1), nuevoTipo);
 
@@ -1666,7 +1670,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       get(Código.val, indicador)[propiedad] = target.value === 'true';
     }
 
-    if (get(Código.val, indicador).tipo === 'Número') {
+    if (get(Código.val, indicador).tipo === 'Número' && propiedad === 'valor') {
       if (target.value.trim() === '' || isNaN(target.value)) {
         target.value = valor;
         return null
@@ -1746,6 +1750,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       }
 
       if (propiedad === 'devolver') {
+        if (JSON.stringify(indicador) === '[0]') {
+          return null
+        }
+
         return div$1(
           {
             class: 'verificación'
@@ -2026,6 +2034,12 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador);
 
+  let devolver = '';
+
+  if (lista.devolver) {
+    devolver = 'return ';
+  }
+
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = [];
     código.push(Tipo({
@@ -2046,6 +2060,12 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
           class: 'bloque-de-espacios'
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span$4(
+        {
+          class: 'devolver'
+        },
+        devolver
       ),
       span$4(
         {
@@ -2081,13 +2101,27 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
 const { pre: pre$3, span: span$3 } = van.tags;
 
-var Lógica = ({ bloquesDeEspacios, valor }) => {
+var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
+  const lógica = get(Código.val, indicador);
+
+  let devolver = '';
+
+  if (lógica.devolver) {
+    devolver = 'return ';
+  }
+
   return pre$3(
     span$3(
       {
         class: 'bloque-de-espacios'
       },
           `${'    '.repeat(bloquesDeEspacios)}`
+    ),
+    span$3(
+      {
+        class: 'devolver'
+      },
+      devolver
     ),
     valor,
     span$3(
@@ -2101,13 +2135,27 @@ var Lógica = ({ bloquesDeEspacios, valor }) => {
 
 const { pre: pre$2, span: span$2 } = van.tags;
 
-var Número = ({ bloquesDeEspacios, valor }) => {
+var Número = ({ bloquesDeEspacios, indicador, valor }) => {
+  const número = get(Código.val, indicador);
+
+  let devolver = '';
+
+  if (número.devolver) {
+    devolver = 'return ';
+  }
+
   return pre$2(
     span$2(
       {
         class: 'bloque-de-espacios'
       },
           `${'    '.repeat(bloquesDeEspacios)}`
+    ),
+    span$2(
+      {
+        class: 'devolver'
+      },
+      devolver
     ),
     valor,
     span$2(
@@ -2121,7 +2169,15 @@ var Número = ({ bloquesDeEspacios, valor }) => {
 
 const { pre: pre$1, span: span$1 } = van.tags;
 
-var Texto = ({ bloquesDeEspacios, valor }) => {
+var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
+  const texto = get(Código.val, indicador);
+
+  let devolver = '';
+
+  if (texto.devolver) {
+    devolver = 'return ';
+  }
+
   return [
     pre$1(
       span$1(
@@ -2129,6 +2185,12 @@ var Texto = ({ bloquesDeEspacios, valor }) => {
           class: 'bloque-de-espacios'
         },
         '    '.repeat(bloquesDeEspacios)
+      ),
+      span$1(
+        {
+          class: 'devolver'
+        },
+        devolver
       ),
       span$1(
         {
@@ -2224,15 +2286,15 @@ var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   }
 
   if (tipo === 'Lógica') {
-    valor = Lógica({ bloquesDeEspacios, valor });
+    valor = Lógica({ bloquesDeEspacios, indicador, valor });
   }
 
   if (tipo === 'Número') {
-    valor = Número({ bloquesDeEspacios, valor });
+    valor = Número({ bloquesDeEspacios, indicador, valor });
   }
 
   if (tipo === 'Texto') {
-    valor = Texto({ bloquesDeEspacios, valor });
+    valor = Texto({ bloquesDeEspacios, indicador, valor });
   }
 
   if (tipo === 'Comentario') {
