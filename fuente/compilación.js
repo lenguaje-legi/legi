@@ -1649,7 +1649,7 @@ var AgregarTipo = ({ tipo, indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$1, fieldset, input, textarea, span: span$1 } = van.tags;
+const { p, h2, div: div$1, fieldset, input, textarea, span: span$5 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1757,7 +1757,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               actualizarPropiedad({ valor, propiedad, target });
             }
           }),
-          span$1({
+          span$5({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -1927,9 +1927,256 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const { div, pre, span } = van.tags;
+const { pre: pre$4, span: span$4 } = van.tags;
 
-const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
+var Función = ({ bloquesDeEspacios, indicador }) => {
+  bloquesDeEspacios = bloquesDeEspacios + 1;
+
+  const función = get(Código.val, indicador);
+
+  let devolver = '';
+
+  if (función.devolver) {
+    devolver = 'return ';
+  }
+
+  const código = función.valor.map(({ valor }, indicadorDelElemento) => {
+    const código = [];
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'valor', indicadorDelElemento],
+      valor
+    }));
+
+    código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }));
+
+    return código
+  });
+
+  return [
+    pre$4(
+      span$4(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span$4(
+        {
+          class: 'devolver'
+        },
+        devolver
+      ),
+      span$4(
+        {
+          class: 'función'
+        },
+        'function'
+      ),
+      span$4(
+        {
+          class: 'paréntesis'
+        },
+        ' ()'
+      ),
+      span$4(
+        {
+          class: 'llave'
+        },
+        ' {'
+      )
+    ),
+    Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
+    código,
+    pre$4(
+      span$4(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span$4(
+        {
+          class: 'llave'
+        },
+        '}'
+      ),
+      span$4(
+        {
+          class: 'punto-y-coma'
+        },
+        ';'
+      )
+    )
+  ]
+};
+
+const { pre: pre$3, span: span$3 } = van.tags;
+
+var Lista = ({ bloquesDeEspacios, indicador }) => {
+  bloquesDeEspacios = bloquesDeEspacios + 1;
+
+  const lista = get(Código.val, indicador);
+
+  const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
+    const código = [];
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'valor', indicadorDelElemento],
+      valor
+    }));
+
+    código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }));
+
+    return código
+  });
+
+  return [
+    pre$3(
+      span$3(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span$3(
+        {
+          class: 'corchete'
+        },
+        '['
+      )
+    ),
+    Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
+    código,
+    pre$3(
+      span$3(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios - 1)}`
+      ),
+      span$3(
+        {
+          class: 'corchete'
+        },
+        ']'
+      ),
+      span$3(
+        {
+          class: 'punto-y-coma'
+        },
+        ';'
+      )
+    )
+  ]
+};
+
+const { pre: pre$2, span: span$2 } = van.tags;
+
+var Lógica = ({ bloquesDeEspacios, valor }) => {
+  return pre$2(
+    span$2(
+      {
+        class: 'bloque-de-espacios'
+      },
+          `${'    '.repeat(bloquesDeEspacios)}`
+    ),
+    valor,
+    span$2(
+      {
+        class: 'punto-y-coma'
+      },
+      ';'
+    )
+  )
+};
+
+const { pre: pre$1, span: span$1 } = van.tags;
+
+var Número = ({ bloquesDeEspacios, valor }) => {
+  return pre$1(
+    span$1(
+      {
+        class: 'bloque-de-espacios'
+      },
+          `${'    '.repeat(bloquesDeEspacios)}`
+    ),
+    valor,
+    span$1(
+      {
+        class: 'punto-y-coma'
+      },
+      ';'
+    )
+  )
+};
+
+const { pre, span } = van.tags;
+
+var Texto = ({ bloquesDeEspacios, valor }) => {
+  return [
+    pre(
+      span(
+        {
+          class: 'bloque-de-espacios'
+        },
+        '    '.repeat(bloquesDeEspacios)
+      ),
+      span(
+        {
+          class: 'inicio-de-texto'
+        },
+        '<<<_'
+      )
+    ),
+    (() => {
+      if (valor === '') {
+        return ''
+      }
+
+      valor = valor.split('\n').map(valor => {
+        return pre(
+          {
+            class: 'texto'
+          },
+          span(
+            {
+              class: 'bloque-de-espacios'
+            },
+            '    '.repeat(bloquesDeEspacios + 1)
+          ),
+          valor
+        )
+      });
+
+      return valor
+    })(),
+    pre(
+      span(
+        {
+          class: 'bloque-de-espacios'
+        },
+        '    '.repeat(bloquesDeEspacios + 1)
+      ),
+      span(
+        {
+          class: 'final-de-texto'
+        },
+        '_'
+      ),
+      span(
+        {
+          class: 'punto-y-coma'
+        },
+        ';'
+      )
+    )
+  ]
+};
+
+const { div } = van.tags;
+
+var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
     tipo = get(Código.val, indicador).tipo;
   }
@@ -1939,222 +2186,23 @@ const Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   }
 
   if (tipo === 'Función') {
-    bloquesDeEspacios = bloquesDeEspacios + 1;
-
-    const función = get(Código.val, indicador);
-
-    let devolver = '';
-
-    if (función.devolver) {
-      devolver = 'return ';
-    }
-
-    const código = función.valor.map(({ valor }, indicadorDelElemento) => {
-      const código = [];
-      código.push(Tipo({
-        bloquesDeEspacios,
-        indicador: [...indicador, 'valor', indicadorDelElemento],
-        valor
-      }));
-
-      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }));
-
-      return código
-    });
-
-    valor = [
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-        ),
-        span(
-          {
-            class: 'devolver'
-          },
-          devolver
-        ),
-        span(
-          {
-            class: 'función'
-          },
-          'function'
-        ),
-        span(
-          {
-            class: 'paréntesis'
-          },
-          ' ()'
-        ),
-        span(
-          {
-            class: 'llave'
-          },
-          ' {'
-        )
-      ),
-      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
-      código,
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-        ),
-        span(
-          {
-            class: 'llave'
-          },
-          '}'
-        ),
-        span(
-          {
-            class: 'punto-y-coma'
-          },
-          ';'
-        )
-      )
-    ];
+    valor = Función({ bloquesDeEspacios, indicador });
   }
 
   if (tipo === 'Lista') {
-    bloquesDeEspacios = bloquesDeEspacios + 1;
-
-    const lista = get(Código.val, indicador);
-
-    const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
-      const código = [];
-      código.push(Tipo({
-        bloquesDeEspacios,
-        indicador: [...indicador, 'valor', indicadorDelElemento],
-        valor
-      }));
-
-      código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', indicadorDelElemento + 1] }));
-
-      return código
-    });
-
-    valor = [
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-        ),
-        span(
-          {
-            class: 'corchete'
-          },
-          '['
-        )
-      ),
-      Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
-      código,
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-        ),
-        span(
-          {
-            class: 'corchete'
-          },
-          ']'
-        ),
-        span(
-          {
-            class: 'punto-y-coma'
-          },
-          ';'
-        )
-      )
-    ];
+    valor = Lista({ bloquesDeEspacios, indicador });
   }
 
-  if (tipo === 'Número' || tipo === 'Lógica') {
-    valor = pre(
-      span(
-        {
-          class: 'bloque-de-espacios'
-        },
-        `${'    '.repeat(bloquesDeEspacios)}`
-      ),
-      valor,
-      span(
-        {
-          class: 'punto-y-coma'
-        },
-        ';'
-      )
-    );
+  if (tipo === 'Lógica') {
+    valor = Lógica({ bloquesDeEspacios, valor });
+  }
+
+  if (tipo === 'Número') {
+    valor = Número({ bloquesDeEspacios, valor });
   }
 
   if (tipo === 'Texto') {
-    valor = [
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          '    '.repeat(bloquesDeEspacios)
-        ),
-        span(
-          {
-            class: 'inicio-de-texto'
-          },
-          '<<<_'
-        )
-      ),
-      (() => {
-        if (valor === '') {
-          return ''
-        }
-
-        valor = valor.split('\n').map(valor => {
-          return pre(
-            {
-              class: 'texto'
-            },
-            span(
-              {
-                class: 'bloque-de-espacios'
-              },
-              '    '.repeat(bloquesDeEspacios + 1)
-            ),
-            valor
-          )
-        });
-
-        return valor
-      })(),
-      pre(
-        span(
-          {
-            class: 'bloque-de-espacios'
-          },
-          '    '.repeat(bloquesDeEspacios + 1)
-        ),
-        span(
-          {
-            class: 'final-de-texto'
-          },
-          '_'
-        ),
-        span(
-          {
-            class: 'punto-y-coma'
-          },
-          ';'
-        )
-      )
-    ];
+    valor = Texto({ bloquesDeEspacios, valor });
   }
 
   return div(
