@@ -12,12 +12,32 @@ export default ({ tipo, indicador } = {}) => {
 
   let editarPropiedades
 
+  const Tipo = get(Código.val, indicador)
+
+  let últimoElemento = get(Código.val, indicador.slice(0, -1))
+  if (últimoElemento) {
+    últimoElemento = últimoElemento.at(-1)
+  }
+
+  if (!últimoElemento) {
+    últimoElemento = {
+      devolver: false
+    }
+  }
+
+  let esElÚltimoElemento
+  let esLaÚltimaNuevaLínea
+  if (JSON.stringify(indicador) !== '[0]') {
+    esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1
+    esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1)
+  }
+
   const actualizarPropiedad = ({ valor, propiedad, target }) => {
     if (target.value === 'true' || target.value === 'false') {
-      get(Código.val, indicador)[propiedad] = target.value === 'true'
+      Tipo[propiedad] = target.value === 'true'
     }
 
-    if (get(Código.val, indicador).tipo === 'Número' && propiedad === 'valor') {
+    if (Tipo.tipo === 'Número' && propiedad === 'valor') {
       if (target.value.trim() === '' || isNaN(target.value)) {
         target.value = valor
         return null
@@ -27,7 +47,7 @@ export default ({ tipo, indicador } = {}) => {
     }
 
     if (target.value !== 'true' && target.value !== 'false') {
-      get(Código.val, indicador)[propiedad] = target.value
+      Tipo[propiedad] = target.value
     }
 
     Visualizar()
@@ -49,6 +69,10 @@ export default ({ tipo, indicador } = {}) => {
   }
 
   if (tipo === 'Nueva línea') {
+    if (esLaÚltimaNuevaLínea && últimoElemento.devolver) {
+      return null
+    }
+
     editarPropiedades = div(
       AgregarTipo({
         tipo: 'Función',
@@ -78,12 +102,12 @@ export default ({ tipo, indicador } = {}) => {
   }
 
   if (tipo !== undefined && tipo !== 'Nueva línea') {
-    editarPropiedades = Object.keys(get(Código.val, indicador)).map(propiedad => {
+    editarPropiedades = Object.keys(Tipo).map(propiedad => {
       let valor
       let confirmado = false
-      const { tipo } = get(Código.val, indicador)
+      const { tipo } = Tipo
 
-      if (typeof get(Código.val, indicador)[propiedad] === 'object') {
+      if (typeof Tipo[propiedad] === 'object') {
         return null
       }
 
@@ -92,12 +116,12 @@ export default ({ tipo, indicador } = {}) => {
           {
             class: 'tipo'
           },
-          get(Código.val, indicador)[propiedad]
+          Tipo[propiedad]
         )
       }
 
       if (propiedad === 'devolver') {
-        if (JSON.stringify(indicador) === '[0]') {
+        if (JSON.stringify(indicador) === '[0]' || !esElÚltimoElemento) {
           return null
         }
 
@@ -107,8 +131,8 @@ export default ({ tipo, indicador } = {}) => {
           },
           input({
             type: 'checkbox',
-            checked: get(Código.val, indicador)[propiedad],
-            value: get(Código.val, indicador)[propiedad],
+            checked: Tipo[propiedad],
+            value: Tipo[propiedad],
             onchange: ({ target }) => {
               console.log('Se confirmó un cambio')
               if (target.checked) {
@@ -141,7 +165,7 @@ export default ({ tipo, indicador } = {}) => {
                 type: 'radio',
                 name: 'lógica',
                 checked: (() => {
-                  if (get(Código.val, indicador)[propiedad] === true) {
+                  if (Tipo[propiedad] === true) {
                     return true
                   }
                 })(),
@@ -161,7 +185,7 @@ export default ({ tipo, indicador } = {}) => {
                 type: 'radio',
                 name: 'lógica',
                 checked: (() => {
-                  if (get(Código.val, indicador)[propiedad] === false) {
+                  if (Tipo[propiedad] === false) {
                     return true
                   }
                 })(),
@@ -200,7 +224,7 @@ export default ({ tipo, indicador } = {}) => {
         },
         p(capitalize(propiedad)),
         casilla({
-          value: get(Código.val, indicador)[propiedad],
+          value: Tipo[propiedad],
           'data-propiedad': propiedad,
           oninput: ({ target }) => {
             if (tipo === 'Texto' && propiedad === 'valor') {
