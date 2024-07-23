@@ -15,6 +15,19 @@ export default ({ bloquesDeEspacios, indicador }) => {
     devolver = 'return '
   }
 
+  const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
+    const código = []
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'contexto', indicadorDelElemento],
+      valor
+    }))
+
+    código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', indicadorDelElemento + 1] }))
+
+    return código
+  })
+
   const código = función.valor.map(({ valor }, indicadorDelElemento) => {
     const código = []
     código.push(Tipo({
@@ -47,12 +60,42 @@ export default ({ bloquesDeEspacios, indicador }) => {
           class: 'función'
         },
         'function'
+      )
+    ),
+    pre(
+      span(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios)}`
       ),
       span(
         {
-          class: 'paréntesis'
+          class: 'contexto'
         },
-        ' ()'
+        '/* contexto */ '
+      ),
+      span(
+        {
+          class: 'paréntesis-de-apertura'
+        },
+        '('
+      )
+    ),
+    Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
+    contexto,
+    pre(
+      span(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios)}`
+      ),
+      span(
+        {
+          class: 'paréntesis-de-cierre'
+        },
+        ')'
       ),
       span(
         {

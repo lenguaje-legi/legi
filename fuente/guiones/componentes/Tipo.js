@@ -3,6 +3,7 @@ import van from 'vanjs-core'
 import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import Función from './tipos/Función.js'
+import Contexto from './tipos/Contexto.js'
 import Lista from './tipos/Lista.js'
 import Lógica from './tipos/Lógica.js'
 import Número from './tipos/Número.js'
@@ -20,7 +21,11 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   }
 
   if (tipo === 'Función') {
-    valor = Función({ bloquesDeEspacios, indicador })
+    valor = Función({ bloquesDeEspacios, indicador, valor })
+  }
+
+  if (tipo === 'Contexto') {
+    valor = Contexto({ bloquesDeEspacios, indicador, valor })
   }
 
   if (tipo === 'Lista') {

@@ -30,7 +30,8 @@ pre {
     color: rgb(150, 255, 100);
 }
 
-#visualización .paréntesis {
+#visualización .paréntesis-de-apertura,
+#visualización .paréntesis-de-cierre {
     color: rgba(255, 150, 0, 0.2);
 }
 
@@ -48,7 +49,9 @@ pre {
     color: rgba(0, 255, 0, 0.2);
 }
 
-#visualización .signo-de-número {
+#visualización .signo-de-número,
+#visualización .signo-de-dólar,
+#visualización .contexto {
     color: rgba(0, 255, 255, 0.2);
 }
 
@@ -64,7 +67,8 @@ pre {
     color: rgb(255, 150, 100);
 }
 
-#visualización .Comentario {
+#visualización .Comentario,
+#visualización .Contexto {
     color: rgb(225, 225, 225);
 }
 
@@ -92,8 +96,14 @@ pre {
 
 #visualización .Tipo .Tipo,
 #visualización .texto,
+#visualización .signo-de-dólar,
 #visualización .final-de-texto {
     margin-left: 1.3rem;
+}
+
+#visualización .contexto,
+#visualización .paréntesis-de-cierre {
+    margin-left: 1.8rem;
 }
 
 #visualización .texto::after {

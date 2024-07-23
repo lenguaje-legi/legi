@@ -1605,8 +1605,22 @@ var AgregarTipo = ({ tipo, indicador }) => {
           tipo
         };
 
+        if (tipo === 'Contexto') {
+          propiedades.valor = {
+            nombre: '',
+            tipos: {
+              Función: true,
+              Lista: true,
+              Lógica: true,
+              Número: true,
+              Texto: true
+            }
+          };
+        }
+
         if (tipo === 'Función') {
           propiedades.devolver = false;
+          propiedades.contexto = [];
           propiedades.valor = [];
         }
 
@@ -1657,7 +1671,7 @@ var AgregarTipo = ({ tipo, indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$1, fieldset, input, textarea, span: span$6 } = van.tags;
+const { p, h2, div: div$1, fieldset, input, textarea, span: span$7 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1680,14 +1694,20 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
   let esElÚltimoElemento;
   let esLaÚltimaNuevaLínea;
-  if (JSON.stringify(indicador) !== '[0]') {
+  if (JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
     esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1;
     esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1);
   }
 
   const actualizarPropiedad = ({ valor, propiedad, target }) => {
     if (target.value === 'true' || target.value === 'false') {
-      Tipo[propiedad] = target.value === 'true';
+      if (Tipo.tipo === 'Contexto') {
+        Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[target.dataset.propiedad]] = target.value === 'true';
+      }
+
+      if (Tipo.tipo !== 'Contexto') {
+        Tipo[propiedad] = target.value === 'true';
+      }
     }
 
     if (Tipo.tipo === 'Número' && propiedad === 'valor') {
@@ -1700,7 +1720,13 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     }
 
     if (target.value !== 'true' && target.value !== 'false') {
-      Tipo[propiedad] = target.value;
+      if (Tipo.tipo === 'Contexto') {
+        Tipo[propiedad][target.dataset.propiedad] = target.value;
+      }
+
+      if (Tipo.tipo !== 'Contexto') {
+        Tipo[propiedad] = target.value;
+      }
     }
 
     Visualizar();
@@ -1726,32 +1752,43 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       return null
     }
 
-    editarPropiedades = div$1(
-      AgregarTipo({
-        tipo: 'Función',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Lista',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Número',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Texto',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Lógica',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Comentario',
-        indicador
-      })
-    );
+    if (indicador.slice(0, -1).at(-1) !== 'contexto') {
+      editarPropiedades = div$1(
+        AgregarTipo({
+          tipo: 'Función',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Lista',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Número',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Texto',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Lógica',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Comentario',
+          indicador
+        })
+      );
+    }
+
+    if (indicador.slice(0, -1).at(-1) === 'contexto') {
+      editarPropiedades = div$1(
+        AgregarTipo({
+          tipo: 'Contexto',
+          indicador
+        })
+      );
+    }
   }
 
   if (tipo !== undefined && tipo !== 'Nueva línea') {
@@ -1760,7 +1797,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       let confirmado = false;
       const { tipo } = Tipo;
 
-      if (typeof Tipo[propiedad] === 'object') {
+      if (typeof Tipo[propiedad] === 'object' && tipo !== 'Contexto') {
         return null
       }
 
@@ -1797,7 +1834,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               actualizarPropiedad({ valor, propiedad, target });
             }
           }),
-          span$6({
+          span$7({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -1805,6 +1842,81 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
           }),
           p(capitalize(propiedad))
         )
+      }
+
+      if (tipo === 'Contexto') {
+        return [
+          div$1(
+            {
+              class: 'propiedad'
+            },
+            p('Nombre'),
+            input({
+              value: Tipo[propiedad].nombre,
+              'data-propiedad': 'nombre',
+              onfocus: ({ target }) => {
+                valor = target.value;
+                console.log('Se inició un cambio');
+              },
+              onfocusout: ({ target }) => {
+                if (valor === target.value) {
+                  return
+                }
+                if (confirmado) {
+                  confirmado = false;
+                  return
+                }
+                console.log('Se aplicó un cambio');
+                actualizarPropiedad({ valor, propiedad, target });
+              },
+              onkeyup: ({ target, key, shiftKey }) => {
+                if (key !== undefined && key !== 'Enter') {
+                  return
+                }
+
+                confirmado = true;
+                target.blur();
+                if (valor === target.value) {
+                  return
+                }
+                console.log('Se confirmó un cambio');
+                actualizarPropiedad({ valor, propiedad, target });
+              }
+            })
+          ),
+          (() => {
+            return Object.keys(Tipo[propiedad].tipos).map((tipo, indicador) => {
+              return div$1(
+                {
+                  class: 'verificación'
+                },
+                input({
+                  type: 'checkbox',
+                  checked: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
+                  value: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
+                  'data-propiedad': indicador,
+                  onchange: ({ target }) => {
+                    console.log('Se confirmó un cambio');
+                    if (target.checked) {
+                      target.value = true;
+                    }
+                    if (!target.checked) {
+                      target.value = false;
+                    }
+                    actualizarPropiedad({ valor, propiedad, target });
+                  }
+                }),
+                span$7({
+                  class: 'marca',
+                  onclick: ({ target }) => {
+                    target.parentNode.childNodes[0].click();
+                  }
+                }),
+                p(tipo)
+              )
+            })
+          })()
+        ]
       }
 
       if (tipo === 'Lógica') {
@@ -1967,7 +2079,7 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const { pre: pre$5, span: span$5 } = van.tags;
+const { pre: pre$6, span: span$6 } = van.tags;
 
 var Función = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
@@ -1979,6 +2091,19 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   if (función.devolver) {
     devolver = 'return ';
   }
+
+  const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
+    const código = [];
+    código.push(Tipo({
+      bloquesDeEspacios,
+      indicador: [...indicador, 'contexto', indicadorDelElemento],
+      valor
+    }));
+
+    código.push(Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', indicadorDelElemento + 1] }));
+
+    return código
+  });
 
   const código = función.valor.map(({ valor }, indicadorDelElemento) => {
     const código = [];
@@ -1994,32 +2119,62 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$5(
-      span$5(
+    pre$6(
+      span$6(
         {
           class: 'bloque-de-espacios'
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
       ),
-      span$5(
+      span$6(
         {
           class: 'devolver'
         },
         devolver
       ),
-      span$5(
+      span$6(
         {
           class: 'función'
         },
         'function'
-      ),
-      span$5(
+      )
+    ),
+    pre$6(
+      span$6(
         {
-          class: 'paréntesis'
+          class: 'bloque-de-espacios'
         },
-        ' ()'
+          `${'    '.repeat(bloquesDeEspacios)}`
       ),
-      span$5(
+      span$6(
+        {
+          class: 'contexto'
+        },
+        '/* contexto */ '
+      ),
+      span$6(
+        {
+          class: 'paréntesis-de-apertura'
+        },
+        '('
+      )
+    ),
+    Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
+    contexto,
+    pre$6(
+      span$6(
+        {
+          class: 'bloque-de-espacios'
+        },
+          `${'    '.repeat(bloquesDeEspacios)}`
+      ),
+      span$6(
+        {
+          class: 'paréntesis-de-cierre'
+        },
+        ')'
+      ),
+      span$6(
         {
           class: 'llave'
         },
@@ -2028,20 +2183,20 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$5(
-      span$5(
+    pre$6(
+      span$6(
         {
           class: 'bloque-de-espacios'
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
       ),
-      span$5(
+      span$6(
         {
           class: 'llave'
         },
         '}'
       ),
-      span$5(
+      span$6(
         {
           class: 'punto-y-coma'
         },
@@ -2049,6 +2204,28 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       )
     )
   ]
+};
+
+const { pre: pre$5, span: span$5 } = van.tags;
+
+var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
+  const contexto = get(Código.val, indicador);
+
+  return pre$5(
+    span$5(
+      {
+        class: 'bloque-de-espacios'
+      },
+          `${'    '.repeat(bloquesDeEspacios + 1)}`
+    ),
+    span$5(
+      {
+        class: 'signo-de-dólar'
+      },
+      '$'
+    ),
+    contexto.valor.nombre
+  )
 };
 
 const { pre: pre$4, span: span$4 } = van.tags;
@@ -2277,7 +2454,7 @@ var Comentario = ({ bloquesDeEspacios, valor }) => {
         {
           class: 'bloque-de-espacios'
         },
-        '    '.repeat(bloquesDeEspacios + 1)
+        '    '.repeat(bloquesDeEspacios)
       ),
       span(
         {
@@ -2302,7 +2479,11 @@ var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   }
 
   if (tipo === 'Función') {
-    valor = Función({ bloquesDeEspacios, indicador });
+    valor = Función({ bloquesDeEspacios, indicador, valor });
+  }
+
+  if (tipo === 'Contexto') {
+    valor = Contexto({ bloquesDeEspacios, indicador, valor });
   }
 
   if (tipo === 'Lista') {
@@ -2357,6 +2538,7 @@ const Código = van.state([
   {
     tipo: 'Función',
     devolver: true,
+    contexto: [],
     valor: []
   }
 ]);

@@ -5,6 +5,7 @@ export const Código = van.state([
   {
     tipo: 'Función',
     devolver: true,
+    contexto: [],
     valor: []
   }
 ])

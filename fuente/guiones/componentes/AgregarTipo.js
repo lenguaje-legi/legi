@@ -15,8 +15,22 @@ export default ({ tipo, indicador }) => {
           tipo
         }
 
+        if (tipo === 'Contexto') {
+          propiedades.valor = {
+            nombre: '',
+            tipos: {
+              Función: true,
+              Lista: true,
+              Lógica: true,
+              Número: true,
+              Texto: true
+            }
+          }
+        }
+
         if (tipo === 'Función') {
           propiedades.devolver = false
+          propiedades.contexto = []
           propiedades.valor = []
         }
 

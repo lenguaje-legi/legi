@@ -8,7 +8,7 @@ export default ({ bloquesDeEspacios, valor }) => {
         {
           class: 'bloque-de-espacios'
         },
-        '    '.repeat(bloquesDeEspacios + 1)
+        '    '.repeat(bloquesDeEspacios)
       ),
       span(
         {

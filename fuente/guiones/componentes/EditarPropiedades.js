@@ -27,14 +27,20 @@ export default ({ tipo, indicador } = {}) => {
 
   let esElÚltimoElemento
   let esLaÚltimaNuevaLínea
-  if (JSON.stringify(indicador) !== '[0]') {
+  if (JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
     esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1
     esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1)
   }
 
   const actualizarPropiedad = ({ valor, propiedad, target }) => {
     if (target.value === 'true' || target.value === 'false') {
-      Tipo[propiedad] = target.value === 'true'
+      if (Tipo.tipo === 'Contexto') {
+        Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[target.dataset.propiedad]] = target.value === 'true'
+      }
+
+      if (Tipo.tipo !== 'Contexto') {
+        Tipo[propiedad] = target.value === 'true'
+      }
     }
 
     if (Tipo.tipo === 'Número' && propiedad === 'valor') {
@@ -47,7 +53,13 @@ export default ({ tipo, indicador } = {}) => {
     }
 
     if (target.value !== 'true' && target.value !== 'false') {
-      Tipo[propiedad] = target.value
+      if (Tipo.tipo === 'Contexto') {
+        Tipo[propiedad][target.dataset.propiedad] = target.value
+      }
+
+      if (Tipo.tipo !== 'Contexto') {
+        Tipo[propiedad] = target.value
+      }
     }
 
     Visualizar()
@@ -73,32 +85,43 @@ export default ({ tipo, indicador } = {}) => {
       return null
     }
 
-    editarPropiedades = div(
-      AgregarTipo({
-        tipo: 'Función',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Lista',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Número',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Texto',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Lógica',
-        indicador
-      }),
-      AgregarTipo({
-        tipo: 'Comentario',
-        indicador
-      })
-    )
+    if (indicador.slice(0, -1).at(-1) !== 'contexto') {
+      editarPropiedades = div(
+        AgregarTipo({
+          tipo: 'Función',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Lista',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Número',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Texto',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Lógica',
+          indicador
+        }),
+        AgregarTipo({
+          tipo: 'Comentario',
+          indicador
+        })
+      )
+    }
+
+    if (indicador.slice(0, -1).at(-1) === 'contexto') {
+      editarPropiedades = div(
+        AgregarTipo({
+          tipo: 'Contexto',
+          indicador
+        })
+      )
+    }
   }
 
   if (tipo !== undefined && tipo !== 'Nueva línea') {
@@ -107,7 +130,7 @@ export default ({ tipo, indicador } = {}) => {
       let confirmado = false
       const { tipo } = Tipo
 
-      if (typeof Tipo[propiedad] === 'object') {
+      if (typeof Tipo[propiedad] === 'object' && tipo !== 'Contexto') {
         return null
       }
 
@@ -152,6 +175,81 @@ export default ({ tipo, indicador } = {}) => {
           }),
           p(capitalize(propiedad))
         )
+      }
+
+      if (tipo === 'Contexto') {
+        return [
+          div(
+            {
+              class: 'propiedad'
+            },
+            p('Nombre'),
+            input({
+              value: Tipo[propiedad].nombre,
+              'data-propiedad': 'nombre',
+              onfocus: ({ target }) => {
+                valor = target.value
+                console.log('Se inició un cambio')
+              },
+              onfocusout: ({ target }) => {
+                if (valor === target.value) {
+                  return
+                }
+                if (confirmado) {
+                  confirmado = false
+                  return
+                }
+                console.log('Se aplicó un cambio')
+                actualizarPropiedad({ valor, propiedad, target })
+              },
+              onkeyup: ({ target, key, shiftKey }) => {
+                if (key !== undefined && key !== 'Enter') {
+                  return
+                }
+
+                confirmado = true
+                target.blur()
+                if (valor === target.value) {
+                  return
+                }
+                console.log('Se confirmó un cambio')
+                actualizarPropiedad({ valor, propiedad, target })
+              }
+            })
+          ),
+          (() => {
+            return Object.keys(Tipo[propiedad].tipos).map((tipo, indicador) => {
+              return div(
+                {
+                  class: 'verificación'
+                },
+                input({
+                  type: 'checkbox',
+                  checked: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
+                  value: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
+                  'data-propiedad': indicador,
+                  onchange: ({ target }) => {
+                    console.log('Se confirmó un cambio')
+                    if (target.checked) {
+                      target.value = true
+                    }
+                    if (!target.checked) {
+                      target.value = false
+                    }
+                    actualizarPropiedad({ valor, propiedad, target })
+                  }
+                }),
+                span({
+                  class: 'marca',
+                  onclick: ({ target }) => {
+                    target.parentNode.childNodes[0].click()
+                  }
+                }),
+                p(tipo)
+              )
+            })
+          })()
+        ]
       }
 
       if (tipo === 'Lógica') {
