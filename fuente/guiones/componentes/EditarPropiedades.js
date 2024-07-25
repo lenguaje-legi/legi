@@ -12,7 +12,10 @@ export default ({ tipo, indicador } = {}) => {
 
   let editarPropiedades
 
-  const Tipo = get(Código.val, indicador)
+  let Tipo = get(Código.val, indicador)
+  if (!Tipo) {
+    Tipo = {}
+  }
 
   let últimoElemento = get(Código.val, indicador.slice(0, -1))
   if (últimoElemento) {
@@ -27,13 +30,28 @@ export default ({ tipo, indicador } = {}) => {
 
   let esElÚltimoElemento
   let esLaÚltimaNuevaLínea
-  if (JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
+  const esLaRaíz = JSON.stringify(indicador) === '[]'
+
+  if (!esLaRaíz && JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
     esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1
     esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1)
   }
 
+  const visualización = document.querySelector('#visualización')
+
   const actualizarPropiedad = ({ valor, propiedad, target }) => {
     if (target.value === 'true' || target.value === 'false') {
+      if (esLaRaíz) {
+        const visualizarLegi = target.value === 'true'
+        if (!visualizarLegi) {
+          visualización.classList.remove('legi')
+        }
+
+        if (visualizarLegi) {
+          visualización.classList.add('legi')
+        }
+      }
+
       if (Tipo.tipo === 'Contexto') {
         Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[target.dataset.propiedad]] = target.value === 'true'
       }
@@ -63,21 +81,77 @@ export default ({ tipo, indicador } = {}) => {
     }
 
     Visualizar()
-    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado')
-    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado')
-    setTimeout(() => {
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado')
-    }, 100)
-    setTimeout(() => {
+    if (!esLaRaíz) {
+      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado')
       document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado')
-    }, 250)
-    setTimeout(() => {
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado')
-    }, 350)
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado')
+      }, 100)
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado')
+      }, 250)
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado')
+      }, 350)
+    }
   }
 
   if (tipo === undefined) {
-    editarPropiedades = div()
+    editarPropiedades = [
+      h2(
+        {
+          class: 'tipo'
+        },
+        'Visualización'
+      ),
+      div(
+        {
+          class: 'lógica'
+        },
+        fieldset(
+          div(
+            input({
+              type: 'radio',
+              name: 'visualización',
+              checked: (() => {
+                if (visualización.classList.contains('legi')) {
+                  return true
+                }
+              })(),
+              value: true,
+              onchange: ({ target }) => {
+                console.log('Se confirmó un cambio')
+                if (target.checked) {
+                  target.value = true
+                }
+                actualizarPropiedad({ target })
+              }
+            }),
+            p('Legi')
+          ),
+          div(
+            input({
+              type: 'radio',
+              name: 'visualización',
+              checked: (() => {
+                if (!visualización.classList.contains('legi')) {
+                  return true
+                }
+              })(),
+              value: false,
+              onchange: ({ target }) => {
+                console.log('Se confirmó un cambio')
+                if (target.checked) {
+                  target.value = false
+                }
+                actualizarPropiedad({ target })
+              }
+            }),
+            p('PHP')
+          )
+        )
+      )
+    ]
   }
 
   if (tipo === 'Nueva línea') {
@@ -145,6 +219,16 @@ export default ({ tipo, indicador } = {}) => {
 
       if (propiedad === 'devolver') {
         if (JSON.stringify(indicador) === '[0]' || !esElÚltimoElemento) {
+          return null
+        }
+
+        const elementoSuperior = get(Código.val, indicador.slice(0, -2))
+        let elElementoSuperiorEsUnaLista = false
+        if (elementoSuperior.tipo === 'Lista') {
+          elElementoSuperiorEsUnaLista = true
+        }
+
+        if (elElementoSuperiorEsUnaLista) {
           return null
         }
 

@@ -30,7 +30,11 @@ export default ({ click, indicador, tipo }) => {
     tipo = get(Código.val, indicador)
   }
 
-  elemento.classList.add('seleccionado')
+  const esLaRaíz = JSON.stringify(indicador) === '[]'
+
+  if (!esLaRaíz) {
+    elemento.classList.add('seleccionado')
+  }
 
   EditarPropiedades({ tipo, indicador })
 }

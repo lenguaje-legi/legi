@@ -12,6 +12,19 @@ pre {
     margin: 0;
 }
 
+#visualización.legi {
+    user-select: none;
+}
+
+#visualización.legi .ruido {
+    position: absolute;
+    color: transparent;
+}
+
+#visualización.legi .ruido span {
+    color: transparent;
+}
+
 #visualización {
     padding: 0.5rem;
     background-color: rgb(75, 75, 75);
@@ -23,11 +36,27 @@ pre {
 }
 
 #visualización .devolver {
-    color: rgb(255, 100, 100);
+    color: rgb(255, 100, 255);
 }
 
 #visualización .función {
     color: rgb(150, 255, 100);
+}
+
+#visualización.legi .Función:first-of-type {
+    padding-bottom: 1.2rem;
+}
+
+#visualización.legi .Función {
+    padding-bottom: 0.94rem;
+}
+
+#visualización .Función:hover:not(:has(.Función:hover)):not(:has(.Lista:hover)) {
+    background-color: rgba(0, 0, 75, 0.2);
+}
+
+#visualización .Lista:hover:not(:has(.Lista:hover)):not(:has(.Función:hover)) {
+    background-color: rgba(0, 0, 75, 0.2);
 }
 
 #visualización .paréntesis-de-apertura,
@@ -45,6 +74,7 @@ pre {
     color: rgba(255, 255, 0, 0.2);
 }
 
+#visualización .coma,
 #visualización .punto-y-coma {
     color: rgba(0, 255, 0, 0.2);
 }
@@ -56,7 +86,7 @@ pre {
 }
 
 #visualización .Número {
-    color: rgb(255, 100, 255);
+    color: rgb(100, 255, 255);
 }
 
 #visualización .Texto {

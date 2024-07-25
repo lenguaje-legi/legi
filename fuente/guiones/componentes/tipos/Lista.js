@@ -9,10 +9,17 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador)
 
+  const legi = document.querySelector('#visualización').classList.contains('legi')
   let devolver = ''
 
   if (lista.devolver) {
-    devolver = 'return '
+    if (legi) {
+      devolver = '<- '
+    }
+
+    if (!legi) {
+      devolver = 'return '
+    }
   }
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
@@ -28,6 +35,12 @@ export default ({ bloquesDeEspacios, indicador }) => {
     return código
   })
 
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2))
+  let elElementoSuperiorEsUnaLista = false
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true
+  }
+
   return [
     pre(
       span(
@@ -36,12 +49,18 @@ export default ({ bloquesDeEspacios, indicador }) => {
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
       ),
-      span(
-        {
-          class: 'devolver'
-        },
-        devolver
-      ),
+      (() => {
+        if (!devolver) {
+          return null
+        }
+
+        return span(
+          {
+            class: 'devolver'
+          },
+          devolver
+        )
+      })(),
       span(
         {
           class: 'corchete'
@@ -64,12 +83,32 @@ export default ({ bloquesDeEspacios, indicador }) => {
         },
         ']'
       ),
-      span(
-        {
-          class: 'punto-y-coma'
-        },
-        ';'
-      )
+      (() => {
+        if (elElementoSuperiorEsUnaLista) {
+          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+            return elemento.tipo !== 'Comentario'
+          })
+
+          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
+
+          if (esElÚltimoElemento) {
+            return null
+          }
+          return span(
+            {
+              class: 'ruido coma'
+            },
+            ','
+          )
+        }
+
+        return span(
+          {
+            class: 'ruido punto-y-coma'
+          },
+          ';'
+        )
+      })()
     )
   ]
 }

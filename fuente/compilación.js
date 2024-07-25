@@ -1679,7 +1679,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
   let editarPropiedades;
 
-  const Tipo = get(Código.val, indicador);
+  let Tipo = get(Código.val, indicador);
+  if (!Tipo) {
+    Tipo = {};
+  }
 
   let últimoElemento = get(Código.val, indicador.slice(0, -1));
   if (últimoElemento) {
@@ -1694,13 +1697,28 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
   let esElÚltimoElemento;
   let esLaÚltimaNuevaLínea;
-  if (JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
+  const esLaRaíz = JSON.stringify(indicador) === '[]';
+
+  if (!esLaRaíz && JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
     esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1;
     esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1);
   }
 
+  const visualización = document.querySelector('#visualización');
+
   const actualizarPropiedad = ({ valor, propiedad, target }) => {
     if (target.value === 'true' || target.value === 'false') {
+      if (esLaRaíz) {
+        const visualizarLegi = target.value === 'true';
+        if (!visualizarLegi) {
+          visualización.classList.remove('legi');
+        }
+
+        if (visualizarLegi) {
+          visualización.classList.add('legi');
+        }
+      }
+
       if (Tipo.tipo === 'Contexto') {
         Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[target.dataset.propiedad]] = target.value === 'true';
       }
@@ -1730,21 +1748,77 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     }
 
     Visualizar();
-    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado');
-    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
-    setTimeout(() => {
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado');
-    }, 100);
-    setTimeout(() => {
+    if (!esLaRaíz) {
+      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado');
       document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
-    }, 250);
-    setTimeout(() => {
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado');
-    }, 350);
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado');
+      }, 100);
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
+      }, 250);
+      setTimeout(() => {
+        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado');
+      }, 350);
+    }
   };
 
   if (tipo === undefined) {
-    editarPropiedades = div$1();
+    editarPropiedades = [
+      h2(
+        {
+          class: 'tipo'
+        },
+        'Visualización'
+      ),
+      div$1(
+        {
+          class: 'lógica'
+        },
+        fieldset(
+          div$1(
+            input({
+              type: 'radio',
+              name: 'visualización',
+              checked: (() => {
+                if (visualización.classList.contains('legi')) {
+                  return true
+                }
+              })(),
+              value: true,
+              onchange: ({ target }) => {
+                console.log('Se confirmó un cambio');
+                if (target.checked) {
+                  target.value = true;
+                }
+                actualizarPropiedad({ target });
+              }
+            }),
+            p('Legi')
+          ),
+          div$1(
+            input({
+              type: 'radio',
+              name: 'visualización',
+              checked: (() => {
+                if (!visualización.classList.contains('legi')) {
+                  return true
+                }
+              })(),
+              value: false,
+              onchange: ({ target }) => {
+                console.log('Se confirmó un cambio');
+                if (target.checked) {
+                  target.value = false;
+                }
+                actualizarPropiedad({ target });
+              }
+            }),
+            p('PHP')
+          )
+        )
+      )
+    ];
   }
 
   if (tipo === 'Nueva línea') {
@@ -1812,6 +1886,16 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
       if (propiedad === 'devolver') {
         if (JSON.stringify(indicador) === '[0]' || !esElÚltimoElemento) {
+          return null
+        }
+
+        const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+        let elElementoSuperiorEsUnaLista = false;
+        if (elementoSuperior.tipo === 'Lista') {
+          elElementoSuperiorEsUnaLista = true;
+        }
+
+        if (elElementoSuperiorEsUnaLista) {
           return null
         }
 
@@ -2074,7 +2158,11 @@ var Seleccionar = ({ click, indicador, tipo }) => {
     tipo = get(Código.val, indicador);
   }
 
-  elemento.classList.add('seleccionado');
+  const esLaRaíz = JSON.stringify(indicador) === '[]';
+
+  if (!esLaRaíz) {
+    elemento.classList.add('seleccionado');
+  }
 
   EditarPropiedades({ tipo, indicador });
 };
@@ -2086,10 +2174,17 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
 
   const función = get(Código.val, indicador);
 
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (función.devolver) {
-    devolver = 'return ';
+    if (legi) {
+      devolver = '<- ';
+    }
+
+    if (!legi) {
+      devolver = 'return ';
+    }
   }
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
@@ -2118,6 +2213,12 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     return código
   });
 
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
+  }
+
   return [
     pre$6(
       span$6(
@@ -2126,17 +2227,29 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
       ),
-      span$6(
-        {
-          class: 'devolver'
-        },
-        devolver
-      ),
+      (() => {
+        if (!devolver) {
+          return null
+        }
+
+        return span$6(
+          {
+            class: 'devolver'
+          },
+          devolver
+        )
+      })(),
       span$6(
         {
           class: 'función'
         },
-        'function'
+        (() => {
+          if (legi) {
+            return '->'
+          }
+
+          return 'function'
+        })()
       )
     ),
     pre$6(
@@ -2150,7 +2263,19 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
         {
           class: 'contexto'
         },
-        '/* contexto */ '
+        span$6(
+          {
+            class: 'ruido'
+          },
+          '/* '
+        ),
+        'contexto ',
+        span$6(
+          {
+            class: 'ruido'
+          },
+          '*/ '
+        )
       ),
       span$6(
         {
@@ -2176,7 +2301,7 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       ),
       span$6(
         {
-          class: 'llave'
+          class: 'ruido llave'
         },
         ' {'
       )
@@ -2192,16 +2317,36 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       ),
       span$6(
         {
-          class: 'llave'
+          class: 'ruido llave'
         },
         '}'
       ),
-      span$6(
-        {
-          class: 'punto-y-coma'
-        },
-        ';'
-      )
+      (() => {
+        if (elElementoSuperiorEsUnaLista) {
+          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+            return elemento.tipo !== 'Comentario'
+          });
+
+          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+          if (esElÚltimoElemento) {
+            return null
+          }
+          return span$6(
+            {
+              class: 'ruido coma'
+            },
+            ','
+          )
+        }
+
+        return span$6(
+          {
+            class: 'ruido punto-y-coma'
+          },
+          ';'
+        )
+      })()
     )
   ]
 };
@@ -2235,10 +2380,17 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador);
 
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (lista.devolver) {
-    devolver = 'return ';
+    if (legi) {
+      devolver = '<- ';
+    }
+
+    if (!legi) {
+      devolver = 'return ';
+    }
   }
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
@@ -2254,6 +2406,12 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     return código
   });
 
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
+  }
+
   return [
     pre$4(
       span$4(
@@ -2262,12 +2420,18 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
         },
           `${'    '.repeat(bloquesDeEspacios - 1)}`
       ),
-      span$4(
-        {
-          class: 'devolver'
-        },
-        devolver
-      ),
+      (() => {
+        if (!devolver) {
+          return null
+        }
+
+        return span$4(
+          {
+            class: 'devolver'
+          },
+          devolver
+        )
+      })(),
       span$4(
         {
           class: 'corchete'
@@ -2290,12 +2454,32 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
         },
         ']'
       ),
-      span$4(
-        {
-          class: 'punto-y-coma'
-        },
-        ';'
-      )
+      (() => {
+        if (elElementoSuperiorEsUnaLista) {
+          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+            return elemento.tipo !== 'Comentario'
+          });
+
+          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+          if (esElÚltimoElemento) {
+            return null
+          }
+          return span$4(
+            {
+              class: 'ruido coma'
+            },
+            ','
+          )
+        }
+
+        return span$4(
+          {
+            class: 'ruido punto-y-coma'
+          },
+          ';'
+        )
+      })()
     )
   ]
 };
@@ -2305,10 +2489,23 @@ const { pre: pre$3, span: span$3 } = van.tags;
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (lógica.devolver) {
-    devolver = 'return ';
+    if (legi) {
+      devolver = '<- ';
+    }
+
+    if (!legi) {
+      devolver = 'return ';
+    }
+  }
+
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
   }
 
   return pre$3(
@@ -2318,19 +2515,45 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
       },
           `${'    '.repeat(bloquesDeEspacios)}`
     ),
-    span$3(
-      {
-        class: 'devolver'
-      },
-      devolver
-    ),
+    (() => {
+      if (!devolver) {
+        return null
+      }
+
+      return span$3(
+        {
+          class: 'devolver'
+        },
+        devolver
+      )
+    })(),
     valor,
-    span$3(
-      {
-        class: 'punto-y-coma'
-      },
-      ';'
-    )
+    (() => {
+      if (elElementoSuperiorEsUnaLista) {
+        const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+          return elemento.tipo !== 'Comentario'
+        });
+
+        const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+        if (esElÚltimoElemento) {
+          return null
+        }
+        return span$3(
+          {
+            class: 'ruido coma'
+          },
+          ','
+        )
+      }
+
+      return span$3(
+        {
+          class: 'ruido punto-y-coma'
+        },
+        ';'
+      )
+    })()
   )
 };
 
@@ -2339,10 +2562,23 @@ const { pre: pre$2, span: span$2 } = van.tags;
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (número.devolver) {
-    devolver = 'return ';
+    if (legi) {
+      devolver = '<- ';
+    }
+
+    if (!legi) {
+      devolver = 'return ';
+    }
+  }
+
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
   }
 
   return pre$2(
@@ -2352,19 +2588,45 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
       },
           `${'    '.repeat(bloquesDeEspacios)}`
     ),
-    span$2(
-      {
-        class: 'devolver'
-      },
-      devolver
-    ),
+    (() => {
+      if (!devolver) {
+        return null
+      }
+
+      return span$2(
+        {
+          class: 'devolver'
+        },
+        devolver
+      )
+    })(),
     valor,
-    span$2(
-      {
-        class: 'punto-y-coma'
-      },
-      ';'
-    )
+    (() => {
+      if (elElementoSuperiorEsUnaLista) {
+        const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+          return elemento.tipo !== 'Comentario'
+        });
+
+        const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+        if (esElÚltimoElemento) {
+          return null
+        }
+        return span$2(
+          {
+            class: 'ruido coma'
+          },
+          ','
+        )
+      }
+
+      return span$2(
+        {
+          class: 'ruido punto-y-coma'
+        },
+        ';'
+      )
+    })()
   )
 };
 
@@ -2373,10 +2635,23 @@ const { pre: pre$1, span: span$1 } = van.tags;
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
 
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (texto.devolver) {
-    devolver = 'return ';
+    if (legi) {
+      devolver = '<- ';
+    }
+
+    if (!legi) {
+      devolver = 'return ';
+    }
+  }
+
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
   }
 
   return [
@@ -2387,12 +2662,18 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
         },
         '    '.repeat(bloquesDeEspacios)
       ),
-      span$1(
-        {
-          class: 'devolver'
-        },
-        devolver
-      ),
+      (() => {
+        if (!devolver) {
+          return null
+        }
+
+        return span$1(
+          {
+            class: 'devolver'
+          },
+          devolver
+        )
+      })(),
       span$1(
         {
           class: 'inicio-de-texto'
@@ -2435,12 +2716,32 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
         },
         '_'
       ),
-      span$1(
-        {
-          class: 'punto-y-coma'
-        },
-        ';'
-      )
+      (() => {
+        if (elElementoSuperiorEsUnaLista) {
+          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+            return elemento.tipo !== 'Comentario'
+          });
+
+          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+          if (esElÚltimoElemento) {
+            return null
+          }
+          return span$1(
+            {
+              class: 'ruido coma'
+            },
+            ','
+          )
+        }
+
+        return span$1(
+          {
+            class: 'ruido punto-y-coma'
+          },
+          ';'
+        )
+      })()
     )
   ]
 };
@@ -2544,6 +2845,11 @@ const Código = van.state([
 ]);
 
 const Acción = van.state('');
+
+const visualización = document.querySelector('#visualización');
+visualización.onclick = click => {
+  Seleccionar({ click, indicador: [] });
+};
 
 Visualizar();
 
