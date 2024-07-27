@@ -10,13 +10,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
   let devolver = ''
 
   if (lógica.devolver) {
-    if (legi) {
-      devolver = '<- '
-    }
-
-    if (!legi) {
-      devolver = 'return '
-    }
+    devolver = 'return '
   }
 
   const elementoSuperior = get(Código.val, indicador.slice(0, -2))
@@ -39,12 +33,27 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
 
       return span(
         {
-          class: 'devolver'
+          class: 'ruido devolver'
         },
         devolver
       )
     })(),
-    valor,
+    span(
+      {
+        class: 'valor'
+      },
+      (() => {
+        if (legi) {
+          if (valor) {
+            return 'verdadero'
+          }
+
+          return 'falso'
+        }
+
+        return valor
+      })()
+    ),
     (() => {
       if (elElementoSuperiorEsUnaLista) {
         const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {

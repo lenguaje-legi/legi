@@ -2027,7 +2027,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
                   actualizarPropiedad({ valor, propiedad, target });
                 }
               }),
-              p('Cierto')
+              p('Verdadero')
             ),
             div$1(
               input({
@@ -2174,17 +2174,10 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
 
   const función = get(Código.val, indicador);
 
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (función.devolver) {
-    if (legi) {
-      devolver = '<- ';
-    }
-
-    if (!legi) {
-      devolver = 'return ';
-    }
+    devolver = 'return ';
   }
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
@@ -2234,22 +2227,16 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
 
         return span$6(
           {
-            class: 'devolver'
+            class: 'ruido devolver'
           },
           devolver
         )
       })(),
       span$6(
         {
-          class: 'función'
+          class: 'ruido valor función'
         },
-        (() => {
-          if (legi) {
-            return '->'
-          }
-
-          return 'function'
-        })()
+        'function'
       )
     ),
     pre$6(
@@ -2365,7 +2352,7 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
     ),
     span$5(
       {
-        class: 'signo-de-dólar'
+        class: 'ruido signo-de-dólar'
       },
       '$'
     ),
@@ -2380,17 +2367,10 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador);
 
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (lista.devolver) {
-    if (legi) {
-      devolver = '<- ';
-    }
-
-    if (!legi) {
-      devolver = 'return ';
-    }
+    devolver = 'return ';
   }
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
@@ -2427,14 +2407,14 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
         return span$4(
           {
-            class: 'devolver'
+            class: 'ruido devolver'
           },
           devolver
         )
       })(),
       span$4(
         {
-          class: 'corchete'
+          class: 'valor corchete'
         },
         '['
       )
@@ -2493,13 +2473,7 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   let devolver = '';
 
   if (lógica.devolver) {
-    if (legi) {
-      devolver = '<- ';
-    }
-
-    if (!legi) {
-      devolver = 'return ';
-    }
+    devolver = 'return ';
   }
 
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2522,12 +2496,27 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
 
       return span$3(
         {
-          class: 'devolver'
+          class: 'ruido devolver'
         },
         devolver
       )
     })(),
-    valor,
+    span$3(
+      {
+        class: 'valor'
+      },
+      (() => {
+        if (legi) {
+          if (valor) {
+            return 'verdadero'
+          }
+
+          return 'falso'
+        }
+
+        return valor
+      })()
+    ),
     (() => {
       if (elElementoSuperiorEsUnaLista) {
         const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
@@ -2562,17 +2551,10 @@ const { pre: pre$2, span: span$2 } = van.tags;
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (número.devolver) {
-    if (legi) {
-      devolver = '<- ';
-    }
-
-    if (!legi) {
-      devolver = 'return ';
-    }
+    devolver = 'return ';
   }
 
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2595,12 +2577,17 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
 
       return span$2(
         {
-          class: 'devolver'
+          class: 'ruido devolver'
         },
         devolver
       )
     })(),
-    valor,
+    span$2(
+      {
+        class: 'valor'
+      },
+      valor
+    ),
     (() => {
       if (elElementoSuperiorEsUnaLista) {
         const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
@@ -2635,17 +2622,10 @@ const { pre: pre$1, span: span$1 } = van.tags;
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
 
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
   if (texto.devolver) {
-    if (legi) {
-      devolver = '<- ';
-    }
-
-    if (!legi) {
-      devolver = 'return ';
-    }
+    devolver = 'return ';
   }
 
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2669,14 +2649,14 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
 
         return span$1(
           {
-            class: 'devolver'
+            class: 'ruido devolver'
           },
           devolver
         )
       })(),
       span$1(
         {
-          class: 'inicio-de-texto'
+          class: 'ruido valor inicio-de-texto'
         },
         '<<<_'
       )
@@ -2712,7 +2692,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
       ),
       span$1(
         {
-          class: 'final-de-texto'
+          class: 'ruido final-de-texto'
         },
         '_'
       ),

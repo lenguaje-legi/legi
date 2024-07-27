@@ -6,17 +6,10 @@ const { pre, span } = van.tags
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador)
 
-  const legi = document.querySelector('#visualización').classList.contains('legi')
   let devolver = ''
 
   if (número.devolver) {
-    if (legi) {
-      devolver = '<- '
-    }
-
-    if (!legi) {
-      devolver = 'return '
-    }
+    devolver = 'return '
   }
 
   const elementoSuperior = get(Código.val, indicador.slice(0, -2))
@@ -39,12 +32,17 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
 
       return span(
         {
-          class: 'devolver'
+          class: 'ruido devolver'
         },
         devolver
       )
     })(),
-    valor,
+    span(
+      {
+        class: 'valor'
+      },
+      valor
+    ),
     (() => {
       if (elElementoSuperiorEsUnaLista) {
         const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {

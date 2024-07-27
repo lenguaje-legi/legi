@@ -360,7 +360,7 @@ export default ({ tipo, indicador } = {}) => {
                   actualizarPropiedad({ valor, propiedad, target })
                 }
               }),
-              p('Cierto')
+              p('Verdadero')
             ),
             div(
               input({

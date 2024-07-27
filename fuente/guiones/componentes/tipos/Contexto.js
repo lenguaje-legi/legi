@@ -15,7 +15,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
     ),
     span(
       {
-        class: 'signo-de-dólar'
+        class: 'ruido signo-de-dólar'
       },
       '$'
     ),

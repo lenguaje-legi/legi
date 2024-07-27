@@ -9,17 +9,10 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador)
 
-  const legi = document.querySelector('#visualización').classList.contains('legi')
   let devolver = ''
 
   if (lista.devolver) {
-    if (legi) {
-      devolver = '<- '
-    }
-
-    if (!legi) {
-      devolver = 'return '
-    }
+    devolver = 'return '
   }
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
@@ -56,14 +49,14 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
         return span(
           {
-            class: 'devolver'
+            class: 'ruido devolver'
           },
           devolver
         )
       })(),
       span(
         {
-          class: 'corchete'
+          class: 'valor corchete'
         },
         '['
       )

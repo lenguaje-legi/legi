@@ -9,17 +9,10 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   const función = get(Código.val, indicador)
 
-  const legi = document.querySelector('#visualización').classList.contains('legi')
   let devolver = ''
 
   if (función.devolver) {
-    if (legi) {
-      devolver = '<- '
-    }
-
-    if (!legi) {
-      devolver = 'return '
-    }
+    devolver = 'return '
   }
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
@@ -69,22 +62,16 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
         return span(
           {
-            class: 'devolver'
+            class: 'ruido devolver'
           },
           devolver
         )
       })(),
       span(
         {
-          class: 'función'
+          class: 'ruido valor función'
         },
-        (() => {
-          if (legi) {
-            return '->'
-          }
-
-          return 'function'
-        })()
+        'function'
       )
     ),
     pre(
