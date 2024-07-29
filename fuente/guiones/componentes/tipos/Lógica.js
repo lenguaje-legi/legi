@@ -22,7 +22,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
   return pre(
     span(
       {
-        class: 'bloque-de-espacios'
+        class: 'ruido bloque-de-espacios'
       },
           `${'    '.repeat(bloquesDeEspacios)}`
     ),

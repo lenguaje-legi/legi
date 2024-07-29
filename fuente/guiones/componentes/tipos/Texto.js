@@ -22,7 +22,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
     pre(
       span(
         {
-          class: 'bloque-de-espacios'
+          class: 'ruido bloque-de-espacios'
         },
         '    '.repeat(bloquesDeEspacios)
       ),
@@ -57,7 +57,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
           },
           span(
             {
-              class: 'bloque-de-espacios'
+              class: 'ruido bloque-de-espacios'
             },
             '    '.repeat(bloquesDeEspacios + 1)
           ),
@@ -70,7 +70,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
     pre(
       span(
         {
-          class: 'bloque-de-espacios'
+          class: 'ruido bloque-de-espacios'
         },
         '    '.repeat(bloquesDeEspacios + 1)
       ),

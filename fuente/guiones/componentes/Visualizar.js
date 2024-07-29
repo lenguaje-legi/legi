@@ -1,5 +1,7 @@
 import van from 'vanjs-core'
 import Tipo from './Tipo.js'
+import json2php from 'json2php'
+import { Código } from '../inicio.js'
 const { add } = van
 
 export default () => {
@@ -9,4 +11,14 @@ export default () => {
     bloquesDeEspacios: 0,
     indicador: [0]
   }))
+
+  const salida = document.querySelector('#salida')
+  salida.innerHTML = ''
+  document.querySelector('#visualización').classList.add('salida')
+  salida.innerText = `<?php\n\n${json2php.make({
+    linebreak: '\n',
+    indent: '    ',
+    shortArraySyntax: true
+  })(Código.val)};\n\n${visualización.innerText}\n`
+  document.querySelector('#visualización').classList.remove('salida')
 }

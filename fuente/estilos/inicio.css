@@ -12,6 +12,16 @@ pre {
     margin: 0;
 }
 
+#salida {
+    position: absolute;
+    z-index: -1;
+}
+
+#visualización.legi.salida .ruido {
+    position: relative;
+    color: transparent;
+}
+
 #visualización.legi {
     user-select: none;
 }

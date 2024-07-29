@@ -6,7 +6,7 @@ export default ({ bloquesDeEspacios, valor }) => {
     return pre(
       span(
         {
-          class: 'bloque-de-espacios'
+          class: 'ruido bloque-de-espacios'
         },
         '    '.repeat(bloquesDeEspacios)
       ),
