@@ -1597,10 +1597,10 @@ function set(object, path, value) {
   return object == null ? object : baseSet(object, path, value);
 }
 
-const { div: div$2, button } = van.tags;
+const { div: div$5, button } = van.tags;
 
 var AgregarTipo = ({ tipo, indicador }) => {
-  return div$2(
+  return div$5(
     button({
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`);
@@ -1674,8 +1674,276 @@ var AgregarTipo = ({ tipo, indicador }) => {
   )
 };
 
+const visualización$2 = document.querySelector('#visualización');
+
+var ActualizarPropiedad = ({ indicador, valor, target }) => {
+  const esLaRaíz = JSON.stringify(indicador) === '[]';
+
+  let Tipo = get(Código.val, indicador);
+  if (!Tipo) {
+    Tipo = {};
+  }
+
+  if (target.value === 'true' || target.value === 'false') {
+    if (esLaRaíz) {
+      const visualizarLegi = target.value === 'true';
+      if (!visualizarLegi) {
+        visualización$2.classList.remove('legi');
+      }
+
+      if (visualizarLegi) {
+        visualización$2.classList.add('legi');
+      }
+    }
+
+    if (!esLaRaíz) {
+      set(
+        Código.val,
+        JSON.parse(target.dataset.propiedad),
+        target.value === 'true'
+      );
+    }
+  }
+
+  if (Tipo.tipo === 'Número' && JSON.parse(target.dataset.propiedad).at(-1) === 'valor') {
+    if (target.value.trim() === '' || isNaN(target.value)) {
+      target.value = valor;
+      return null
+    }
+
+    target.value = Number(target.value);
+  }
+
+  if (target.value !== 'true' && target.value !== 'false') {
+    if (target.value.trim() === '' || target.value.trim() === valor) {
+      target.value = valor;
+      return null
+    }
+
+    set(
+      Código.val,
+      JSON.parse(target.dataset.propiedad),
+      target.value
+    );
+  }
+
+  Visualizar();
+  if (!esLaRaíz) {
+    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado');
+    document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
+    setTimeout(() => {
+      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado');
+    }, 100);
+    setTimeout(() => {
+      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
+    }, 250);
+    setTimeout(() => {
+      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado');
+    }, 350);
+  }
+};
+
+const { p: p$3, div: div$4, input: input$3, span: span$8 } = van.tags;
+
+var PropiedadesDeContexto = ({ indicador }) => {
+  let valor;
+  let confirmado = false;
+
+  const Tipo = get(Código.val, indicador);
+
+  return [
+    div$4(
+      {
+        class: 'propiedad'
+      },
+      p$3('Nombre'),
+      input$3({
+        value: Tipo.valor.nombre,
+        'data-propiedad': JSON.stringify([...indicador, 'valor', 'nombre']),
+        onfocus: ({ target }) => {
+          valor = target.value;
+          console.log('Se inició un cambio');
+        },
+        onfocusout: ({ target }) => {
+          if (valor === target.value) {
+            return
+          }
+          if (confirmado) {
+            confirmado = false;
+            return
+          }
+          console.log('Se aplicó un cambio');
+          ActualizarPropiedad({ indicador, valor, target });
+        },
+        onkeyup: ({ target, key }) => {
+          if (key !== undefined && key !== 'Enter') {
+            return
+          }
+
+          confirmado = true;
+          target.blur();
+          if (valor === target.value) {
+            return
+          }
+          console.log('Se confirmó un cambio');
+          ActualizarPropiedad({ indicador, valor, target });
+        }
+      })
+    ),
+    (() => {
+      return Object.keys(Tipo.valor.tipos).map((tipo, indicadorDePropiedad) => {
+        return div$4(
+          {
+            class: 'verificación'
+          },
+          input$3({
+            type: 'checkbox',
+            checked: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
+            value: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
+            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipos', tipo]),
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              if (target.checked) {
+                target.value = true;
+              }
+              if (!target.checked) {
+                target.value = false;
+              }
+              ActualizarPropiedad({ indicador, valor, target });
+            }
+          }),
+          span$8({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click();
+            }
+          }),
+          p$3(tipo)
+        )
+      })
+    })()
+  ]
+};
+
+const { p: p$2, h2: h2$1, div: div$3, fieldset: fieldset$1, input: input$2 } = van.tags;
+const visualización$1 = document.querySelector('#visualización');
+
+var Lenguaje = ({ indicador }) => {
+  return [
+    h2$1(
+      {
+        class: 'tipo'
+      },
+      'Visualización'
+    ),
+    div$3(
+      {
+        class: 'lógica'
+      },
+      fieldset$1(
+        div$3(
+          input$2({
+            type: 'radio',
+            name: 'visualización',
+            checked: (() => {
+              if (visualización$1.classList.contains('legi')) {
+                return true
+              }
+            })(),
+            value: true,
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              if (target.checked) {
+                target.value = true;
+              }
+              ActualizarPropiedad({ indicador, target });
+            }
+          }),
+          p$2('Legi')
+        ),
+        div$3(
+          input$2({
+            type: 'radio',
+            name: 'visualización',
+            checked: (() => {
+              if (!visualización$1.classList.contains('legi')) {
+                return true
+              }
+            })(),
+            value: false,
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              if (target.checked) {
+                target.value = false;
+              }
+              ActualizarPropiedad({ indicador, target });
+            }
+          }),
+          p$2('PHP')
+        )
+      )
+    )
+  ]
+};
+
+const { p: p$1, div: div$2, fieldset, input: input$1 } = van.tags;
+
+var PropiedadesDeLógica = ({ indicador }) => {
+  const Tipo = get(Código.val, indicador);
+
+  return div$2(
+    {
+      class: 'lógica'
+    },
+    fieldset(
+      div$2(
+        input$1({
+          'data-propiedad': JSON.stringify([...indicador, 'valor']),
+          type: 'radio',
+          name: 'lógica',
+          checked: (() => {
+            if (Tipo.valor === true) {
+              return true
+            }
+          })(),
+          value: true,
+          onchange: ({ target }) => {
+            console.log('Se confirmó un cambio');
+            if (target.checked) {
+              target.value = true;
+            }
+            ActualizarPropiedad({ indicador, target });
+          }
+        }),
+        p$1('Verdadero')
+      ),
+      div$2(
+        input$1({
+          'data-propiedad': JSON.stringify([...indicador, 'valor']),
+          type: 'radio',
+          name: 'lógica',
+          checked: (() => {
+            if (Tipo.valor === false) {
+              return true
+            }
+          })(),
+          value: false,
+          onchange: ({ target }) => {
+            console.log('Se confirmó un cambio');
+            if (target.checked) {
+              target.value = false;
+            }
+            ActualizarPropiedad({ indicador, target });
+          }
+        }),
+        p$1('Falso')
+      )
+    )
+  )
+};
+
 const { add: add$1 } = van;
-const { p, h2, div: div$1, fieldset, input, textarea, span: span$7 } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$7 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -1699,130 +1967,17 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     };
   }
 
+  const esLaRaíz = JSON.stringify(indicador) === '[]';
   let esElÚltimoElemento;
   let esLaÚltimaNuevaLínea;
-  const esLaRaíz = JSON.stringify(indicador) === '[]';
 
   if (!esLaRaíz && JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
     esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1;
     esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1);
   }
 
-  const visualización = document.querySelector('#visualización');
-
-  const actualizarPropiedad = ({ valor, propiedad, target }) => {
-    if (target.value === 'true' || target.value === 'false') {
-      if (esLaRaíz) {
-        const visualizarLegi = target.value === 'true';
-        if (!visualizarLegi) {
-          visualización.classList.remove('legi');
-        }
-
-        if (visualizarLegi) {
-          visualización.classList.add('legi');
-        }
-      }
-
-      if (Tipo.tipo === 'Contexto') {
-        Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[target.dataset.propiedad]] = target.value === 'true';
-      }
-
-      if (Tipo.tipo !== 'Contexto') {
-        Tipo[propiedad] = target.value === 'true';
-      }
-    }
-
-    if (Tipo.tipo === 'Número' && propiedad === 'valor') {
-      if (target.value.trim() === '' || isNaN(target.value)) {
-        target.value = valor;
-        return null
-      }
-
-      target.value = Number(target.value);
-    }
-
-    if (target.value !== 'true' && target.value !== 'false') {
-      if (Tipo.tipo === 'Contexto') {
-        Tipo[propiedad][target.dataset.propiedad] = target.value;
-      }
-
-      if (Tipo.tipo !== 'Contexto') {
-        Tipo[propiedad] = target.value;
-      }
-    }
-
-    Visualizar();
-    if (!esLaRaíz) {
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('editado');
-      document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
-      setTimeout(() => {
-        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('seleccionado');
-      }, 100);
-      setTimeout(() => {
-        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.add('seleccionado');
-      }, 250);
-      setTimeout(() => {
-        document.querySelector(`[data-indicador='${JSON.stringify(indicador)}']`).classList.remove('editado');
-      }, 350);
-    }
-  };
-
   if (tipo === undefined) {
-    editarPropiedades = [
-      h2(
-        {
-          class: 'tipo'
-        },
-        'Visualización'
-      ),
-      div$1(
-        {
-          class: 'lógica'
-        },
-        fieldset(
-          div$1(
-            input({
-              type: 'radio',
-              name: 'visualización',
-              checked: (() => {
-                if (visualización.classList.contains('legi')) {
-                  return true
-                }
-              })(),
-              value: true,
-              onchange: ({ target }) => {
-                console.log('Se confirmó un cambio');
-                if (target.checked) {
-                  target.value = true;
-                }
-                actualizarPropiedad({ target });
-              }
-            }),
-            p('Legi')
-          ),
-          div$1(
-            input({
-              type: 'radio',
-              name: 'visualización',
-              checked: (() => {
-                if (!visualización.classList.contains('legi')) {
-                  return true
-                }
-              })(),
-              value: false,
-              onchange: ({ target }) => {
-                console.log('Se confirmó un cambio');
-                if (target.checked) {
-                  target.value = false;
-                }
-                actualizarPropiedad({ target });
-              }
-            }),
-            p('PHP')
-          )
-        )
-      )
-    ];
+    editarPropiedades = Lenguaje({ indicador });
   }
 
   if (tipo === 'Nueva línea') {
@@ -1832,29 +1987,18 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
     if (indicador.slice(0, -1).at(-1) !== 'contexto') {
       editarPropiedades = div$1(
-        AgregarTipo({
-          tipo: 'Función',
-          indicador
-        }),
-        AgregarTipo({
-          tipo: 'Lista',
-          indicador
-        }),
-        AgregarTipo({
-          tipo: 'Número',
-          indicador
-        }),
-        AgregarTipo({
-          tipo: 'Texto',
-          indicador
-        }),
-        AgregarTipo({
-          tipo: 'Lógica',
-          indicador
-        }),
-        AgregarTipo({
-          tipo: 'Comentario',
-          indicador
+        [
+          'Función',
+          'Lista',
+          'Número',
+          'Texto',
+          'Lógica',
+          'Comentario'
+        ].map(tipo => {
+          return AgregarTipo({
+            tipo,
+            indicador
+          })
         })
       );
     }
@@ -1908,6 +2052,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
             class: 'verificación'
           },
           input({
+            'data-propiedad': JSON.stringify([...indicador, propiedad]),
             type: 'checkbox',
             checked: Tipo[propiedad],
             value: Tipo[propiedad],
@@ -1919,7 +2064,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               if (!target.checked) {
                 target.value = false;
               }
-              actualizarPropiedad({ valor, propiedad, target });
+              ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
           span$7({
@@ -1933,128 +2078,11 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
       }
 
       if (tipo === 'Contexto') {
-        return [
-          div$1(
-            {
-              class: 'propiedad'
-            },
-            p('Nombre'),
-            input({
-              value: Tipo[propiedad].nombre,
-              'data-propiedad': 'nombre',
-              onfocus: ({ target }) => {
-                valor = target.value;
-                console.log('Se inició un cambio');
-              },
-              onfocusout: ({ target }) => {
-                if (valor === target.value) {
-                  return
-                }
-                if (confirmado) {
-                  confirmado = false;
-                  return
-                }
-                console.log('Se aplicó un cambio');
-                actualizarPropiedad({ valor, propiedad, target });
-              },
-              onkeyup: ({ target, key, shiftKey }) => {
-                if (key !== undefined && key !== 'Enter') {
-                  return
-                }
-
-                confirmado = true;
-                target.blur();
-                if (valor === target.value) {
-                  return
-                }
-                console.log('Se confirmó un cambio');
-                actualizarPropiedad({ valor, propiedad, target });
-              }
-            })
-          ),
-          (() => {
-            return Object.keys(Tipo[propiedad].tipos).map((tipo, indicador) => {
-              return div$1(
-                {
-                  class: 'verificación'
-                },
-                input({
-                  type: 'checkbox',
-                  checked: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
-                  value: Tipo[propiedad].tipos[Object.keys(Tipo[propiedad].tipos)[indicador]],
-                  'data-propiedad': indicador,
-                  onchange: ({ target }) => {
-                    console.log('Se confirmó un cambio');
-                    if (target.checked) {
-                      target.value = true;
-                    }
-                    if (!target.checked) {
-                      target.value = false;
-                    }
-                    actualizarPropiedad({ valor, propiedad, target });
-                  }
-                }),
-                span$7({
-                  class: 'marca',
-                  onclick: ({ target }) => {
-                    target.parentNode.childNodes[0].click();
-                  }
-                }),
-                p(tipo)
-              )
-            })
-          })()
-        ]
+        return PropiedadesDeContexto({ indicador, propiedad })
       }
 
       if (tipo === 'Lógica') {
-        return div$1(
-          {
-            class: 'lógica'
-          },
-          fieldset(
-            div$1(
-              input({
-                type: 'radio',
-                name: 'lógica',
-                checked: (() => {
-                  if (Tipo[propiedad] === true) {
-                    return true
-                  }
-                })(),
-                value: true,
-                onchange: ({ target }) => {
-                  console.log('Se confirmó un cambio');
-                  if (target.checked) {
-                    target.value = true;
-                  }
-                  actualizarPropiedad({ valor, propiedad, target });
-                }
-              }),
-              p('Verdadero')
-            ),
-            div$1(
-              input({
-                type: 'radio',
-                name: 'lógica',
-                checked: (() => {
-                  if (Tipo[propiedad] === false) {
-                    return true
-                  }
-                })(),
-                value: false,
-                onchange: ({ target }) => {
-                  console.log('Se confirmó un cambio');
-                  if (target.checked) {
-                    target.value = false;
-                  }
-                  actualizarPropiedad({ valor, propiedad, target });
-                }
-              }),
-              p('Falso')
-            )
-          )
-        )
+        return PropiedadesDeLógica({ indicador })
       }
 
       let casilla = input;
@@ -2065,7 +2093,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
       setTimeout(() => {
         if (tipo === 'Texto' && propiedad === 'valor') {
-          const casilla = document.querySelector(`#propiedades [data-propiedad='${propiedad}']`);
+          const casilla = document.querySelector(`#propiedades [data-propiedad='${JSON.stringify([...indicador, 'valor'])}']`);
           casilla.style.height = '';
           casilla.style.height = `${casilla.scrollHeight}px`;
         }
@@ -2078,7 +2106,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
         p(capitalize(propiedad)),
         casilla({
           value: Tipo[propiedad],
-          'data-propiedad': propiedad,
+          'data-propiedad': JSON.stringify([...indicador, propiedad]),
           oninput: ({ target }) => {
             if (tipo === 'Texto' && propiedad === 'valor') {
               target.style.height = '';
@@ -2098,7 +2126,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               return
             }
             console.log('Se aplicó un cambio');
-            actualizarPropiedad({ valor, propiedad, target });
+            ActualizarPropiedad({ indicador, valor, propiedad, target });
           },
           onkeydown: event => {
             if (tipo !== 'Texto' && tipo !== 'Comentario') {
@@ -2124,7 +2152,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               return
             }
             console.log('Se confirmó un cambio');
-            actualizarPropiedad({ valor, propiedad, target });
+            ActualizarPropiedad({ indicador, valor, target });
           }
         })
       )

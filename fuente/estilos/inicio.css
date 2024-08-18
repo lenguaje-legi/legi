@@ -164,8 +164,8 @@ pre {
 
 #visualización .Tipo .Tipo,
 #visualización .texto,
-#visualización .signo-de-dólar,
-#visualización .final-de-texto {
+#visualización .final-de-texto,
+#visualización .Contexto pre {
     margin-left: 1.3rem;
 }
 
