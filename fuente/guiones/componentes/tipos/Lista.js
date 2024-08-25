@@ -1,4 +1,5 @@
 import { get } from 'lodash-es'
+import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import Tipo from '../Tipo.js'
 import { Código } from '../../inicio.js'
 import van from 'vanjs-core'
@@ -8,6 +9,8 @@ export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
   const lista = get(Código.val, indicador)
+
+  const { asignación } = lista
 
   let devolver = ''
 
@@ -54,6 +57,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span(
         {
           class: 'valor corchete'

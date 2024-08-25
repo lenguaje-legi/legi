@@ -1,10 +1,13 @@
 import van from 'vanjs-core'
+import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import { Código } from '../../inicio.js'
 import { get } from 'lodash-es'
 const { pre, span } = van.tags
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador)
+
+  const { asignación } = texto
 
   let devolver = ''
 
@@ -38,6 +41,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span(
         {
           class: 'ruido valor inicio-de-texto'

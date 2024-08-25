@@ -119,6 +119,15 @@ pre {
     color: rgba(0, 255, 255, 0.2);
 }
 
+#visualización.legi .signo-de-asignación::before {
+    color: rgb(255, 100, 255);
+    content: " : ";
+}
+
+#visualización:not(.legi) .signo-de-asignación > .ruido {
+    color: rgb(255, 100, 255);
+}
+
 #visualización .Número {
     color: rgb(100, 255, 255);
 }

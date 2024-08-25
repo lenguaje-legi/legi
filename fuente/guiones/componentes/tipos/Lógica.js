@@ -1,10 +1,13 @@
 import van from 'vanjs-core'
+import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import { Código } from '../../inicio.js'
 import { get } from 'lodash-es'
 const { pre, span } = van.tags
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador)
+
+  const { asignación } = lógica
 
   const legi = document.querySelector('#visualización').classList.contains('legi')
   let devolver = ''
@@ -38,6 +41,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
         devolver
       )
     })(),
+    SignoDeAsignación({ asignación }),
     span(
       {
         class: 'valor'

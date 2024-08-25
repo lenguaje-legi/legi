@@ -1,11 +1,12 @@
 import AgregarTipo from './AgregarTipo.js'
 import ActualizarPropiedad from './ActualizarPropiedad.js'
 import PropiedadesDeContexto from './propiedades/PropiedadesDeContexto.js'
+import PropiedadesDeLógica from './propiedades/PropiedadesDeLógica.js'
+import PropiedadesDeAsignación from './propiedades/PropiedadesDeAsignación.js'
 import van from 'vanjs-core'
 import { capitalize, get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import Lenguaje from './propiedades/lenguaje.js'
-import PropiedadesDeLógica from './propiedades/PropiedadesDeLógica.js'
 const { add } = van
 const { p, h2, div, input, textarea, span } = van.tags
 
@@ -143,6 +144,10 @@ export default ({ tipo, indicador } = {}) => {
 
       if (tipo === 'Contexto') {
         return PropiedadesDeContexto({ indicador, propiedad })
+      }
+
+      if (propiedad === 'asignación') {
+        return PropiedadesDeAsignación({ indicador })
       }
 
       if (tipo === 'Lógica') {

@@ -1597,10 +1597,10 @@ function set(object, path, value) {
   return object == null ? object : baseSet(object, path, value);
 }
 
-const { div: div$5, button } = van.tags;
+const { div: div$6, button } = van.tags;
 
 var AgregarTipo = ({ tipo, indicador }) => {
-  return div$5(
+  return div$6(
     button({
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`);
@@ -1624,27 +1624,32 @@ var AgregarTipo = ({ tipo, indicador }) => {
 
         if (tipo === 'Función') {
           propiedades.devolver = false;
+          propiedades.asignación = '';
           propiedades.contexto = [];
           propiedades.valor = [];
         }
 
         if (tipo === 'Lista') {
           propiedades.devolver = false;
+          propiedades.asignación = '';
           propiedades.valor = [];
         }
 
         if (tipo === 'Número') {
           propiedades.devolver = false;
+          propiedades.asignación = '';
           propiedades.valor = 0;
         }
 
         if (tipo === 'Texto') {
           propiedades.devolver = false;
+          propiedades.asignación = '';
           propiedades.valor = '';
         }
 
         if (tipo === 'Lógica') {
           propiedades.devolver = false;
+          propiedades.asignación = '';
           propiedades.valor = true;
         }
 
@@ -1743,7 +1748,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$3, div: div$4, input: input$3, span: span$8 } = van.tags;
+const { p: p$3, div: div$5, input: input$3, span: span$9 } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -1752,7 +1757,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
 
   return [
-    div$4(
+    div$5(
       {
         class: 'propiedad'
       },
@@ -1792,7 +1797,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
     ),
     (() => {
       return Object.keys(Tipo.valor.tipos).map((tipo, indicadorDePropiedad) => {
-        return div$4(
+        return div$5(
           {
             class: 'verificación'
           },
@@ -1812,7 +1817,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$8({
+          span$9({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -1825,79 +1830,18 @@ var PropiedadesDeContexto = ({ indicador }) => {
   ]
 };
 
-const { p: p$2, h2: h2$1, div: div$3, fieldset: fieldset$1, input: input$2 } = van.tags;
-const visualización$1 = document.querySelector('#visualización');
-
-var Lenguaje = ({ indicador }) => {
-  return [
-    h2$1(
-      {
-        class: 'tipo'
-      },
-      'Visualización'
-    ),
-    div$3(
-      {
-        class: 'lógica'
-      },
-      fieldset$1(
-        div$3(
-          input$2({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (visualización$1.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: true,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio');
-              if (target.checked) {
-                target.value = true;
-              }
-              ActualizarPropiedad({ indicador, target });
-            }
-          }),
-          p$2('Legi')
-        ),
-        div$3(
-          input$2({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (!visualización$1.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: false,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio');
-              if (target.checked) {
-                target.value = false;
-              }
-              ActualizarPropiedad({ indicador, target });
-            }
-          }),
-          p$2('PHP')
-        )
-      )
-    )
-  ]
-};
-
-const { p: p$1, div: div$2, fieldset, input: input$1 } = van.tags;
+const { p: p$2, div: div$4, fieldset: fieldset$1, input: input$2 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
 
-  return div$2(
+  return div$4(
     {
       class: 'lógica'
     },
-    fieldset(
-      div$2(
-        input$1({
+    fieldset$1(
+      div$4(
+        input$2({
           'data-propiedad': JSON.stringify([...indicador, 'valor']),
           type: 'radio',
           name: 'lógica',
@@ -1915,10 +1859,10 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        p$1('Verdadero')
+        p$2('Verdadero')
       ),
-      div$2(
-        input$1({
+      div$4(
+        input$2({
           'data-propiedad': JSON.stringify([...indicador, 'valor']),
           type: 'radio',
           name: 'lógica',
@@ -1936,14 +1880,116 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        p$1('Falso')
+        p$2('Falso')
       )
     )
   )
 };
 
+const { div: div$3, select, option } = van.tags;
+
+var PropiedadesDeAsignación = ({ indicador }) => {
+  const { contexto } = get(Código.val, indicador.slice(0, -2));
+
+  if (!contexto) {
+    return
+  }
+
+  return div$3(
+    {
+      class: 'lógica'
+    },
+    div$3(
+      select(
+        {
+          'data-propiedad': JSON.stringify([...indicador, 'asignación']),
+          name: 'asignación',
+          onchange: ({ target }) => {
+            console.log('Se confirmó un cambio');
+            ActualizarPropiedad({ indicador, target });
+          }
+        },
+        option(''),
+        contexto.map((contexto, indicadorDelContexto) => {
+          const valor = JSON.stringify([...indicador.slice(0, -2), 'contexto', indicadorDelContexto]);
+          return option(
+            {
+              value: valor,
+              selected: (() => {
+                return valor === get(Código.val, [...indicador, 'asignación'])
+              })()
+            },
+            contexto.valor.nombre
+          )
+        })
+      )
+    )
+  )
+};
+
+const { p: p$1, h2: h2$1, div: div$2, fieldset, input: input$1 } = van.tags;
+const visualización$1 = document.querySelector('#visualización');
+
+var Lenguaje = ({ indicador }) => {
+  return [
+    h2$1(
+      {
+        class: 'tipo'
+      },
+      'Visualización'
+    ),
+    div$2(
+      {
+        class: 'lógica'
+      },
+      fieldset(
+        div$2(
+          input$1({
+            type: 'radio',
+            name: 'visualización',
+            checked: (() => {
+              if (visualización$1.classList.contains('legi')) {
+                return true
+              }
+            })(),
+            value: true,
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              if (target.checked) {
+                target.value = true;
+              }
+              ActualizarPropiedad({ indicador, target });
+            }
+          }),
+          p$1('Legi')
+        ),
+        div$2(
+          input$1({
+            type: 'radio',
+            name: 'visualización',
+            checked: (() => {
+              if (!visualización$1.classList.contains('legi')) {
+                return true
+              }
+            })(),
+            value: false,
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              if (target.checked) {
+                target.value = false;
+              }
+              ActualizarPropiedad({ indicador, target });
+            }
+          }),
+          p$1('PHP')
+        )
+      )
+    )
+  ]
+};
+
 const { add: add$1 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$7 } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$8 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2067,7 +2113,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$7({
+          span$8({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2079,6 +2125,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
       if (tipo === 'Contexto') {
         return PropiedadesDeContexto({ indicador, propiedad })
+      }
+
+      if (propiedad === 'asignación') {
+        return PropiedadesDeAsignación({ indicador })
       }
 
       if (tipo === 'Lógica') {
@@ -2199,12 +2249,48 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
+const { span: span$7 } = van.tags;
+
+var SignoDeAsignación = ({ asignación }) => {
+  if (!asignación) {
+    return null
+  }
+
+  return [
+    span$7(
+      {
+        class: 'ruido signo-de-dólar'
+      },
+      '$'
+    ),
+    span$7(
+      {
+        class: 'asignación'
+      },
+      `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
+    ),
+    span$7(
+      {
+        class: 'signo-de-asignación'
+      },
+      span$7(
+        {
+          class: 'ruido'
+        },
+        ' = '
+      )
+    )
+  ]
+};
+
 const { pre: pre$7, span: span$6 } = van.tags;
 
 var Función = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
   const función = get(Código.val, indicador);
+
+  const { asignación } = función;
 
   let devolver = '';
 
@@ -2264,6 +2350,7 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span$6(
         {
           class: 'ruido valor función'
@@ -2399,6 +2486,8 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador);
 
+  const { asignación } = lista;
+
   let devolver = '';
 
   if (lista.devolver) {
@@ -2444,6 +2533,7 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span$4(
         {
           class: 'valor corchete'
@@ -2501,6 +2591,8 @@ const { pre: pre$4, span: span$3 } = van.tags;
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
+  const { asignación } = lógica;
+
   const legi = document.querySelector('#visualización').classList.contains('legi');
   let devolver = '';
 
@@ -2533,6 +2625,7 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
         devolver
       )
     })(),
+    SignoDeAsignación({ asignación }),
     span$3(
       {
         class: 'valor'
@@ -2583,6 +2676,8 @@ const { pre: pre$3, span: span$2 } = van.tags;
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
+  const { asignación } = número;
+
   let devolver = '';
 
   if (número.devolver) {
@@ -2602,6 +2697,7 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
       },
           `${'    '.repeat(bloquesDeEspacios)}`
     ),
+    SignoDeAsignación({ asignación }),
     (() => {
       if (!devolver) {
         return null
@@ -2654,6 +2750,8 @@ const { pre: pre$2, span: span$1 } = van.tags;
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
 
+  const { asignación } = texto;
+
   let devolver = '';
 
   if (texto.devolver) {
@@ -2686,6 +2784,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span$1(
         {
           class: 'ruido valor inicio-de-texto'

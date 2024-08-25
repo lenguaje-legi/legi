@@ -1,5 +1,6 @@
-import { get } from 'lodash-es'
+import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import Tipo from '../Tipo.js'
+import { get } from 'lodash-es'
 import { Código } from '../../inicio.js'
 import van from 'vanjs-core'
 const { pre, span } = van.tags
@@ -8,6 +9,8 @@ export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
   const función = get(Código.val, indicador)
+
+  const { asignación } = función
 
   let devolver = ''
 
@@ -67,6 +70,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
           devolver
         )
       })(),
+      SignoDeAsignación({ asignación }),
       span(
         {
           class: 'ruido valor función'

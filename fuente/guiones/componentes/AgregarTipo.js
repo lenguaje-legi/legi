@@ -30,27 +30,32 @@ export default ({ tipo, indicador }) => {
 
         if (tipo === 'Función') {
           propiedades.devolver = false
+          propiedades.asignación = ''
           propiedades.contexto = []
           propiedades.valor = []
         }
 
         if (tipo === 'Lista') {
           propiedades.devolver = false
+          propiedades.asignación = ''
           propiedades.valor = []
         }
 
         if (tipo === 'Número') {
           propiedades.devolver = false
+          propiedades.asignación = ''
           propiedades.valor = 0
         }
 
         if (tipo === 'Texto') {
           propiedades.devolver = false
+          propiedades.asignación = ''
           propiedades.valor = ''
         }
 
         if (tipo === 'Lógica') {
           propiedades.devolver = false
+          propiedades.asignación = ''
           propiedades.valor = true
         }
 
