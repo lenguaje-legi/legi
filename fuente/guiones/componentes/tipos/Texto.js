@@ -1,5 +1,8 @@
 import van from 'vanjs-core'
+import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
+import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
+import SignoDeCierre from '../signos/SignoDeCierre.js'
 import { Código } from '../../inicio.js'
 import { get } from 'lodash-es'
 const { pre, span } = van.tags
@@ -7,41 +10,11 @@ const { pre, span } = van.tags
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador)
 
-  const { asignación } = texto
-
-  let devolver = ''
-
-  if (texto.devolver) {
-    devolver = 'return '
-  }
-
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2))
-  let elElementoSuperiorEsUnaLista = false
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true
-  }
-
   return [
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-        '    '.repeat(bloquesDeEspacios)
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(texto),
+      SignoDeAsignación(texto),
       span(
         {
           class: 'ruido valor inicio-de-texto'
@@ -59,12 +32,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
           {
             class: 'texto'
           },
-          span(
-            {
-              class: 'ruido bloque-de-espacios'
-            },
-            '    '.repeat(bloquesDeEspacios + 1)
-          ),
+          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
           valor
         )
       })
@@ -84,32 +52,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
         },
         '_'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          })
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 }

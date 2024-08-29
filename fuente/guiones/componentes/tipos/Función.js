@@ -1,4 +1,7 @@
+import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
+import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
+import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from '../Tipo.js'
 import { get } from 'lodash-es'
 import { Código } from '../../inicio.js'
@@ -9,14 +12,6 @@ export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
   const función = get(Código.val, indicador)
-
-  const { asignación } = función
-
-  let devolver = ''
-
-  if (función.devolver) {
-    devolver = 'return '
-  }
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
     const código = []
@@ -44,33 +39,11 @@ export default ({ bloquesDeEspacios, indicador }) => {
     return código
   })
 
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2))
-  let elElementoSuperiorEsUnaLista = false
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true
-  }
-
   return [
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+      SignoDeDevolver(función),
+      SignoDeAsignación(función),
       span(
         {
           class: 'ruido valor función'
@@ -79,12 +52,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
       )
     ),
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
           class: 'contexto'
@@ -113,12 +81,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
           class: 'paréntesis-de-cierre'
@@ -135,44 +98,14 @@ export default ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span(
         {
           class: 'ruido llave'
         },
         '}'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          })
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 }

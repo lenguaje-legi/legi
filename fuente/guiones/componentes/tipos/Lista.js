@@ -1,5 +1,8 @@
 import { get } from 'lodash-es'
+import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
+import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
+import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from '../Tipo.js'
 import { Código } from '../../inicio.js'
 import van from 'vanjs-core'
@@ -9,14 +12,6 @@ export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
   const lista = get(Código.val, indicador)
-
-  const { asignación } = lista
-
-  let devolver = ''
-
-  if (lista.devolver) {
-    devolver = 'return '
-  }
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = []
@@ -31,33 +26,11 @@ export default ({ bloquesDeEspacios, indicador }) => {
     return código
   })
 
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2))
-  let elElementoSuperiorEsUnaLista = false
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true
-  }
-
   return [
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+      SignoDeDevolver(lista),
+      SignoDeAsignación(lista),
       span(
         {
           class: 'valor corchete'
@@ -68,44 +41,14 @@ export default ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span(
         {
           class: 'corchete'
         },
         ']'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          })
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 }

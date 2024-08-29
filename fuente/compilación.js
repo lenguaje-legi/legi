@@ -1748,7 +1748,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$3, div: div$5, input: input$3, span: span$9 } = van.tags;
+const { p: p$3, div: div$5, input: input$3, span: span$c } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -1817,7 +1817,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$9({
+          span$c({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -1896,9 +1896,6 @@ var PropiedadesDeAsignación = ({ indicador }) => {
   }
 
   return div$3(
-    {
-      class: 'lógica'
-    },
     div$3(
       select(
         {
@@ -1989,7 +1986,7 @@ var Lenguaje = ({ indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$8 } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$b } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2113,7 +2110,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$8({
+          span$b({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2249,7 +2246,41 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const { span: span$7 } = van.tags;
+const { span: span$a } = van.tags;
+
+var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
+  return span$a(
+    {
+      class: 'ruido bloque-de-espacios'
+    },
+    `${'    '.repeat(bloquesDeEspacios)}`
+  )
+};
+
+const { span: span$9 } = van.tags;
+
+var SignoDeDevolver = ({ devolver }) => {
+  if (!devolver) {
+    devolver = '';
+  }
+
+  if (devolver) {
+    devolver = 'return ';
+  }
+
+  if (!devolver) {
+    return null
+  }
+
+  return span$9(
+    {
+      class: 'ruido devolver'
+    },
+    devolver
+  )
+};
+
+const { span: span$8 } = van.tags;
 
 var SignoDeAsignación = ({ asignación }) => {
   if (!asignación) {
@@ -2257,23 +2288,23 @@ var SignoDeAsignación = ({ asignación }) => {
   }
 
   return [
-    span$7(
+    span$8(
       {
         class: 'ruido signo-de-dólar'
       },
       '$'
     ),
-    span$7(
+    span$8(
       {
         class: 'asignación'
       },
       `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
     ),
-    span$7(
+    span$8(
       {
         class: 'signo-de-asignación'
       },
-      span$7(
+      span$8(
         {
           class: 'ruido'
         },
@@ -2283,20 +2314,47 @@ var SignoDeAsignación = ({ asignación }) => {
   ]
 };
 
+const { span: span$7 } = van.tags;
+
+var SignoDeCierre = ({ indicador }) => {
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+    elElementoSuperiorEsUnaLista = true;
+  }
+
+  if (elElementoSuperiorEsUnaLista) {
+    const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+      return elemento.tipo !== 'Comentario'
+    });
+
+    const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+
+    if (esElÚltimoElemento) {
+      return null
+    }
+    return span$7(
+      {
+        class: 'ruido coma'
+      },
+      ','
+    )
+  }
+
+  return span$7(
+    {
+      class: 'ruido punto-y-coma'
+    },
+    ';'
+  )
+};
+
 const { pre: pre$7, span: span$6 } = van.tags;
 
 var Función = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
   const función = get(Código.val, indicador);
-
-  const { asignación } = función;
-
-  let devolver = '';
-
-  if (función.devolver) {
-    devolver = 'return ';
-  }
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
     const código = [];
@@ -2324,33 +2382,11 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     return código
   });
 
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
-
   return [
     pre$7(
-      span$6(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span$6(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+      SignoDeDevolver(función),
+      SignoDeAsignación(función),
       span$6(
         {
           class: 'ruido valor función'
@@ -2359,12 +2395,7 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       )
     ),
     pre$7(
-      span$6(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios }),
       span$6(
         {
           class: 'contexto'
@@ -2393,12 +2424,7 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
     pre$7(
-      span$6(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios }),
       span$6(
         {
           class: 'paréntesis-de-cierre'
@@ -2415,44 +2441,14 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
     pre$7(
-      span$6(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span$6(
         {
           class: 'ruido llave'
         },
         '}'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          });
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span$6(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span$6(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 };
@@ -2486,14 +2482,6 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
   const lista = get(Código.val, indicador);
 
-  const { asignación } = lista;
-
-  let devolver = '';
-
-  if (lista.devolver) {
-    devolver = 'return ';
-  }
-
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = [];
     código.push(Tipo({
@@ -2507,33 +2495,11 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     return código
   });
 
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
-
   return [
     pre$5(
-      span$4(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span$4(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+      SignoDeDevolver(lista),
+      SignoDeAsignación(lista),
       span$4(
         {
           class: 'valor corchete'
@@ -2544,44 +2510,14 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
     pre$5(
-      span$4(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-          `${'    '.repeat(bloquesDeEspacios - 1)}`
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span$4(
         {
           class: 'corchete'
         },
         ']'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          });
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span$4(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span$4(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 };
@@ -2591,41 +2527,12 @@ const { pre: pre$4, span: span$3 } = van.tags;
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  const { asignación } = lógica;
-
   const legi = document.querySelector('#visualización').classList.contains('legi');
-  let devolver = '';
-
-  if (lógica.devolver) {
-    devolver = 'return ';
-  }
-
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
 
   return pre$4(
-    span$3(
-      {
-        class: 'ruido bloque-de-espacios'
-      },
-          `${'    '.repeat(bloquesDeEspacios)}`
-    ),
-    (() => {
-      if (!devolver) {
-        return null
-      }
-
-      return span$3(
-        {
-          class: 'ruido devolver'
-        },
-        devolver
-      )
-    })(),
-    SignoDeAsignación({ asignación }),
+    BloqueDeEspacios({ bloquesDeEspacios }),
+    SignoDeDevolver(lógica),
+    SignoDeAsignación(lógica),
     span$3(
       {
         class: 'valor'
@@ -2642,32 +2549,7 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
         return valor
       })()
     ),
-    (() => {
-      if (elElementoSuperiorEsUnaLista) {
-        const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-          return elemento.tipo !== 'Comentario'
-        });
-
-        const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-        if (esElÚltimoElemento) {
-          return null
-        }
-        return span$3(
-          {
-            class: 'ruido coma'
-          },
-          ','
-        )
-      }
-
-      return span$3(
-        {
-          class: 'ruido punto-y-coma'
-        },
-        ';'
-      )
-    })()
+    SignoDeCierre({ indicador })
   )
 };
 
@@ -2676,72 +2558,17 @@ const { pre: pre$3, span: span$2 } = van.tags;
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
-  const { asignación } = número;
-
-  let devolver = '';
-
-  if (número.devolver) {
-    devolver = 'return ';
-  }
-
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
-
   return pre$3(
-    span$2(
-      {
-        class: 'ruido bloque-de-espacios'
-      },
-          `${'    '.repeat(bloquesDeEspacios)}`
-    ),
-    SignoDeAsignación({ asignación }),
-    (() => {
-      if (!devolver) {
-        return null
-      }
-
-      return span$2(
-        {
-          class: 'ruido devolver'
-        },
-        devolver
-      )
-    })(),
+    BloqueDeEspacios({ bloquesDeEspacios }),
+    SignoDeDevolver(número),
+    SignoDeAsignación(número),
     span$2(
       {
         class: 'valor'
       },
       valor
     ),
-    (() => {
-      if (elElementoSuperiorEsUnaLista) {
-        const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-          return elemento.tipo !== 'Comentario'
-        });
-
-        const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-        if (esElÚltimoElemento) {
-          return null
-        }
-        return span$2(
-          {
-            class: 'ruido coma'
-          },
-          ','
-        )
-      }
-
-      return span$2(
-        {
-          class: 'ruido punto-y-coma'
-        },
-        ';'
-      )
-    })()
+    SignoDeCierre({ indicador })
   )
 };
 
@@ -2750,41 +2577,11 @@ const { pre: pre$2, span: span$1 } = van.tags;
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
 
-  const { asignación } = texto;
-
-  let devolver = '';
-
-  if (texto.devolver) {
-    devolver = 'return ';
-  }
-
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
-
   return [
     pre$2(
-      span$1(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-        '    '.repeat(bloquesDeEspacios)
-      ),
-      (() => {
-        if (!devolver) {
-          return null
-        }
-
-        return span$1(
-          {
-            class: 'ruido devolver'
-          },
-          devolver
-        )
-      })(),
-      SignoDeAsignación({ asignación }),
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(texto),
+      SignoDeAsignación(texto),
       span$1(
         {
           class: 'ruido valor inicio-de-texto'
@@ -2802,12 +2599,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
           {
             class: 'texto'
           },
-          span$1(
-            {
-              class: 'ruido bloque-de-espacios'
-            },
-            '    '.repeat(bloquesDeEspacios + 1)
-          ),
+          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
           valor
         )
       });
@@ -2827,32 +2619,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
         },
         '_'
       ),
-      (() => {
-        if (elElementoSuperiorEsUnaLista) {
-          const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-            return elemento.tipo !== 'Comentario'
-          });
-
-          const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-          if (esElÚltimoElemento) {
-            return null
-          }
-          return span$1(
-            {
-              class: 'ruido coma'
-            },
-            ','
-          )
-        }
-
-        return span$1(
-          {
-            class: 'ruido punto-y-coma'
-          },
-          ';'
-        )
-      })()
+      SignoDeCierre({ indicador })
     )
   ]
 };
