@@ -1613,11 +1613,11 @@ var AgregarTipo = ({ tipo, indicador }) => {
           propiedades.valor = {
             nombre: '',
             tipos: {
-              Función: true,
-              Lista: true,
-              Lógica: true,
-              Número: true,
-              Texto: true
+              Función: false,
+              Lista: false,
+              Lógica: false,
+              Número: false,
+              Texto: false
             }
           };
         }
@@ -1889,6 +1889,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
 const { div: div$3, select, option } = van.tags;
 
 var PropiedadesDeAsignación = ({ indicador }) => {
+  const { tipo } = get(Código.val, indicador);
   const { contexto } = get(Código.val, indicador.slice(0, -2));
 
   if (!contexto) {
@@ -1914,7 +1915,8 @@ var PropiedadesDeAsignación = ({ indicador }) => {
               value: valor,
               selected: (() => {
                 return valor === get(Código.val, [...indicador, 'asignación'])
-              })()
+              })(),
+              disabled: !contexto.valor.tipos[tipo]
             },
             contexto.valor.nombre
           )
@@ -2646,6 +2648,19 @@ var Comentario = ({ bloquesDeEspacios, valor }) => {
   })
 };
 
+var ErrorDeAsignación = ({ indicador }) => {
+  const { tipo, asignación } = get(Código.val, indicador);
+  if (!asignación) {
+    return
+  }
+
+  const contexto = get(Código.val, JSON.parse(asignación));
+
+  if (contexto) {
+    return !contexto.valor.tipos[tipo]
+  }
+};
+
 const { div } = van.tags;
 
 var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
@@ -2685,6 +2700,12 @@ var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
     valor = Comentario({ bloquesDeEspacios, valor });
   }
 
+  let error = '';
+
+  if (tipo !== 'Nueva línea' && ErrorDeAsignación({ indicador })) {
+    error = 'error ';
+  }
+
   return div(
     {
       'data-indicador': (() => {
@@ -2693,7 +2714,7 @@ var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
         }
         return JSON.stringify(indicador)
       })(),
-      class: `Tipo ${tipo.replaceAll(' ', '-')}`,
+      class: `${error}Tipo ${tipo.replaceAll(' ', '-')}`,
       onclick: (click) => {
         Seleccionar({ click, indicador, tipo });
       }

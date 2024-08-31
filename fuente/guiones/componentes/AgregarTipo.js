@@ -19,11 +19,11 @@ export default ({ tipo, indicador }) => {
           propiedades.valor = {
             nombre: '',
             tipos: {
-              Función: true,
-              Lista: true,
-              Lógica: true,
-              Número: true,
-              Texto: true
+              Función: false,
+              Lista: false,
+              Lógica: false,
+              Número: false,
+              Texto: false
             }
           }
         }

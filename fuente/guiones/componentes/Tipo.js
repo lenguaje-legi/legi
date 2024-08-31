@@ -9,6 +9,7 @@ import Lógica from './tipos/Lógica.js'
 import Número from './tipos/Número.js'
 import Texto from './tipos/Texto.js'
 import Comentario from './tipos/Comentario.js'
+import ErrorDeAsignación from './errores/ErrorDeAsignación.js'
 const { div } = van.tags
 
 export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
@@ -48,6 +49,12 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
     valor = Comentario({ bloquesDeEspacios, valor })
   }
 
+  let error = ''
+
+  if (tipo !== 'Nueva línea' && ErrorDeAsignación({ indicador })) {
+    error = 'error '
+  }
+
   return div(
     {
       'data-indicador': (() => {
@@ -56,7 +63,7 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
         }
         return JSON.stringify(indicador)
       })(),
-      class: `Tipo ${tipo.replaceAll(' ', '-')}`,
+      class: `${error}Tipo ${tipo.replaceAll(' ', '-')}`,
       onclick: (click) => {
         Seleccionar({ click, indicador, tipo })
       }

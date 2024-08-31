@@ -5,6 +5,7 @@ import van from 'vanjs-core'
 const { div, select, option } = van.tags
 
 export default ({ indicador }) => {
+  const { tipo } = get(Código.val, indicador)
   const { contexto } = get(Código.val, indicador.slice(0, -2))
 
   if (!contexto) {
@@ -30,7 +31,8 @@ export default ({ indicador }) => {
               value: valor,
               selected: (() => {
                 return valor === get(Código.val, [...indicador, 'asignación'])
-              })()
+              })(),
+              disabled: !contexto.valor.tipos[tipo]
             },
             contexto.valor.nombre
           )
