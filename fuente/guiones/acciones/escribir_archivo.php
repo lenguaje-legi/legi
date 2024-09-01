@@ -1,6 +1,6 @@
 <?php
 
-$configuración = require('../configuración.php');
+$configuración = require('../../../configuración.php');
 
 $archivo = $configuración['archivo'];
 

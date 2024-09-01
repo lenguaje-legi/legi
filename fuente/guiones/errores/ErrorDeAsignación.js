@@ -1,4 +1,4 @@
-import { Código } from '../../inicio'
+import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
 
 export default ({ indicador }) => {

@@ -1,11 +1,11 @@
-import Visualizar from './componentes/Visualizar.js'
+import Visualizar from './acciones/Visualizar.js'
 import van from 'vanjs-core'
-import Seleccionar from './componentes/Seleccionar.js'
+import Seleccionar from './acciones/Seleccionar.js'
 import { fromString } from 'php-array-reader'
 
 const leerArchivo = async () => {
   try {
-    const response = await fetch('/leer_archivo.php')
+    const response = await fetch('/guiones/acciones/leer_archivo.php')
     const archivo = await response.text()
     return archivo
   } catch (error) {
@@ -15,7 +15,7 @@ const leerArchivo = async () => {
 
 const escribirArchivo = async () => {
   try {
-    await fetch('/escribir_archivo.php', {
+    await fetch('/guiones/acciones/escribir_archivo.php', {
       method: 'POST',
       body: JSON.stringify({
         contenido: document.querySelector('#salida').innerText

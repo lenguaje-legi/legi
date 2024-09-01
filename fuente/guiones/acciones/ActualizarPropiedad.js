@@ -1,5 +1,5 @@
-import Visualizar from './Visualizar'
-import { Código } from '../inicio'
+import Visualizar from './Visualizar.js'
+import { Código } from '../inicio.js'
 import { set, get } from 'lodash-es'
 const visualización = document.querySelector('#visualización')
 

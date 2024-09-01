@@ -1,5 +1,5 @@
-import ActualizarPropiedad from '../ActualizarPropiedad'
-import { Código } from '../../inicio'
+import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
+import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
 import van from 'vanjs-core'
 const { p, div, input, span } = van.tags

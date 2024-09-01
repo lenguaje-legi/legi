@@ -14738,7 +14738,7 @@ var phpArrayReader = { fromString };
 
 const leerArchivo = async () => {
   try {
-    const response = await fetch('/leer_archivo.php');
+    const response = await fetch('/guiones/acciones/leer_archivo.php');
     const archivo = await response.text();
     return archivo
   } catch (error) {
@@ -14748,7 +14748,7 @@ const leerArchivo = async () => {
 
 const escribirArchivo = async () => {
   try {
-    await fetch('/escribir_archivo.php', {
+    await fetch('/guiones/acciones/escribir_archivo.php', {
       method: 'POST',
       body: JSON.stringify({
         contenido: document.querySelector('#salida').innerText

@@ -1,4 +1,4 @@
-import ActualizarPropiedad from '../ActualizarPropiedad'
+import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import van from 'vanjs-core'
 const { p, h2, div, fieldset, input } = van.tags
 const visualización = document.querySelector('#visualización')

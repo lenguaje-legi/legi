@@ -1,6 +1,6 @@
 import van from 'vanjs-core'
 import { get } from 'lodash-es'
-import { Código } from '../../inicio.js'
+import { Código } from '../inicio.js'
 const { span } = van.tags
 
 export default ({ indicador }) => {

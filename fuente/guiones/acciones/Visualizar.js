@@ -1,5 +1,5 @@
 import van from 'vanjs-core'
-import Tipo from './Tipo.js'
+import Tipo from '../tipos/Tipo.js'
 import json2php from 'json2php'
 import { Código } from '../inicio.js'
 const { add } = van
