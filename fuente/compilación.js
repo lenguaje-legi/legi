@@ -14736,7 +14736,37 @@ function parseKey (expr) {
 
 var phpArrayReader = { fromString };
 
-const php = `
+const leerArchivo = async () => {
+  try {
+    const response = await fetch('/leer_archivo.php');
+    const archivo = await response.text();
+    return archivo
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const escribirArchivo = async () => {
+  try {
+    await fetch('/escribir_archivo.php', {
+      method: 'POST',
+      body: JSON.stringify({
+        contenido: document.querySelector('#salida').innerText
+      })
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+document.querySelector('#escribir-archivo').addEventListener('click', () => {
+  escribirArchivo();
+});
+
+let php = await leerArchivo();
+
+if (!php) {
+  php = `
 <?php
 
 [
@@ -14751,6 +14781,7 @@ const php = `
         ]
     ]
 ];`;
+}
 
 const Código = van.state(phpArrayReader.fromString(php));
 
