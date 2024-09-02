@@ -5,7 +5,7 @@ import { fromString } from 'php-array-reader'
 
 const leerArchivo = async () => {
   try {
-    const response = await fetch('/guiones/acciones/leer_archivo.php')
+    const response = await fetch('/leer-archivo')
     const archivo = await response.text()
     return archivo
   } catch (error) {
@@ -15,7 +15,7 @@ const leerArchivo = async () => {
 
 const escribirArchivo = async () => {
   try {
-    await fetch('/guiones/acciones/escribir_archivo.php', {
+    await fetch('/escribir-archivo', {
       method: 'POST',
       body: JSON.stringify({
         contenido: document.querySelector('#salida').innerText
