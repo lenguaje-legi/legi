@@ -3,6 +3,8 @@ import ActualizarPropiedad from './ActualizarPropiedad.js'
 import PropiedadesDeContexto from '../propiedades/PropiedadesDeContexto.js'
 import PropiedadesDeLógica from '../propiedades/PropiedadesDeLógica.js'
 import PropiedadesDeAsignación from '../propiedades/PropiedadesDeAsignación.js'
+import PropiedadesDeInstancia from '../propiedades/PropiedadesDeInstancia.js'
+import PropiedadesDeFunción from '../propiedades/PropiedadesDeFunción.js'
 import van from 'vanjs-core'
 import { capitalize, get } from 'lodash-es'
 import { Código } from '../inicio.js'
@@ -53,6 +55,8 @@ export default ({ tipo, indicador } = {}) => {
     if (indicador.slice(0, -1).at(-1) !== 'contexto') {
       editarPropiedades = div(
         [
+          'Nulo',
+          'Instancia',
           'Función',
           'Lista',
           'Número',
@@ -148,6 +152,30 @@ export default ({ tipo, indicador } = {}) => {
 
       if (propiedad === 'asignación') {
         return PropiedadesDeAsignación({ indicador })
+      }
+
+      if (tipo === 'Función') {
+        return PropiedadesDeFunción({ indicador, propiedad })
+      }
+
+      if (propiedad === 'valor' && tipo === 'Instancia') {
+        return null
+      }
+
+      if (propiedad === 'instancia' && Tipo.instancia === '') {
+        return PropiedadesDeInstancia({ indicador, propiedad })
+      }
+
+      if (propiedad === 'instancia' && Tipo.instancia !== '') {
+        return null
+      }
+
+      if (propiedad === 'devuelve' && Tipo.instancia !== '') {
+        return PropiedadesDeInstancia({ indicador, propiedad })
+      }
+
+      if (propiedad === 'devuelve' && Tipo.instancia === '') {
+        return null
       }
 
       if (tipo === 'Lógica') {

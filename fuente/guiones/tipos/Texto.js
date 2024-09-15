@@ -23,7 +23,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
       )
     ),
     (() => {
-      if (valor === '') {
+      if (valor === '' || valor === undefined) {
         return ''
       }
 

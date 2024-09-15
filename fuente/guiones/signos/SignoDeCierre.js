@@ -6,16 +6,23 @@ const { span } = van.tags
 export default ({ indicador }) => {
   const elementoSuperior = get(Código.val, indicador.slice(0, -2))
   let elElementoSuperiorEsUnaLista = false
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
+  if (elementoSuperior && (elementoSuperior.tipo === 'Lista' || elementoSuperior.tipo === 'Instancia')) {
     elElementoSuperiorEsUnaLista = true
   }
 
   if (elElementoSuperiorEsUnaLista) {
-    const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-      return elemento.tipo !== 'Comentario'
-    })
+    let esElÚltimoElemento = false
+    if (elementoSuperior.tipo !== 'Instancia') {
+      const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+        return elemento.tipo !== 'Comentario'
+      })
 
-    const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
+      esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
+    }
+
+    if (elementoSuperior.tipo === 'Instancia') {
+      esElÚltimoElemento = get(Código.val, indicador) === get(Código.val, indicador.slice(0, -2)).contexto.at(-1)
+    }
 
     if (esElÚltimoElemento) {
       return null

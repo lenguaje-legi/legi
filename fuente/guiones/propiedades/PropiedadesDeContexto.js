@@ -50,24 +50,26 @@ export default ({ indicador }) => {
       })
     ),
     (() => {
-      return Object.keys(Tipo.valor.tipos).map((tipo, indicadorDePropiedad) => {
+      return [
+        'Función',
+        'Lista',
+        'Lógica',
+        'Número',
+        'Texto',
+        'Nulo'
+      ].map((tipo) => {
         return div(
           {
-            class: 'verificación'
+            class: 'elección'
           },
           input({
-            type: 'checkbox',
-            checked: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
-            value: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
-            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipos', tipo]),
+            type: 'radio',
+            name: 'tipo',
+            checked: Tipo.valor.tipo === tipo,
+            value: tipo,
+            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipo']),
             onchange: ({ target }) => {
               console.log('Se confirmó un cambio')
-              if (target.checked) {
-                target.value = true
-              }
-              if (!target.checked) {
-                target.value = false
-              }
               ActualizarPropiedad({ indicador, valor, target })
             }
           }),

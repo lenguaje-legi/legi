@@ -1,25 +1,35 @@
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
+import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
 import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
 import van from 'vanjs-core'
 const { div, select, option } = van.tags
 
 export default ({ indicador }) => {
-  const { tipo } = get(Código.val, indicador)
+  const Tipo = get(Código.val, indicador)
+  const { tipo } = Tipo
   const { contexto } = get(Código.val, indicador.slice(0, -2))
 
   if (!contexto) {
     return
   }
 
+  let error = ''
+
+  if (ErrorDeAsignación({ indicador })) {
+    error = 'error'
+  }
+
   return div(
     div(
       select(
         {
+          class: error,
           'data-propiedad': JSON.stringify([...indicador, 'asignación']),
           name: 'asignación',
           onchange: ({ target }) => {
             console.log('Se confirmó un cambio')
+            target.classList.remove('error')
             ActualizarPropiedad({ indicador, target })
           }
         },
@@ -32,7 +42,13 @@ export default ({ indicador }) => {
               selected: (() => {
                 return valor === get(Código.val, [...indicador, 'asignación'])
               })(),
-              disabled: !contexto.valor.tipos[tipo]
+              disabled: (() => {
+                if (tipo === 'Instancia') {
+                  return contexto.valor.tipo !== Tipo.devuelve
+                }
+
+                return contexto.valor.tipo !== tipo
+              })()
             },
             contexto.valor.nombre
           )

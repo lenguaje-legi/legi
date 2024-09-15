@@ -18,19 +18,29 @@ export default ({ tipo, indicador }) => {
         if (tipo === 'Contexto') {
           propiedades.valor = {
             nombre: '',
-            tipos: {
-              Función: false,
-              Lista: false,
-              Lógica: false,
-              Número: false,
-              Texto: false
-            }
+            tipo: 'Nulo'
           }
+        }
+
+        if (tipo === 'Nulo') {
+          propiedades.devolver = false
+          propiedades.asignación = ''
+          propiedades.contexto = []
+        }
+
+        if (tipo === 'Instancia') {
+          propiedades.devolver = false
+          propiedades.asignación = ''
+          propiedades.instancia = ''
+          propiedades.devuelve = ''
+          propiedades.contexto = []
+          propiedades.valor = () => {}
         }
 
         if (tipo === 'Función') {
           propiedades.devolver = false
           propiedades.asignación = ''
+          propiedades.devuelve = 'Nulo'
           propiedades.contexto = []
           propiedades.valor = []
         }

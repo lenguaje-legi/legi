@@ -1597,10 +1597,10 @@ function set(object, path, value) {
   return object == null ? object : baseSet(object, path, value);
 }
 
-const { div: div$6, button } = van.tags;
+const { div: div$8, button } = van.tags;
 
 var AgregarTipo = ({ tipo, indicador }) => {
-  return div$6(
+  return div$8(
     button({
       onclick: () => {
         console.log(`Se agregó un tipo: ${tipo}`);
@@ -1612,19 +1612,29 @@ var AgregarTipo = ({ tipo, indicador }) => {
         if (tipo === 'Contexto') {
           propiedades.valor = {
             nombre: '',
-            tipos: {
-              Función: false,
-              Lista: false,
-              Lógica: false,
-              Número: false,
-              Texto: false
-            }
+            tipo: 'Nulo'
           };
+        }
+
+        if (tipo === 'Nulo') {
+          propiedades.devolver = false;
+          propiedades.asignación = '';
+          propiedades.contexto = [];
+        }
+
+        if (tipo === 'Instancia') {
+          propiedades.devolver = false;
+          propiedades.asignación = '';
+          propiedades.instancia = '';
+          propiedades.devuelve = '';
+          propiedades.contexto = [];
+          propiedades.valor = () => {};
         }
 
         if (tipo === 'Función') {
           propiedades.devolver = false;
           propiedades.asignación = '';
+          propiedades.devuelve = 'Nulo';
           propiedades.contexto = [];
           propiedades.valor = [];
         }
@@ -1720,7 +1730,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 
   if (target.value !== 'true' && target.value !== 'false') {
-    if (target.value.trim() === '' || target.value.trim() === valor) {
+    if (target.tagName !== 'SELECT' && (target.value.trim() === '' || target.value.trim() === valor)) {
       target.value = valor;
       return null
     }
@@ -1748,7 +1758,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$3, div: div$5, input: input$3, span: span$c } = van.tags;
+const { p: p$5, div: div$7, input: input$4, span: span$i } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -1757,12 +1767,12 @@ var PropiedadesDeContexto = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
 
   return [
-    div$5(
+    div$7(
       {
         class: 'propiedad'
       },
-      p$3('Nombre'),
-      input$3({
+      p$5('Nombre'),
+      input$4({
         value: Tipo.valor.nombre,
         'data-propiedad': JSON.stringify([...indicador, 'valor', 'nombre']),
         onfocus: ({ target }) => {
@@ -1796,52 +1806,57 @@ var PropiedadesDeContexto = ({ indicador }) => {
       })
     ),
     (() => {
-      return Object.keys(Tipo.valor.tipos).map((tipo, indicadorDePropiedad) => {
-        return div$5(
+      return [
+        'Función',
+        'Lista',
+        'Lógica',
+        'Número',
+        'Texto',
+        'Nulo'
+      ].map((tipo) => {
+        return div$7(
           {
-            class: 'verificación'
+            class: 'elección'
           },
-          input$3({
-            type: 'checkbox',
-            checked: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
-            value: Tipo.valor.tipos[Object.keys(Tipo.valor.tipos)[indicadorDePropiedad]],
-            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipos', tipo]),
+          input$4({
+            type: 'radio',
+            name: 'tipo',
+            checked: Tipo.valor.tipo === tipo,
+            value: tipo,
+            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipo']),
             onchange: ({ target }) => {
               console.log('Se confirmó un cambio');
-              if (target.checked) {
-                target.value = true;
-              }
-              if (!target.checked) {
-                target.value = false;
-              }
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$c({
+          span$i({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
             }
           }),
-          p$3(tipo)
+          p$5(tipo)
         )
       })
     })()
   ]
 };
 
-const { p: p$2, div: div$4, fieldset: fieldset$1, input: input$2 } = van.tags;
+const { p: p$4, div: div$6, span: span$h, fieldset: fieldset$1, input: input$3 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
 
-  return div$4(
+  return div$6(
     {
       class: 'lógica'
     },
     fieldset$1(
-      div$4(
-        input$2({
+      div$6(
+        {
+          class: 'elección'
+        },
+        input$3({
           'data-propiedad': JSON.stringify([...indicador, 'valor']),
           type: 'radio',
           name: 'lógica',
@@ -1859,10 +1874,19 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        p$2('Verdadero')
+        span$h({
+          class: 'marca',
+          onclick: ({ target }) => {
+            target.parentNode.childNodes[0].click();
+          }
+        }),
+        p$4('Verdadero')
       ),
-      div$4(
-        input$2({
+      div$6(
+        {
+          class: 'elección'
+        },
+        input$3({
           'data-propiedad': JSON.stringify([...indicador, 'valor']),
           type: 'radio',
           name: 'lógica',
@@ -1880,43 +1904,81 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        p$2('Falso')
+        span$h({
+          class: 'marca',
+          onclick: ({ target }) => {
+            target.parentNode.childNodes[0].click();
+          }
+        }),
+        p$4('Falso')
       )
     )
   )
 };
 
-const { div: div$3, select, option } = van.tags;
+var ErrorDeAsignación = ({ indicador }) => {
+  const { tipo, asignación, devuelve } = get(Código.val, indicador);
+  if (!asignación) {
+    return
+  }
+
+  const contexto = get(Código.val, JSON.parse(asignación));
+
+  if (contexto) {
+    if (tipo === 'Instancia') {
+      return contexto.valor.tipo !== devuelve
+    }
+
+    return contexto.valor.tipo !== tipo
+  }
+};
+
+const { div: div$5, select: select$1, option: option$1 } = van.tags;
 
 var PropiedadesDeAsignación = ({ indicador }) => {
-  const { tipo } = get(Código.val, indicador);
+  const Tipo = get(Código.val, indicador);
+  const { tipo } = Tipo;
   const { contexto } = get(Código.val, indicador.slice(0, -2));
 
   if (!contexto) {
     return
   }
 
-  return div$3(
-    div$3(
-      select(
+  let error = '';
+
+  if (ErrorDeAsignación({ indicador })) {
+    error = 'error';
+  }
+
+  return div$5(
+    div$5(
+      select$1(
         {
+          class: error,
           'data-propiedad': JSON.stringify([...indicador, 'asignación']),
           name: 'asignación',
           onchange: ({ target }) => {
             console.log('Se confirmó un cambio');
+            target.classList.remove('error');
             ActualizarPropiedad({ indicador, target });
           }
         },
-        option(''),
+        option$1(''),
         contexto.map((contexto, indicadorDelContexto) => {
           const valor = JSON.stringify([...indicador.slice(0, -2), 'contexto', indicadorDelContexto]);
-          return option(
+          return option$1(
             {
               value: valor,
               selected: (() => {
                 return valor === get(Código.val, [...indicador, 'asignación'])
               })(),
-              disabled: !contexto.valor.tipos[tipo]
+              disabled: (() => {
+                if (tipo === 'Instancia') {
+                  return contexto.valor.tipo !== Tipo.devuelve
+                }
+
+                return contexto.valor.tipo !== tipo
+              })()
             },
             contexto.valor.nombre
           )
@@ -1926,7 +1988,305 @@ var PropiedadesDeAsignación = ({ indicador }) => {
   )
 };
 
-const { p: p$1, h2: h2$1, div: div$2, fieldset, input: input$1 } = van.tags;
+const { span: span$g } = van.tags;
+
+var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
+  return span$g(
+    {
+      class: 'ruido bloque-de-espacios'
+    },
+    `${'    '.repeat(bloquesDeEspacios)}`
+  )
+};
+
+const { span: span$f } = van.tags;
+
+var SignoDeDevolver = ({ devolver }) => {
+  if (!devolver) {
+    devolver = '';
+  }
+
+  if (devolver) {
+    devolver = 'return ';
+  }
+
+  if (!devolver) {
+    return null
+  }
+
+  return span$f(
+    {
+      class: 'ruido devolver'
+    },
+    devolver
+  )
+};
+
+const { span: span$e } = van.tags;
+
+var SignoDeAsignación = ({ asignación }) => {
+  if (!asignación) {
+    return null
+  }
+
+  return [
+    span$e(
+      {
+        class: 'ruido signo-de-dólar'
+      },
+      '$'
+    ),
+    span$e(
+      {
+        class: 'asignación'
+      },
+      `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
+    ),
+    span$e(
+      {
+        class: 'signo-de-asignación'
+      },
+      span$e(
+        {
+          class: 'ruido'
+        },
+        ' = '
+      )
+    )
+  ]
+};
+
+const { span: span$d } = van.tags;
+
+var SignoDeCierre = ({ indicador }) => {
+  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  let elElementoSuperiorEsUnaLista = false;
+  if (elementoSuperior && (elementoSuperior.tipo === 'Lista' || elementoSuperior.tipo === 'Instancia')) {
+    elElementoSuperiorEsUnaLista = true;
+  }
+
+  if (elElementoSuperiorEsUnaLista) {
+    let esElÚltimoElemento = false;
+    if (elementoSuperior.tipo !== 'Instancia') {
+      const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
+        return elemento.tipo !== 'Comentario'
+      });
+
+      esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+    }
+
+    if (elementoSuperior.tipo === 'Instancia') {
+      esElÚltimoElemento = get(Código.val, indicador) === get(Código.val, indicador.slice(0, -2)).contexto.at(-1);
+    }
+
+    if (esElÚltimoElemento) {
+      return null
+    }
+    return span$d(
+      {
+        class: 'ruido coma'
+      },
+      ','
+    )
+  }
+
+  return span$d(
+    {
+      class: 'ruido punto-y-coma'
+    },
+    ';'
+  )
+};
+
+const { pre: pre$a, span: span$c, style: style$1 } = van.tags;
+
+var imprimir = () => {
+  return {
+    devuelve: 'Nulo',
+    contexto: [
+      {
+        tipo: 'Texto',
+        nombre: 'texto',
+        valor: ''
+      }
+    ],
+    valor: ({ bloquesDeEspacios, indicador }) => {
+      const función = get(Código.val, indicador);
+      const { contexto } = función;
+
+      const legi = document.querySelector('#visualización').classList.contains('legi');
+
+      return [
+        (() => {
+          if (legi) {
+            return style$1(`
+              [data-indicador='${JSON.stringify(indicador)}']
+              .instancia::before {
+                content: '▶️ imprimir';
+                color: #fff;
+                filter: hue-rotate(250deg);
+              }
+            `)
+          }
+        })(),
+        pre$a(
+          {
+            class: 'instancia'
+          },
+          pre$a(
+            BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+            SignoDeDevolver(función),
+            SignoDeAsignación(función),
+            span$c('(function ($texto) {')
+          ),
+          pre$a(
+            BloqueDeEspacios({ bloquesDeEspacios }),
+            span$c('print($texto);')
+          ),
+          pre$a(
+            BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+            span$c('})(...[')
+          )
+        ),
+        (() => {
+          return contexto.map((contexto, indicadorDelElemento) => {
+            return pre$a(
+              BloqueDeEspacios({ bloquesDeEspacios }),
+              span$c(`'${contexto.nombre}'`),
+              span$c(
+                {
+                  class: 'signo-de-asignación'
+                },
+                span$c(
+                  {
+                    class: 'ruido'
+                  },
+                  ' => '
+                )
+              ),
+              Tipo({
+                bloquesDeEspacios,
+                indicador: [...indicador, 'contexto', indicadorDelElemento],
+                valor: contexto.valor
+              })
+            )
+          })
+        })(),
+        pre$a(
+          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+          span$c('])'),
+          SignoDeCierre({ indicador })
+        )
+      ]
+    }
+  }
+};
+
+const { p: p$3, div: div$4, select, option } = van.tags;
+
+var PropiedadesDeInstancia = ({ indicador }) => {
+  const funciones = [
+    {
+      nombre: 'imprimir',
+      ...imprimir()
+    }
+  ];
+
+  const { instancia } = get(Código.val, indicador);
+
+  if (instancia) {
+    const { devuelve } = funciones.find(función => función.nombre === instancia);
+    return p$3(devuelve)
+  }
+
+  return [
+    div$4(
+      {
+        class: 'propiedad'
+      },
+      p$3('Función'),
+      select(
+        {
+          'data-propiedad': JSON.stringify([...indicador, 'instancia']),
+          name: 'instancia',
+          onchange: ({ target }) => {
+            console.log('Se confirmó un cambio');
+            ActualizarPropiedad({ indicador, target });
+            const { instancia } = get(Código.val, indicador);
+            const { devuelve, contexto } = funciones.find(función => función.nombre === instancia);
+            set(
+              Código.val,
+              [...indicador, 'devuelve'],
+              devuelve
+            );
+            set(
+              Código.val,
+              [...indicador, 'contexto'],
+              contexto
+            );
+            Visualizar();
+          }
+        },
+        option(''),
+        funciones.map((función) => {
+          return option(
+            {
+              value: función.nombre
+            },
+            función.nombre
+          )
+        })
+      )
+    )
+  ]
+};
+
+const { p: p$2, div: div$3, input: input$2, span: span$b } = van.tags;
+
+var PropiedadesDeFunción = ({ indicador }) => {
+  let valor;
+
+  const Tipo = get(Código.val, indicador);
+
+  return [
+    (() => {
+      return [
+        'Función',
+        'Lista',
+        'Lógica',
+        'Número',
+        'Texto',
+        'Nulo'
+      ].map((tipo) => {
+        return div$3(
+          {
+            class: 'elección'
+          },
+          input$2({
+            type: 'radio',
+            name: 'devuelve',
+            checked: Tipo.devuelve === tipo,
+            value: tipo,
+            'data-propiedad': JSON.stringify([...indicador, 'devuelve']),
+            onchange: ({ target }) => {
+              console.log('Se confirmó un cambio');
+              ActualizarPropiedad({ indicador, valor, target });
+            }
+          }),
+          span$b({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click();
+            }
+          }),
+          p$2(tipo)
+        )
+      })
+    })()
+  ]
+};
+
+const { p: p$1, span: span$a, h2: h2$1, div: div$2, fieldset, input: input$1 } = van.tags;
 const visualización$1 = document.querySelector('#visualización');
 
 var Lenguaje = ({ indicador }) => {
@@ -1943,6 +2303,9 @@ var Lenguaje = ({ indicador }) => {
       },
       fieldset(
         div$2(
+          {
+            class: 'elección'
+          },
           input$1({
             type: 'radio',
             name: 'visualización',
@@ -1960,9 +2323,18 @@ var Lenguaje = ({ indicador }) => {
               ActualizarPropiedad({ indicador, target });
             }
           }),
+          span$a({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click();
+            }
+          }),
           p$1('Legi')
         ),
         div$2(
+          {
+            class: 'elección'
+          },
           input$1({
             type: 'radio',
             name: 'visualización',
@@ -1980,6 +2352,12 @@ var Lenguaje = ({ indicador }) => {
               ActualizarPropiedad({ indicador, target });
             }
           }),
+          span$a({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click();
+            }
+          }),
           p$1('PHP')
         )
       )
@@ -1988,7 +2366,7 @@ var Lenguaje = ({ indicador }) => {
 };
 
 const { add: add$1 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$b } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$9 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2033,6 +2411,8 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     if (indicador.slice(0, -1).at(-1) !== 'contexto') {
       editarPropiedades = div$1(
         [
+          'Nulo',
+          'Instancia',
           'Función',
           'Lista',
           'Número',
@@ -2112,7 +2492,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$b({
+          span$9({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2128,6 +2508,30 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
       if (propiedad === 'asignación') {
         return PropiedadesDeAsignación({ indicador })
+      }
+
+      if (tipo === 'Función') {
+        return PropiedadesDeFunción({ indicador, propiedad })
+      }
+
+      if (propiedad === 'valor' && tipo === 'Instancia') {
+        return null
+      }
+
+      if (propiedad === 'instancia' && Tipo.instancia === '') {
+        return PropiedadesDeInstancia({ indicador, propiedad })
+      }
+
+      if (propiedad === 'instancia' && Tipo.instancia !== '') {
+        return null
+      }
+
+      if (propiedad === 'devuelve' && Tipo.instancia !== '') {
+        return PropiedadesDeInstancia({ indicador, propiedad })
+      }
+
+      if (propiedad === 'devuelve' && Tipo.instancia === '') {
+        return null
       }
 
       if (tipo === 'Lógica') {
@@ -2248,107 +2652,87 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const { span: span$a } = van.tags;
+const { pre: pre$9, span: span$8 } = van.tags;
 
-var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
-  return span$a(
-    {
-      class: 'ruido bloque-de-espacios'
-    },
-    `${'    '.repeat(bloquesDeEspacios)}`
+var Nulo = ({ bloquesDeEspacios, indicador, valor }) => {
+  const legi = document.querySelector('#visualización').classList.contains('legi');
+  const lógica = get(Código.val, indicador);
+
+  return pre$9(
+    BloqueDeEspacios({ bloquesDeEspacios }),
+    SignoDeDevolver(lógica),
+    SignoDeAsignación(lógica),
+    span$8(
+      {
+        class: `valor${(() => {
+          if (legi) {
+            return ' nulo'
+          }
+
+          return ''
+        })()}`
+      },
+      'null'
+    ),
+    SignoDeCierre({ indicador })
   )
 };
 
-const { span: span$9 } = van.tags;
+const { pre: pre$8, span: span$7, style } = van.tags;
 
-var SignoDeDevolver = ({ devolver }) => {
-  if (!devolver) {
-    devolver = '';
-  }
-
-  if (devolver) {
-    devolver = 'return ';
-  }
-
-  if (!devolver) {
-    return null
-  }
-
-  return span$9(
-    {
-      class: 'ruido devolver'
-    },
-    devolver
-  )
+const instancias = {
+  imprimir
 };
 
-const { span: span$8 } = van.tags;
+var Instancia = ({ bloquesDeEspacios, indicador }) => {
+  const legi = document.querySelector('#visualización').classList.contains('legi');
 
-var SignoDeAsignación = ({ asignación }) => {
-  if (!asignación) {
-    return null
-  }
+  bloquesDeEspacios = bloquesDeEspacios + 1;
 
-  return [
-    span$8(
-      {
-        class: 'ruido signo-de-dólar'
-      },
-      '$'
-    ),
-    span$8(
-      {
-        class: 'asignación'
-      },
-      `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
-    ),
-    span$8(
-      {
-        class: 'signo-de-asignación'
-      },
-      span$8(
-        {
-          class: 'ruido'
-        },
-        ' = '
-      )
-    )
-  ]
-};
+  const función = get(Código.val, indicador);
+  const { instancia } = función;
 
-const { span: span$7 } = van.tags;
-
-var SignoDeCierre = ({ indicador }) => {
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
-  let elElementoSuperiorEsUnaLista = false;
-  if (elementoSuperior && elementoSuperior.tipo === 'Lista') {
-    elElementoSuperiorEsUnaLista = true;
-  }
-
-  if (elElementoSuperiorEsUnaLista) {
-    const elementosEnLaLista = elementoSuperior.valor.filter(elemento => {
-      return elemento.tipo !== 'Comentario'
-    });
-
-    const esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
-
-    if (esElÚltimoElemento) {
-      return null
+  return (() => {
+    if (!instancias[instancia]) {
+      return [
+        (() => {
+          if (legi) {
+            return style(`
+              [data-indicador='${JSON.stringify(indicador)}']
+              .ruido {
+                margin-left: -0.9rem;
+              }
+            `)
+          }
+        })(),
+        pre$8(
+          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+          SignoDeDevolver(función),
+          SignoDeAsignación(función),
+          span$7(
+            {
+              class: 'ruido'
+            },
+            '# '
+          ),
+          span$7('(')
+        ),
+        pre$8(
+          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+          span$7(
+            {
+              class: 'ruido'
+            },
+            '# '
+          ),
+          span$7(')'),
+          SignoDeCierre({ indicador })
+        )
+      ]
     }
-    return span$7(
-      {
-        class: 'ruido coma'
-      },
-      ','
-    )
-  }
 
-  return span$7(
-    {
-      class: 'ruido punto-y-coma'
-    },
-    ';'
-  )
+    return imprimir().valor({ bloquesDeEspacios, indicador })
+  })()
 };
 
 const { pre: pre$7, span: span$6 } = van.tags;
@@ -2529,27 +2913,21 @@ const { pre: pre$4, span: span$3 } = van.tags;
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  const legi = document.querySelector('#visualización').classList.contains('legi');
-
   return pre$4(
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(lógica),
     SignoDeAsignación(lógica),
     span$3(
       {
-        class: 'valor'
-      },
-      (() => {
-        if (legi) {
+        class: `valor ${(() => {
           if (valor) {
             return 'verdadero'
           }
 
           return 'falso'
-        }
-
-        return valor
-      })()
+        })()}`
+      },
+      valor
     ),
     SignoDeCierre({ indicador })
   )
@@ -2592,7 +2970,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
       )
     ),
     (() => {
-      if (valor === '') {
+      if (valor === '' || valor === undefined) {
         return ''
       }
 
@@ -2648,19 +3026,6 @@ var Comentario = ({ bloquesDeEspacios, valor }) => {
   })
 };
 
-var ErrorDeAsignación = ({ indicador }) => {
-  const { tipo, asignación } = get(Código.val, indicador);
-  if (!asignación) {
-    return
-  }
-
-  const contexto = get(Código.val, JSON.parse(asignación));
-
-  if (contexto) {
-    return !contexto.valor.tipos[tipo]
-  }
-};
-
 const { div } = van.tags;
 
 var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
@@ -2670,6 +3035,14 @@ var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
 
   if (asignación) {
     valor = `$${asignación} = ${valor}`;
+  }
+
+  if (tipo === 'Nulo') {
+    valor = Nulo({ bloquesDeEspacios, indicador });
+  }
+
+  if (tipo === 'Instancia') {
+    valor = Instancia({ bloquesDeEspacios, indicador });
   }
 
   if (tipo === 'Función') {

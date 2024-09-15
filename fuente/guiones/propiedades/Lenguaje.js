@@ -1,6 +1,6 @@
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import van from 'vanjs-core'
-const { p, h2, div, fieldset, input } = van.tags
+const { p, span, h2, div, fieldset, input } = van.tags
 const visualización = document.querySelector('#visualización')
 
 export default ({ indicador }) => {
@@ -17,6 +17,9 @@ export default ({ indicador }) => {
       },
       fieldset(
         div(
+          {
+            class: 'elección'
+          },
           input({
             type: 'radio',
             name: 'visualización',
@@ -34,9 +37,18 @@ export default ({ indicador }) => {
               ActualizarPropiedad({ indicador, target })
             }
           }),
+          span({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click()
+            }
+          }),
           p('Legi')
         ),
         div(
+          {
+            class: 'elección'
+          },
           input({
             type: 'radio',
             name: 'visualización',
@@ -52,6 +64,12 @@ export default ({ indicador }) => {
                 target.value = false
               }
               ActualizarPropiedad({ indicador, target })
+            }
+          }),
+          span({
+            class: 'marca',
+            onclick: ({ target }) => {
+              target.parentNode.childNodes[0].click()
             }
           }),
           p('PHP')

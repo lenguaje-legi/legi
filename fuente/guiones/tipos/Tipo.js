@@ -2,6 +2,8 @@ import Seleccionar from '../acciones/Seleccionar.js'
 import van from 'vanjs-core'
 import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
+import Nulo from './Nulo.js'
+import Instancia from './Instancia.js'
 import Función from './Función.js'
 import Contexto from './Contexto.js'
 import Lista from './Lista.js'
@@ -19,6 +21,14 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
 
   if (asignación) {
     valor = `$${asignación} = ${valor}`
+  }
+
+  if (tipo === 'Nulo') {
+    valor = Nulo({ bloquesDeEspacios, indicador })
+  }
+
+  if (tipo === 'Instancia') {
+    valor = Instancia({ bloquesDeEspacios, indicador })
   }
 
   if (tipo === 'Función') {

@@ -8,6 +8,7 @@ import { get } from 'lodash-es'
 const { pre, span } = van.tags
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
+  const legi = document.querySelector('#visualización').classList.contains('legi')
   const lógica = get(Código.val, indicador)
 
   return pre(
@@ -16,15 +17,15 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
     SignoDeAsignación(lógica),
     span(
       {
-        class: `valor ${(() => {
-          if (valor) {
-            return 'verdadero'
+        class: `valor${(() => {
+          if (legi) {
+            return ' nulo'
           }
 
-          return 'falso'
+          return ''
         })()}`
       },
-      valor
+      'null'
     ),
     SignoDeCierre({ indicador })
   )

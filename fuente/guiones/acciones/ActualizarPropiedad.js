@@ -42,7 +42,7 @@ export default ({ indicador, valor, target }) => {
   }
 
   if (target.value !== 'true' && target.value !== 'false') {
-    if (target.value.trim() === '' || target.value.trim() === valor) {
+    if (target.tagName !== 'SELECT' && (target.value.trim() === '' || target.value.trim() === valor)) {
       target.value = valor
       return null
     }
