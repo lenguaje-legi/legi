@@ -30,8 +30,9 @@ export default () => {
             return style(`
               [data-indicador='${JSON.stringify(indicador)}']
               .instancia::before {
-                content: '▶️ imprimir';
+                content: '${'    '.repeat(bloquesDeEspacios - 1)}▶️ imprimir';
                 color: #fff;
+                margin-left: -${(bloquesDeEspacios - 1) * 2.5}rem;
                 filter: hue-rotate(250deg);
               }
             `)
@@ -48,6 +49,9 @@ export default () => {
             span('(function ($texto) {')
           ),
           pre(
+            {
+              style: `margin-left: ${(bloquesDeEspacios - 1) * 2.5}rem;`
+            },
             BloqueDeEspacios({ bloquesDeEspacios }),
             span('print($texto);')
           ),
@@ -59,6 +63,9 @@ export default () => {
         (() => {
           return contexto.map((contexto, indicadorDelElemento) => {
             return pre(
+              {
+                style: 'margin-left: 2.5rem;'
+              },
               BloqueDeEspacios({ bloquesDeEspacios }),
               span(`'${contexto.nombre}'`),
               span(

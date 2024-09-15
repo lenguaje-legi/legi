@@ -52,6 +52,9 @@ export default ({ bloquesDeEspacios, indicador }) => {
       )
     ),
     pre(
+      {
+        style: 'margin-left: 2.5rem;'
+      },
       BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
@@ -84,6 +87,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
       BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
+          style: 'margin-left: 2.5rem;',
           class: 'paréntesis-de-cierre'
         },
         ')'

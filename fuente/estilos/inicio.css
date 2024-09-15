@@ -22,7 +22,8 @@
 body {
     font-family: "0xProto";
     margin: 0;
-    color: #ffffff;
+    color: #fff;
+    background-color: #000;
 }
 
 pre {
@@ -33,11 +34,6 @@ pre {
 #salida {
     position: absolute;
     z-index: -1;
-}
-
-#visualización.salida .ruido {
-    position: relative;
-    color: transparent;
 }
 
 #visualización.legi {
@@ -69,15 +65,13 @@ pre {
     background-color: rgb(75, 75, 75);
 }
 
-#visualización .bloque-de-espacios {
-    position: absolute;
-    z-index: -1;
+#visualización .texto,
+#visualización .final-de-texto {
+    margin-left: 2.5rem;
 }
 
-#visualización .Instancia .bloque-de-espacios {
-    margin-left: -1.8rem;
-    position: relative;
-    z-index: -1;
+#visualización .Contexto pre {
+    margin-left: 2.5rem;
 }
 
 #visualización.legi .Instancia .instancia {
@@ -85,16 +79,8 @@ pre {
     color: transparent;
 }
 
-#visualización.legi .Instancia .instancia + pre {
+#visualización.legi .Instancia .instancia+pre {
     padding-top: 1.3rem;
-}
-
-#visualización .Instancia > pre {
-    margin-left: -0.75rem;
-}
-
-#visualización.legi .Instancia>pre {
-    margin-left: 0rem;
 }
 
 #visualización.legi .Instancia>pre:last-of-type {
@@ -107,7 +93,7 @@ pre {
 }
 
 #visualización .devolver {
-    color: rgb(255, 100, 255);
+    color: rgb(255, 100, 100);
 }
 
 #visualización.legi .devolver::before {
@@ -117,7 +103,7 @@ pre {
 }
 
 #visualización .función {
-    color: rgb(150, 255, 100);
+    color: rgb(100, 100, 255);
 }
 
 #visualización.legi .función::before {
@@ -180,14 +166,6 @@ pre {
     margin-left: -0.5rem;
 }
 
-#visualización .Contexto .signo-de-dólar {
-    margin-left: 1rem;
-}
-
-#visualización.legi .Contexto .signo-de-dólar {
-    margin-left: 0.33rem;
-}
-
 #visualización.legi .signo-de-asignación::before {
     color: rgb(255, 100, 255);
     content: " : ";
@@ -200,43 +178,6 @@ pre {
 #visualización:not(.legi) .signo-de-asignación>.ruido {
     margin-left: 0rem;
     color: rgb(255, 100, 255);
-}
-
-#visualización .Número {
-    color: rgb(100, 255, 255);
-}
-
-#visualización .Texto {
-    color: rgb(255, 255, 100);
-}
-
-#visualización.legi .Nulo .valor {
-    color: transparent;
-}
-
-#visualización.legi .Nulo .nulo::before {
-    content: "👻";
-    color: #fff;
-}
-
-#visualización .Lógica {
-    color: rgb(255, 150, 100);
-}
-
-#visualización.legi .Lógica .valor::before {
-    color: rgb(255, 150, 100);
-}
-
-#visualización.legi .Lógica .valor {
-    color: transparent;
-}
-
-#visualización.legi .Lógica .falso::before {
-    content: "❌";
-}
-
-#visualización.legi .Lógica .verdadero::before {
-    content: "✔️";
 }
 
 #visualización .Comentario,
@@ -256,42 +197,6 @@ pre {
     transition: background-color 200ms linear;
 }
 
-#visualización .Tipo {
-    padding: 0rem 0.5rem;
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
-#visualización .Tipo.error {
-    background-color: rgba(255, 0, 0, 0.2);
-}
-
-#visualización>.Tipo {
-    border-radius: 0.33rem;
-    padding: 0.25rem 0.5rem;
-}
-
-#visualización .Tipo .Tipo,
-#visualización .Contexto pre {
-    margin-left: 1.8rem;
-}
-
-#visualización .texto,
-#visualización .final-de-texto {
-    margin-left: 2.6rem;
-}
-
-#visualización.legi .final-de-texto {
-    margin-left: 0;
-}
-
-#visualización .contexto {
-    margin-left: 2.5rem;
-}
-
-#visualización .paréntesis-de-cierre {
-    margin-left: 2.4rem;
-}
-
 #visualización .texto::after {
     content: " ";
 }
@@ -305,12 +210,7 @@ pre {
 }
 
 #visualización .Tipo div:only-of-type {
-    border-radius: 0.33rem;
-}
-
-#visualización .Nueva-línea {
-    padding: 0.25rem;
-    background-color: rgba(0, 25, 0, 0.2);
+    border-radius: 0.4rem;
 }
 
 #visualización .Tipo:hover:not(:has(.Tipo:hover)) {

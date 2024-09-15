@@ -1,6 +1,7 @@
 import Visualizar from './acciones/Visualizar.js'
 import van from 'vanjs-core'
 import Seleccionar from './acciones/Seleccionar.js'
+import Estilo from './Estilo.js'
 import { fromString } from 'php-array-reader'
 
 const leerArchivo = async () => {
@@ -60,3 +61,16 @@ visualización.onclick = click => {
 }
 
 Visualizar()
+
+Estilo({
+  nombre: 'Visualización',
+  css: {
+    '#visualización': {
+
+      ' .Nueva-línea': {
+        padding: '0.25rem',
+        'background-color': 'rgba(0, 25, 0, 0.2)'
+      }
+    }
+  }
+})

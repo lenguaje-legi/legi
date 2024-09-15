@@ -82,7 +82,7 @@ let derive = (f, s = state(), dom) => {
   return s
 };
 
-let add$2 = (dom, ...children) => {
+let add$3 = (dom, ...children) => {
   for (let c of children.flat(Infinity)) {
     let protoOfC = protoOf(c ?? 0);
     let child = protoOfC === stateProto ? bind(() => c.val) :
@@ -113,7 +113,7 @@ let tag = (ns, name, ...args) => {
     k.startsWith("on") || protoOfV === funcProto$2 && (v = derive(v), protoOfV = stateProto);
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v);
   }
-  return add$2(dom, ...children)
+  return add$3(dom, ...children)
 };
 
 let handler = ns => ({get: (_, name) => tag.bind(_undefined, ns, name)});
@@ -137,7 +137,7 @@ let updateDoms = () => {
 
 let hydrate = (dom, f) => update(dom, bind(f, dom));
 
-var van = {add: add$2, tags, state, derive, hydrate};
+var van = {add: add$3, tags, state, derive, hydrate};
 
 var global$2 = (typeof global !== "undefined" ? global :
             typeof self !== "undefined" ? self :
@@ -1991,12 +1991,18 @@ var PropiedadesDeAsignación = ({ indicador }) => {
 const { span: span$g } = van.tags;
 
 var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
-  return span$g(
-    {
-      class: 'ruido bloque-de-espacios'
-    },
-    `${'    '.repeat(bloquesDeEspacios)}`
-  )
+  if (bloquesDeEspacios === 0) {
+    return null
+  }
+
+  return [...Array(bloquesDeEspacios).keys()].map(() => {
+    return span$g(
+      {
+        class: 'bloque-de-espacios'
+      },
+      '    '
+    )
+  })
 };
 
 const { span: span$f } = van.tags;
@@ -2098,7 +2104,7 @@ var SignoDeCierre = ({ indicador }) => {
   )
 };
 
-const { pre: pre$a, span: span$c, style: style$1 } = van.tags;
+const { pre: pre$a, span: span$c, style: style$2 } = van.tags;
 
 var imprimir = () => {
   return {
@@ -2119,11 +2125,12 @@ var imprimir = () => {
       return [
         (() => {
           if (legi) {
-            return style$1(`
+            return style$2(`
               [data-indicador='${JSON.stringify(indicador)}']
               .instancia::before {
-                content: '▶️ imprimir';
+                content: '${'    '.repeat(bloquesDeEspacios - 1)}▶️ imprimir';
                 color: #fff;
+                margin-left: -${(bloquesDeEspacios - 1) * 2.5}rem;
                 filter: hue-rotate(250deg);
               }
             `)
@@ -2140,6 +2147,9 @@ var imprimir = () => {
             span$c('(function ($texto) {')
           ),
           pre$a(
+            {
+              style: `margin-left: ${(bloquesDeEspacios - 1) * 2.5}rem;`
+            },
             BloqueDeEspacios({ bloquesDeEspacios }),
             span$c('print($texto);')
           ),
@@ -2151,6 +2161,9 @@ var imprimir = () => {
         (() => {
           return contexto.map((contexto, indicadorDelElemento) => {
             return pre$a(
+              {
+                style: 'margin-left: 2.5rem;'
+              },
               BloqueDeEspacios({ bloquesDeEspacios }),
               span$c(`'${contexto.nombre}'`),
               span$c(
@@ -2365,7 +2378,7 @@ var Lenguaje = ({ indicador }) => {
   ]
 };
 
-const { add: add$1 } = van;
+const { add: add$2 } = van;
 const { p, h2, div: div$1, input, textarea, span: span$9 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
@@ -2612,7 +2625,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     });
   }
 
-  add$1(propiedades, editarPropiedades);
+  add$2(propiedades, editarPropiedades);
 };
 
 let selección;
@@ -2652,7 +2665,71 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
+const CSS = css => {
+  return Object.keys(css).map(selector => {
+    return `
+        ${selector} {
+          ${Object.keys(css[selector]).map(regla => {
+            if (typeof css[selector][regla] === 'object') {
+              const cssAnidado = {};
+
+              cssAnidado[`&${regla}`] = css[selector][regla];
+
+              return CSS(cssAnidado)
+            }
+            return `${regla}: ${css[selector][regla]};\n`
+          }).join('')}
+        }
+      `
+  }).join('')
+};
+
+const { add: add$1 } = van;
+const { style: style$1 } = van.tags;
+
+var Estilo = ({ nombre, css }) => {
+  const estilo = document.querySelector(`#${nombre}-estilo`);
+
+  if (estilo) {
+    return null
+  }
+
+  add$1(document.body, style$1(
+    {
+      id: `${nombre}-estilo`
+    },
+    CSS(css)
+  ));
+};
+
 const { pre: pre$9, span: span$8 } = van.tags;
+
+Estilo({
+  nombre: 'Nulo',
+  css: {
+    '#visualización': {
+
+      ' .Nulo': {
+        color: 'rgb(150, 100, 255)'
+      },
+
+      '.legi': {
+
+        ' .Nulo': {
+
+          ' .valor': {
+            color: 'transparent',
+
+            '::before': {
+              content: '"👻"',
+              color: '#fff'
+            }
+          }
+        }
+      }
+    }
+  }
+});
 
 var Nulo = ({ bloquesDeEspacios, indicador, valor }) => {
   const legi = document.querySelector('#visualización').classList.contains('legi');
@@ -2781,6 +2858,9 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       )
     ),
     pre$7(
+      {
+        style: 'margin-left: 2.5rem;'
+      },
       BloqueDeEspacios({ bloquesDeEspacios }),
       span$6(
         {
@@ -2813,6 +2893,7 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
       BloqueDeEspacios({ bloquesDeEspacios }),
       span$6(
         {
+          style: 'margin-left: 2.5rem;',
           class: 'paréntesis-de-cierre'
         },
         ')'
@@ -2845,12 +2926,7 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   const contexto = get(Código.val, indicador);
 
   return pre$6(
-    span$5(
-      {
-        class: 'ruido bloque-de-espacios'
-      },
-          `${'    '.repeat(bloquesDeEspacios + 1)}`
-    ),
+    BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
     span$5(
       {
         class: 'ruido signo-de-dólar'
@@ -2910,6 +2986,44 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
 
 const { pre: pre$4, span: span$3 } = van.tags;
 
+Estilo({
+  nombre: 'Lógica',
+  css: {
+    '#visualización': {
+
+      ' .Lógica': {
+        color: 'rgb(255, 150, 100)'
+      },
+
+      '.legi': {
+
+        ' .Lógica': {
+
+          ' .valor': {
+            color: 'transparent'
+          },
+
+          ' .falso': {
+
+            '::before': {
+              content: '"❌"',
+              color: '#fff'
+            }
+          },
+
+          ' .verdadero': {
+
+            '::before': {
+              content: '"✔️"',
+              color: '#fff'
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
@@ -2935,6 +3049,18 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
 
 const { pre: pre$3, span: span$2 } = van.tags;
 
+Estilo({
+  nombre: 'Número',
+  css: {
+    '#visualización': {
+
+      ' .Número': {
+        color: 'rgb(100, 255, 255)'
+      }
+    }
+  }
+});
+
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
@@ -2953,6 +3079,18 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
 };
 
 const { pre: pre$2, span: span$1 } = van.tags;
+
+Estilo({
+  nombre: 'Texto',
+  css: {
+    '#visualización': {
+
+      ' .Texto': {
+        color: 'rgb(255, 255, 100)'
+      }
+    }
+  }
+});
 
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
@@ -2987,12 +3125,7 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
       return valor
     })(),
     pre$2(
-      span$1(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-        '    '.repeat(bloquesDeEspacios + 1)
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
       span$1(
         {
           class: 'ruido final-de-texto'
@@ -3009,12 +3142,7 @@ const { pre: pre$1, span } = van.tags;
 var Comentario = ({ bloquesDeEspacios, valor }) => {
   return valor.split('\n').map(valor => {
     return pre$1(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-        '    '.repeat(bloquesDeEspacios)
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
           class: 'signo-de-número'
@@ -3027,6 +3155,39 @@ var Comentario = ({ bloquesDeEspacios, valor }) => {
 };
 
 const { div } = van.tags;
+
+Estilo({
+  nombre: 'Tipo',
+  css: {
+    '#visualización': {
+
+      '>.Tipo': {
+        'border-radius': '0.4rem'
+      },
+
+      ' .Tipo': {
+        'padding-right': '0.5rem',
+        'background-color': 'rgba(0, 0, 0, 0.2)',
+
+        ' .bloque-de-espacios': {
+          'margin-left': '-2.5rem'
+        },
+
+        ' .Tipo': {
+          'margin-left': '2.5rem'
+        },
+
+        '.error': {
+          'background-color': 'rgba(255, 0, 0, 0.2)'
+        }
+      }
+    }
+  }
+});
+
+/*
+
+*/
 
 var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
@@ -15166,6 +15327,19 @@ visualización.onclick = click => {
 };
 
 Visualizar();
+
+Estilo({
+  nombre: 'Visualización',
+  css: {
+    '#visualización': {
+
+      ' .Nueva-línea': {
+        padding: '0.25rem',
+        'background-color': 'rgba(0, 25, 0, 0.2)'
+      }
+    }
+  }
+});
 
 export { Acción, Código };
 //# sourceMappingURL=compilación.js.map

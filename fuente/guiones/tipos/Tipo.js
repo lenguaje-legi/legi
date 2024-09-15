@@ -12,7 +12,41 @@ import Número from './Número.js'
 import Texto from './Texto.js'
 import Comentario from './Comentario.js'
 import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
+import Estilo from '../Estilo.js'
 const { div } = van.tags
+
+Estilo({
+  nombre: 'Tipo',
+  css: {
+    '#visualización': {
+
+      '>.Tipo': {
+        'border-radius': '0.4rem'
+      },
+
+      ' .Tipo': {
+        'padding-right': '0.5rem',
+        'background-color': 'rgba(0, 0, 0, 0.2)',
+
+        ' .bloque-de-espacios': {
+          'margin-left': '-2.5rem'
+        },
+
+        ' .Tipo': {
+          'margin-left': '2.5rem'
+        },
+
+        '.error': {
+          'background-color': 'rgba(255, 0, 0, 0.2)'
+        }
+      }
+    }
+  }
+})
+
+/*
+
+*/
 
 export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {

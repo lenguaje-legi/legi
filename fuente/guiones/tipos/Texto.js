@@ -3,9 +3,22 @@ import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
+import Estilo from '../Estilo.js'
 import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
 const { pre, span } = van.tags
+
+Estilo({
+  nombre: 'Texto',
+  css: {
+    '#visualización': {
+
+      ' .Texto': {
+        color: 'rgb(255, 255, 100)'
+      }
+    }
+  }
+})
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador)
@@ -40,12 +53,7 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
       return valor
     })(),
     pre(
-      span(
-        {
-          class: 'ruido bloque-de-espacios'
-        },
-        '    '.repeat(bloquesDeEspacios + 1)
-      ),
+      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
       span(
         {
           class: 'ruido final-de-texto'
