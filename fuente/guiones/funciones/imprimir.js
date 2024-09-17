@@ -6,7 +6,7 @@ import Tipo from '../tipos/Tipo.js'
 import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
-const { pre, span, style } = van.tags
+const { pre, span } = van.tags
 
 export default () => {
   return {
@@ -22,22 +22,7 @@ export default () => {
       const función = get(Código.val, indicador)
       const { contexto } = función
 
-      const legi = document.querySelector('#visualización').classList.contains('legi')
-
       return [
-        (() => {
-          if (legi) {
-            return style(`
-              [data-indicador='${JSON.stringify(indicador)}']
-              .instancia::before {
-                content: '${'    '.repeat(bloquesDeEspacios - 1)}▶️ imprimir';
-                color: #fff;
-                margin-left: -${(bloquesDeEspacios - 1) * 2.5}rem;
-                filter: hue-rotate(250deg);
-              }
-            `)
-          }
-        })(),
         pre(
           {
             class: 'instancia'

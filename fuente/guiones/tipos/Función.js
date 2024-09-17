@@ -3,10 +3,40 @@ import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
+import Estilo from '../Estilo.js'
 import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
 const { pre, span } = van.tags
+
+Estilo({
+  nombre: 'Función',
+  css: {
+    '#visualización': {
+
+      ' .Función': {
+
+        ' .función': {
+          color: 'rgb(100, 100, 255)'
+        }
+      },
+
+      '.legi': {
+
+        ' .Función': {
+
+          ' .función': {
+
+            '::before': {
+              color: '#fff',
+              content: '"▶️"'
+            }
+          }
+        }
+      }
+    }
+  }
+})
 
 export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1

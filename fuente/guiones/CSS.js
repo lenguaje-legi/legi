@@ -1,3 +1,5 @@
+import { kebabCase } from 'lodash-es'
+
 const CSS = css => {
   return Object.keys(css).map(selector => {
     return `
@@ -10,7 +12,8 @@ const CSS = css => {
 
               return CSS(cssAnidado)
             }
-            return `${regla}: ${css[selector][regla]};\n`
+
+            return `${kebabCase(regla)}: ${css[selector][regla]};\n`
           }).join('')}
         }
       `

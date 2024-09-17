@@ -65,11 +65,44 @@ Visualizar()
 Estilo({
   nombre: 'Visualización',
   css: {
+    body: {
+      fontFamily: '"0xProto"',
+      margin: '0',
+      color: '#fff',
+      backgroundColor: '#000'
+    },
+
+    pre: {
+      fontFamily: '"0xProto"',
+      margin: '0'
+    },
+
     '#visualización': {
+      backgroundColor: 'rgb(75, 75, 75)',
+      padding: '0.5rem',
+
+      '.legi': {
+
+        ' .ruido': {
+          color: 'transparent'
+        }
+      },
 
       ' .Nueva-línea': {
         padding: '0.25rem',
-        'background-color': 'rgba(0, 25, 0, 0.2)'
+        backgroundColor: 'rgba(0, 25, 0, 0.2)'
+      },
+
+      ' .corchete': {
+        color: 'rgb(100, 150, 255)'
+      },
+
+      ' .paréntesis-de-apertura': {
+        color: 'rgba(255, 150, 0, 0.2)'
+      },
+
+      ' .paréntesis-de-cierre': {
+        color: 'rgba(255, 150, 0, 0.2)'
       }
     }
   }

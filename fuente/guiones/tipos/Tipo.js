@@ -21,32 +21,28 @@ Estilo({
     '#visualización': {
 
       '>.Tipo': {
-        'border-radius': '0.4rem'
+        borderRadius: '0.4rem'
       },
 
       ' .Tipo': {
-        'padding-right': '0.5rem',
-        'background-color': 'rgba(0, 0, 0, 0.2)',
+        padding: '0 0.5rem',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
 
         ' .bloque-de-espacios': {
-          'margin-left': '-2.5rem'
+          marginLeft: '-2.5rem'
         },
 
         ' .Tipo': {
-          'margin-left': '2.5rem'
+          marginLeft: '2rem'
         },
 
         '.error': {
-          'background-color': 'rgba(255, 0, 0, 0.2)'
+          backgroundColor: 'rgba(255, 0, 0, 0.2)'
         }
       }
     }
   }
 })
-
-/*
-
-*/
 
 export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
