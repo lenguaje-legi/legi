@@ -6,7 +6,33 @@ import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
+import Estilo from '../Estilo.js'
 const { pre, span } = van.tags
+
+Estilo({
+  nombre: 'Lista',
+  css: {
+    '#visualización': {
+
+      '.legi': {
+
+        ' .Lista': {
+
+          '> pre': {
+
+            ':first-of-type': {
+
+              '::before': {
+                content: '"📃"',
+                color: '#fff'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})
 
 export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
@@ -33,7 +59,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
       SignoDeAsignación(lista),
       span(
         {
-          class: 'valor corchete'
+          class: 'ruido corchete'
         },
         '['
       )
@@ -44,7 +70,7 @@ export default ({ bloquesDeEspacios, indicador }) => {
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span(
         {
-          class: 'corchete'
+          class: 'ruido corchete'
         },
         ']'
       ),

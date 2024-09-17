@@ -81,13 +81,6 @@ Estilo({
       backgroundColor: 'rgb(75, 75, 75)',
       padding: '0.5rem',
 
-      '.legi': {
-
-        ' .ruido': {
-          color: 'transparent'
-        }
-      },
-
       ' .Nueva-línea': {
         padding: '0.25rem',
         backgroundColor: 'rgba(0, 25, 0, 0.2)'
@@ -103,6 +96,21 @@ Estilo({
 
       ' .paréntesis-de-cierre': {
         color: 'rgba(255, 150, 0, 0.2)'
+      },
+
+      ' .signo-de-número': {
+        color: 'rgba(0, 255, 255, 0.2)'
+      },
+
+      ' .signo-de-dólar': {
+        color: 'rgba(0, 255, 255, 0.2)'
+      },
+
+      '.legi': {
+
+        ' .ruido': {
+          color: 'transparent'
+        }
       }
     }
   }

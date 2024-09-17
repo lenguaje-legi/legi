@@ -16,6 +16,10 @@ Estilo({
 
       ' .Función': {
 
+        ' .contexto': {
+          color: 'rgba(0, 255, 255, 0.2)'
+        },
+
         ' .función': {
           color: 'rgb(100, 100, 255)'
         }
@@ -28,8 +32,8 @@ Estilo({
           ' .función': {
 
             '::before': {
-              color: '#fff',
-              content: '"▶️"'
+              content: '"▶️"',
+              color: '#fff'
             }
           }
         }

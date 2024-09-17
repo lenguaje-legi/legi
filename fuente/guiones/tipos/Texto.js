@@ -15,6 +15,16 @@ Estilo({
 
       ' .Texto': {
         color: 'rgb(255, 255, 100)'
+      },
+
+      '.legi': {
+
+        ' .Texto': {
+
+          ' .texto': {
+            borderBottom: '1px solid rgba(150, 150, 0, 0.2)'
+          }
+        }
       }
     }
   }

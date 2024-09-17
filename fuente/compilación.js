@@ -3174,6 +3174,10 @@ Estilo({
 
       ' .Función': {
 
+        ' .contexto': {
+          color: 'rgba(0, 255, 255, 0.2)'
+        },
+
         ' .función': {
           color: 'rgb(100, 100, 255)'
         }
@@ -3186,8 +3190,8 @@ Estilo({
           ' .función': {
 
             '::before': {
-              color: '#fff',
-              content: '"▶️"'
+              content: '"▶️"',
+              color: '#fff'
             }
           }
         }
@@ -3321,6 +3325,31 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
 
 const { pre: pre$5, span: span$4 } = van.tags;
 
+Estilo({
+  nombre: 'Lista',
+  css: {
+    '#visualización': {
+
+      '.legi': {
+
+        ' .Lista': {
+
+          '> pre': {
+
+            ':first-of-type': {
+
+              '::before': {
+                content: '"📃"',
+                color: '#fff'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
 var Lista = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
@@ -3346,7 +3375,7 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
       SignoDeAsignación(lista),
       span$4(
         {
-          class: 'valor corchete'
+          class: 'ruido corchete'
         },
         '['
       )
@@ -3357,7 +3386,7 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       span$4(
         {
-          class: 'corchete'
+          class: 'ruido corchete'
         },
         ']'
       ),
@@ -3438,6 +3467,16 @@ Estilo({
 
       ' .Número': {
         color: 'rgb(100, 255, 255)'
+      },
+
+      '.legi': {
+
+        ' .Número': {
+
+          ' .valor': {
+            border: '1px solid'
+          }
+        }
       }
     }
   }
@@ -3469,6 +3508,16 @@ Estilo({
 
       ' .Texto': {
         color: 'rgb(255, 255, 100)'
+      },
+
+      '.legi': {
+
+        ' .Texto': {
+
+          ' .texto': {
+            borderBottom: '1px solid rgba(150, 150, 0, 0.2)'
+          }
+        }
       }
     }
   }
@@ -3521,13 +3570,36 @@ var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
 
 const { pre: pre$1, span } = van.tags;
 
+Estilo({
+  nombre: 'Comentario',
+  css: {
+    '#visualización': {
+
+      '.legi': {
+
+        ' .Comentario': {
+          paddingBottom: '1.3rem',
+
+          '::before': {
+            content: '"💬"'
+          },
+
+          ' pre': {
+            borderBottom: '1px solid rgba(100, 100, 100, 0.2)'
+          }
+        }
+      }
+    }
+  }
+});
+
 var Comentario = ({ bloquesDeEspacios, valor }) => {
   return valor.split('\n').map(valor => {
     return pre$1(
       BloqueDeEspacios({ bloquesDeEspacios }),
       span(
         {
-          class: 'signo-de-número'
+          class: 'ruido signo-de-número'
         },
         '# '
       ),
@@ -15725,13 +15797,6 @@ Estilo({
       backgroundColor: 'rgb(75, 75, 75)',
       padding: '0.5rem',
 
-      '.legi': {
-
-        ' .ruido': {
-          color: 'transparent'
-        }
-      },
-
       ' .Nueva-línea': {
         padding: '0.25rem',
         backgroundColor: 'rgba(0, 25, 0, 0.2)'
@@ -15747,6 +15812,21 @@ Estilo({
 
       ' .paréntesis-de-cierre': {
         color: 'rgba(255, 150, 0, 0.2)'
+      },
+
+      ' .signo-de-número': {
+        color: 'rgba(0, 255, 255, 0.2)'
+      },
+
+      ' .signo-de-dólar': {
+        color: 'rgba(0, 255, 255, 0.2)'
+      },
+
+      '.legi': {
+
+        ' .ruido': {
+          color: 'transparent'
+        }
       }
     }
   }

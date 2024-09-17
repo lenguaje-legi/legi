@@ -15,6 +15,16 @@ Estilo({
 
       ' .Número': {
         color: 'rgb(100, 255, 255)'
+      },
+
+      '.legi': {
+
+        ' .Número': {
+
+          ' .valor': {
+            border: '1px solid'
+          }
+        }
       }
     }
   }
