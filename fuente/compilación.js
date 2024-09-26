@@ -2070,7 +2070,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$5, div: div$7, input: input$4, span: span$i } = van.tags;
+const { p: p$5, div: div$7, input: input$4, span: span$g } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -2141,7 +2141,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$i({
+          span$g({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2154,7 +2154,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
   ]
 };
 
-const { p: p$4, div: div$6, span: span$h, fieldset: fieldset$1, input: input$3 } = van.tags;
+const { p: p$4, div: div$6, span: span$f, fieldset: fieldset$1, input: input$3 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
@@ -2186,7 +2186,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$h({
+        span$f({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2216,7 +2216,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$h({
+        span$f({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2300,7 +2300,7 @@ var PropiedadesDeAsignación = ({ indicador }) => {
   )
 };
 
-const { span: span$g } = van.tags;
+const { span: span$e } = van.tags;
 
 var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   if (bloquesDeEspacios === 0) {
@@ -2308,7 +2308,7 @@ var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   }
 
   return [...Array(bloquesDeEspacios).keys()].map(() => {
-    return span$g(
+    return span$e(
       {
         class: 'bloque-de-espacios'
       },
@@ -2317,7 +2317,7 @@ var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   })
 };
 
-const { span: span$f } = van.tags;
+const { span: span$d } = van.tags;
 
 var SignoDeDevolver = ({ devolver }) => {
   if (!devolver) {
@@ -2332,7 +2332,7 @@ var SignoDeDevolver = ({ devolver }) => {
     return null
   }
 
-  return span$f(
+  return span$d(
     {
       class: 'ruido devolver'
     },
@@ -2340,7 +2340,7 @@ var SignoDeDevolver = ({ devolver }) => {
   )
 };
 
-const { span: span$e } = van.tags;
+const { span: span$c } = van.tags;
 
 var SignoDeAsignación = ({ asignación }) => {
   if (!asignación) {
@@ -2348,23 +2348,23 @@ var SignoDeAsignación = ({ asignación }) => {
   }
 
   return [
-    span$e(
+    span$c(
       {
         class: 'ruido signo-de-dólar'
       },
       '$'
     ),
-    span$e(
+    span$c(
       {
         class: 'asignación'
       },
       `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
     ),
-    span$e(
+    span$c(
       {
         class: 'signo-de-asignación'
       },
-      span$e(
+      span$c(
         {
           class: 'ruido'
         },
@@ -2374,7 +2374,7 @@ var SignoDeAsignación = ({ asignación }) => {
   ]
 };
 
-const { span: span$d } = van.tags;
+const { span: span$b } = van.tags;
 
 var SignoDeCierre = ({ indicador }) => {
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2400,7 +2400,7 @@ var SignoDeCierre = ({ indicador }) => {
     if (esElÚltimoElemento) {
       return null
     }
-    return span$d(
+    return span$b(
       {
         class: 'ruido coma'
       },
@@ -2408,7 +2408,7 @@ var SignoDeCierre = ({ indicador }) => {
     )
   }
 
-  return span$d(
+  return span$b(
     {
       class: 'ruido punto-y-coma'
     },
@@ -2416,7 +2416,7 @@ var SignoDeCierre = ({ indicador }) => {
   )
 };
 
-const { pre: pre$a, span: span$c } = van.tags;
+const { pre: pre$8, span: span$a } = van.tags;
 
 var imprimir = () => {
   return {
@@ -2433,41 +2433,41 @@ var imprimir = () => {
       const { contexto } = función;
 
       return [
-        pre$a(
+        pre$8(
           {
             class: 'instancia'
           },
-          pre$a(
+          pre$8(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
             SignoDeDevolver(función),
             SignoDeAsignación(función),
-            span$c('(function ($texto) {')
+            span$a('(function ($texto) {')
           ),
-          pre$a(
+          pre$8(
             {
               style: `margin-left: ${(bloquesDeEspacios - 1) * 2.5}rem;`
             },
             BloqueDeEspacios({ bloquesDeEspacios }),
-            span$c('print($texto);')
+            span$a('print($texto);')
           ),
-          pre$a(
+          pre$8(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-            span$c('})(...[')
+            span$a('})(...[')
           )
         ),
         (() => {
           return contexto.map((contexto, indicadorDelElemento) => {
-            return pre$a(
+            return pre$8(
               {
                 style: 'margin-left: 2.5rem;'
               },
               BloqueDeEspacios({ bloquesDeEspacios }),
-              span$c(`'${contexto.nombre}'`),
-              span$c(
+              span$a(`'${contexto.nombre}'`),
+              span$a(
                 {
                   class: 'signo-de-asignación'
                 },
-                span$c(
+                span$a(
                   {
                     class: 'ruido'
                   },
@@ -2482,9 +2482,9 @@ var imprimir = () => {
             )
           })
         })(),
-        pre$a(
+        pre$8(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$c('])'),
+          span$a('])'),
           SignoDeCierre({ indicador })
         )
       ]
@@ -2551,7 +2551,7 @@ var PropiedadesDeInstancia = ({ indicador }) => {
   ]
 };
 
-const { p: p$2, div: div$3, input: input$2, span: span$b } = van.tags;
+const { p: p$2, div: div$3, input: input$2, span: span$9 } = van.tags;
 
 var PropiedadesDeFunción = ({ indicador }) => {
   let valor;
@@ -2583,7 +2583,7 @@ var PropiedadesDeFunción = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$b({
+          span$9({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2596,7 +2596,37 @@ var PropiedadesDeFunción = ({ indicador }) => {
   ]
 };
 
-const { p: p$1, span: span$a, h2: h2$1, div: div$2, fieldset, input: input$1 } = van.tags;
+const { p: p$1, span: span$8, div: div$2, fieldset, input: input$1 } = van.tags;
+
+var Elección = (opciones) => {
+  return fieldset(
+    opciones.map(opción => {
+      const { nombre, valor, seleccionado, alSeleccionar } = opción;
+
+      return div$2(
+        {
+          class: 'elección'
+        },
+        input$1({
+          type: 'radio',
+          name: 'visualización',
+          checked: seleccionado,
+          value: valor,
+          onchange: (evento) => alSeleccionar(evento)
+        }),
+        span$8({
+          class: 'marca',
+          onclick: ({ target }) => {
+            target.parentNode.childNodes[0].click();
+          }
+        }),
+        p$1(nombre)
+      )
+    })
+  )
+};
+
+const { h2: h2$1 } = van.tags;
 const visualización$1 = document.querySelector('#visualización');
 
 var Lenguaje = ({ indicador }) => {
@@ -2607,76 +2637,45 @@ var Lenguaje = ({ indicador }) => {
       },
       'Visualización'
     ),
-    div$2(
+    Elección([
       {
-        class: 'lógica'
+        nombre: 'Legi',
+        valor: true,
+        seleccionado: (() => {
+          if (visualización$1.classList.contains('legi')) {
+            return true
+          }
+        })(),
+        alSeleccionar: ({ target }) => {
+          console.log('Se confirmó un cambio');
+          if (target.checked) {
+            target.value = true;
+          }
+          ActualizarPropiedad({ indicador, target });
+        }
       },
-      fieldset(
-        div$2(
-          {
-            class: 'elección'
-          },
-          input$1({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (visualización$1.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: true,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio');
-              if (target.checked) {
-                target.value = true;
-              }
-              ActualizarPropiedad({ indicador, target });
-            }
-          }),
-          span$a({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click();
-            }
-          }),
-          p$1('Legi')
-        ),
-        div$2(
-          {
-            class: 'elección'
-          },
-          input$1({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (!visualización$1.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: false,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio');
-              if (target.checked) {
-                target.value = false;
-              }
-              ActualizarPropiedad({ indicador, target });
-            }
-          }),
-          span$a({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click();
-            }
-          }),
-          p$1('PHP')
-        )
-      )
-    )
+      {
+        nombre: 'PHP',
+        valor: false,
+        seleccionado: (() => {
+          if (!visualización$1.classList.contains('legi')) {
+            return true
+          }
+        })(),
+        alSeleccionar: ({ target }) => {
+          console.log('Se confirmó un cambio');
+          if (target.checked) {
+            target.value = false;
+          }
+          ActualizarPropiedad({ indicador, target });
+        }
+      }
+    ])
   ]
 };
 
 const { add: add$2 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$9 } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$7 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2802,7 +2801,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$9({
+          span$7({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2962,20 +2961,68 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const CSS = css => {
-  return Object.keys(css).map(selector => {
+var Componente = () => {
+  const identificadorDelComponente = crypto.randomUUID();
+
+  return {
+    identificadorDelComponente,
+    elemento: (etiqueta, ...propiedades) => {
+      if (typeof propiedades[0] === 'object' && !Array.isArray(propiedades[0])) {
+        propiedades[0]['data-componente'] = identificadorDelComponente;
+      }
+
+      if (typeof propiedades[0] !== 'object' || Array.isArray(propiedades[0])) {
+        propiedades = [{ 'data-componente': identificadorDelComponente }].concat(propiedades);
+      }
+
+      return van.tags[etiqueta](...propiedades)
+    }
+  }
+};
+
+const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
+  if (!reglasAnidadas) {
+    if (Object.keys(reglas).find(regla => typeof reglas[regla] === 'string')) {
+      return CSS({
+        identificadorDelComponente,
+        reglas: {
+          '': {
+            ...reglas
+          }
+        },
+        reglasAnidadas: true
+      })
+    }
+  }
+
+  if (!identificadorDelComponente) {
+    identificadorDelComponente = '';
+  }
+
+  return Object.keys(reglas).map(selector => {
+    let selectorConComponente = selector;
+
+    if (identificadorDelComponente) {
+      selectorConComponente = `${selector}[data-componente="${identificadorDelComponente}"]`;
+    }
+
     return `
-        ${selector} {
-          ${Object.keys(css[selector]).map(regla => {
-            if (typeof css[selector][regla] === 'object') {
-              const cssAnidado = {};
+        ${selectorConComponente} {
+          ${Object.keys(reglas[selector]).map(regla => {
+            if (typeof reglas[selector][regla] === 'object') {
+              let selectorAnidado = regla;
+              const reglasAnidadas = {};
 
-              cssAnidado[`&${regla}`] = css[selector][regla];
+              if (identificadorDelComponente && !selectorAnidado.includes('::') && !selectorAnidado.startsWith('.')) {
+                selectorAnidado = `${selectorAnidado}[data-componente="${identificadorDelComponente}"]`;
+              }
 
-              return CSS(cssAnidado)
+              reglasAnidadas[`&${selectorAnidado}`] = reglas[selector][regla];
+
+              return CSS({ reglas: reglasAnidadas, reglasAnidadas: true })
             }
 
-            return `${kebabCase(regla)}: ${css[selector][regla]};\n`
+            return `${kebabCase(regla)}: ${reglas[selector][regla]};\n`
           }).join('')}
         }
       `
@@ -2985,8 +3032,12 @@ const CSS = css => {
 const { add: add$1 } = van;
 const { style: style$1 } = van.tags;
 
-var Estilo = ({ nombre, css }) => {
-  const estilo = document.querySelector(`#${nombre}-estilo`);
+var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
+  const estilo = document.querySelector(`#estilo-${nombre}`);
+
+  if (identificadorDelComponente) {
+    nombre = identificadorDelComponente;
+  }
 
   if (estilo) {
     return null
@@ -2994,58 +3045,48 @@ var Estilo = ({ nombre, css }) => {
 
   add$1(document.body, style$1(
     {
-      id: `${nombre}-estilo`
+      id: `estilo-${nombre}`
     },
-    CSS(css)
+    CSS({
+      reglas,
+      identificadorDelComponente
+    })
   ));
 };
 
-const { pre: pre$9, span: span$8 } = van.tags;
+const { identificadorDelComponente: identificadorDelComponente$1, elemento: _$1 } = Componente();
 
 Estilo({
-  nombre: 'Nulo',
-  css: {
-    '#visualización': {
+  identificadorDelComponente: identificadorDelComponente$1,
+  reglas: {
+    '.nulo': {
+      color: 'transparent',
 
-      ' .Nulo': {
-        color: 'rgb(150, 100, 255)'
-      },
-
-      '.legi': {
-
-        ' .Nulo': {
-
-          ' .valor': {
-            color: 'transparent',
-
-            '::before': {
-              content: '"👻"',
-              color: '#fff'
-            }
-          }
-        }
+      '::before': {
+        content: '"👻"',
+        color: '#fff'
       }
     }
   }
 });
 
-var Nulo = ({ bloquesDeEspacios, indicador, valor }) => {
+var Nulo = ({ bloquesDeEspacios, indicador }) => {
   const legi = document.querySelector('#visualización').classList.contains('legi');
-  const lógica = get(Código.val, indicador);
+  const nulo = get(Código.val, indicador);
 
-  return pre$9(
+  let clase = 'valor';
+
+  if (legi) {
+    clase = `${clase} nulo`;
+  }
+
+  return _$1('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(lógica),
-    SignoDeAsignación(lógica),
-    span$8(
+    SignoDeDevolver(nulo),
+    SignoDeAsignación(nulo),
+    _$1('span',
       {
-        class: `valor${(() => {
-          if (legi) {
-            return ' nulo'
-          }
-
-          return ''
-        })()}`
+        class: clase
       },
       'null'
     ),
@@ -3053,7 +3094,7 @@ var Nulo = ({ bloquesDeEspacios, indicador, valor }) => {
   )
 };
 
-const { pre: pre$8, span: span$7, style } = van.tags;
+const { pre: pre$7, span: span$6, style } = van.tags;
 
 const instancias = {
   imprimir
@@ -3061,7 +3102,7 @@ const instancias = {
 
 Estilo({
   nombre: 'Instancia',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Instancia': {
@@ -3131,23 +3172,23 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
     if (!instancias[instancia]) {
       return [
         estilo(),
-        pre$8(
+        pre$7(
           {
             class: 'instancia'
           },
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
           SignoDeDevolver(función),
           SignoDeAsignación(función),
-          span$7(
+          span$6(
             {
               class: 'ruido'
             },
             '# ('
           )
         ),
-        pre$8(
+        pre$7(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$7(
+          span$6(
             {
               class: 'ruido'
             },
@@ -3165,11 +3206,11 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
   })()
 };
 
-const { pre: pre$7, span: span$6 } = van.tags;
+const { pre: pre$6, span: span$5 } = van.tags;
 
 Estilo({
   nombre: 'Función',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Función': {
@@ -3232,41 +3273,41 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$7(
+    pre$6(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(función),
       SignoDeAsignación(función),
-      span$6(
+      span$5(
         {
           class: 'ruido valor función'
         },
         'function'
       )
     ),
-    pre$7(
+    pre$6(
       {
         style: 'margin-left: 2.5rem;'
       },
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$6(
+      span$5(
         {
           class: 'contexto'
         },
-        span$6(
+        span$5(
           {
             class: 'ruido'
           },
           '/* '
         ),
         'contexto ',
-        span$6(
+        span$5(
           {
             class: 'ruido'
           },
           '*/ '
         )
       ),
-      span$6(
+      span$5(
         {
           class: 'paréntesis-de-apertura'
         },
@@ -3275,16 +3316,16 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
-    pre$7(
+    pre$6(
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$6(
+      span$5(
         {
           style: 'margin-left: 2.5rem;',
           class: 'paréntesis-de-cierre'
         },
         ')'
       ),
-      span$6(
+      span$5(
         {
           class: 'ruido llave'
         },
@@ -3293,9 +3334,9 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$7(
+    pre$6(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$6(
+      span$5(
         {
           class: 'ruido llave'
         },
@@ -3306,14 +3347,14 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { pre: pre$6, span: span$5 } = van.tags;
+const { pre: pre$5, span: span$4 } = van.tags;
 
 var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   const contexto = get(Código.val, indicador);
 
-  return pre$6(
+  return pre$5(
     BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
-    span$5(
+    span$4(
       {
         class: 'ruido signo-de-dólar'
       },
@@ -3323,11 +3364,11 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   )
 };
 
-const { pre: pre$5, span: span$4 } = van.tags;
+const { pre: pre$4, span: span$3 } = van.tags;
 
 Estilo({
   nombre: 'Lista',
-  css: {
+  reglas: {
     '#visualización': {
 
       '.legi': {
@@ -3369,11 +3410,11 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$5(
+    pre$4(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(lista),
       SignoDeAsignación(lista),
-      span$4(
+      span$3(
         {
           class: 'ruido corchete'
         },
@@ -3382,9 +3423,9 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$5(
+    pre$4(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$4(
+      span$3(
         {
           class: 'ruido corchete'
         },
@@ -3395,11 +3436,11 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { pre: pre$4, span: span$3 } = van.tags;
+const { pre: pre$3, span: span$2 } = van.tags;
 
 Estilo({
   nombre: 'Lógica',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Lógica': {
@@ -3438,11 +3479,11 @@ Estilo({
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  return pre$4(
+  return pre$3(
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(lógica),
     SignoDeAsignación(lógica),
-    span$3(
+    span$2(
       {
         class: `valor ${(() => {
           if (valor) {
@@ -3458,40 +3499,39 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   )
 };
 
-const { pre: pre$3, span: span$2 } = van.tags;
+const { identificadorDelComponente, elemento: _ } = Componente();
 
 Estilo({
-  nombre: 'Número',
-  css: {
-    '#visualización': {
+  identificadorDelComponente,
+  reglas: {
+    color: 'rgb(100, 255, 255)',
 
-      ' .Número': {
-        color: 'rgb(100, 255, 255)'
-      },
+    '.valor': {
 
       '.legi': {
-
-        ' .Número': {
-
-          ' .valor': {
-            border: '1px solid'
-          }
-        }
+        border: '1px solid'
       }
     }
   }
 });
 
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
+  const legi = document.querySelector('#visualización').classList.contains('legi');
   const número = get(Código.val, indicador);
 
-  return pre$3(
+  let clase = 'valor';
+
+  if (legi) {
+    clase = `${clase} legi`;
+  }
+
+  return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(número),
     SignoDeAsignación(número),
-    span$2(
+    _('span',
       {
-        class: 'valor'
+        class: clase
       },
       valor
     ),
@@ -3503,7 +3543,7 @@ const { pre: pre$2, span: span$1 } = van.tags;
 
 Estilo({
   nombre: 'Texto',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Texto': {
@@ -3511,6 +3551,14 @@ Estilo({
       },
 
       '.legi': {
+
+        ' .inicio-de-texto': {
+
+          '::before': {
+            color: '#fff',
+            content: '"✏️"'
+          }
+        },
 
         ' .Texto': {
 
@@ -3572,7 +3620,7 @@ const { pre: pre$1, span } = van.tags;
 
 Estilo({
   nombre: 'Comentario',
-  css: {
+  reglas: {
     '#visualización': {
 
       '.legi': {
@@ -3612,7 +3660,7 @@ const { div } = van.tags;
 
 Estilo({
   nombre: 'Tipo',
-  css: {
+  reglas: {
     '#visualización': {
 
       '>.Tipo': {
@@ -15780,7 +15828,7 @@ Visualizar();
 
 Estilo({
   nombre: 'Visualización',
-  css: {
+  reglas: {
     body: {
       fontFamily: '"0xProto"',
       margin: '0',
@@ -15796,6 +15844,14 @@ Estilo({
     '#visualización': {
       backgroundColor: 'rgb(75, 75, 75)',
       padding: '0.5rem',
+
+      ' .seleccionado': {
+        backgroundColor: '#993800'
+      },
+
+      ' .devolver': {
+        color: 'rgb(255, 100, 100)'
+      },
 
       ' .Nueva-línea': {
         padding: '0.25rem',
@@ -15824,8 +15880,29 @@ Estilo({
 
       '.legi': {
 
+        ' .devolver': {
+
+          '::before': {
+            filter: 'hue-rotate(150deg)',
+            color: '#fff',
+            content: '"◀️"'
+          }
+        },
+
         ' .ruido': {
           color: 'transparent'
+        },
+
+        ' .signo-de-asignación': {
+
+          '::before': {
+            color: 'rgb(255, 100, 255)',
+            content: '" : "'
+          },
+
+          '> .ruido': {
+            marginLeft: '-2rem'
+          }
         }
       }
     }

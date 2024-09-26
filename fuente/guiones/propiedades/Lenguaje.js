@@ -1,6 +1,7 @@
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import van from 'vanjs-core'
-const { p, span, h2, div, fieldset, input } = van.tags
+import Elección from '../componentes/Elección.js'
+const { h2 } = van.tags
 const visualización = document.querySelector('#visualización')
 
 export default ({ indicador }) => {
@@ -11,70 +12,39 @@ export default ({ indicador }) => {
       },
       'Visualización'
     ),
-    div(
+    Elección([
       {
-        class: 'lógica'
+        nombre: 'Legi',
+        valor: true,
+        seleccionado: (() => {
+          if (visualización.classList.contains('legi')) {
+            return true
+          }
+        })(),
+        alSeleccionar: ({ target }) => {
+          console.log('Se confirmó un cambio')
+          if (target.checked) {
+            target.value = true
+          }
+          ActualizarPropiedad({ indicador, target })
+        }
       },
-      fieldset(
-        div(
-          {
-            class: 'elección'
-          },
-          input({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (visualización.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: true,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio')
-              if (target.checked) {
-                target.value = true
-              }
-              ActualizarPropiedad({ indicador, target })
-            }
-          }),
-          span({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click()
-            }
-          }),
-          p('Legi')
-        ),
-        div(
-          {
-            class: 'elección'
-          },
-          input({
-            type: 'radio',
-            name: 'visualización',
-            checked: (() => {
-              if (!visualización.classList.contains('legi')) {
-                return true
-              }
-            })(),
-            value: false,
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio')
-              if (target.checked) {
-                target.value = false
-              }
-              ActualizarPropiedad({ indicador, target })
-            }
-          }),
-          span({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click()
-            }
-          }),
-          p('PHP')
-        )
-      )
-    )
+      {
+        nombre: 'PHP',
+        valor: false,
+        seleccionado: (() => {
+          if (!visualización.classList.contains('legi')) {
+            return true
+          }
+        })(),
+        alSeleccionar: ({ target }) => {
+          console.log('Se confirmó un cambio')
+          if (target.checked) {
+            target.value = false
+          }
+          ActualizarPropiedad({ indicador, target })
+        }
+      }
+    ])
   ]
 }

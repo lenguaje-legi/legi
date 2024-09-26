@@ -15,7 +15,7 @@ const instancias = {
 
 Estilo({
   nombre: 'Instancia',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Instancia': {

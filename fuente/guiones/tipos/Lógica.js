@@ -10,7 +10,7 @@ const { pre, span } = van.tags
 
 Estilo({
   nombre: 'Lógica',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Lógica': {

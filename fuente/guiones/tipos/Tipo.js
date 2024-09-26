@@ -17,7 +17,7 @@ const { div } = van.tags
 
 Estilo({
   nombre: 'Tipo',
-  css: {
+  reglas: {
     '#visualización': {
 
       '>.Tipo': {

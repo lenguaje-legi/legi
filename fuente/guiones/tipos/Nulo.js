@@ -1,57 +1,45 @@
-import van from 'vanjs-core'
+import Componente from '../Componente.js'
+import Estilo from '../Estilo.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
-import Estilo from '../Estilo.js'
 import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
-const { pre, span } = van.tags
+
+const { identificadorDelComponente, elemento: _ } = Componente()
 
 Estilo({
-  nombre: 'Nulo',
-  css: {
-    '#visualización': {
+  identificadorDelComponente,
+  reglas: {
+    '.nulo': {
+      color: 'transparent',
 
-      ' .Nulo': {
-        color: 'rgb(150, 100, 255)'
-      },
-
-      '.legi': {
-
-        ' .Nulo': {
-
-          ' .valor': {
-            color: 'transparent',
-
-            '::before': {
-              content: '"👻"',
-              color: '#fff'
-            }
-          }
-        }
+      '::before': {
+        content: '"👻"',
+        color: '#fff'
       }
     }
   }
 })
 
-export default ({ bloquesDeEspacios, indicador, valor }) => {
+export default ({ bloquesDeEspacios, indicador }) => {
   const legi = document.querySelector('#visualización').classList.contains('legi')
-  const lógica = get(Código.val, indicador)
+  const nulo = get(Código.val, indicador)
 
-  return pre(
+  let clase = 'valor'
+
+  if (legi) {
+    clase = `${clase} nulo`
+  }
+
+  return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(lógica),
-    SignoDeAsignación(lógica),
-    span(
+    SignoDeDevolver(nulo),
+    SignoDeAsignación(nulo),
+    _('span',
       {
-        class: `valor${(() => {
-          if (legi) {
-            return ' nulo'
-          }
-
-          return ''
-        })()}`
+        class: clase
       },
       'null'
     ),

@@ -3,8 +3,12 @@ import CSS from './CSS.js'
 const { add } = van
 const { style } = van.tags
 
-export default ({ nombre, css }) => {
-  const estilo = document.querySelector(`#${nombre}-estilo`)
+export default ({ identificadorDelComponente, nombre, reglas }) => {
+  const estilo = document.querySelector(`#estilo-${nombre}`)
+
+  if (identificadorDelComponente) {
+    nombre = identificadorDelComponente
+  }
 
   if (estilo) {
     return null
@@ -12,8 +16,11 @@ export default ({ nombre, css }) => {
 
   add(document.body, style(
     {
-      id: `${nombre}-estilo`
+      id: `estilo-${nombre}`
     },
-    CSS(css)
+    CSS({
+      reglas,
+      identificadorDelComponente
+    })
   ))
 }

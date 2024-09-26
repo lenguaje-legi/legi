@@ -10,7 +10,7 @@ const { pre, span } = van.tags
 
 Estilo({
   nombre: 'Texto',
-  css: {
+  reglas: {
     '#visualización': {
 
       ' .Texto': {
@@ -18,6 +18,14 @@ Estilo({
       },
 
       '.legi': {
+
+        ' .inicio-de-texto': {
+
+          '::before': {
+            color: '#fff',
+            content: '"✏️"'
+          }
+        },
 
         ' .Texto': {
 

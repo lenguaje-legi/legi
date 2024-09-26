@@ -64,7 +64,7 @@ Visualizar()
 
 Estilo({
   nombre: 'Visualización',
-  css: {
+  reglas: {
     body: {
       fontFamily: '"0xProto"',
       margin: '0',
@@ -80,6 +80,14 @@ Estilo({
     '#visualización': {
       backgroundColor: 'rgb(75, 75, 75)',
       padding: '0.5rem',
+
+      ' .seleccionado': {
+        backgroundColor: '#993800'
+      },
+
+      ' .devolver': {
+        color: 'rgb(255, 100, 100)'
+      },
 
       ' .Nueva-línea': {
         padding: '0.25rem',
@@ -108,8 +116,29 @@ Estilo({
 
       '.legi': {
 
+        ' .devolver': {
+
+          '::before': {
+            filter: 'hue-rotate(150deg)',
+            color: '#fff',
+            content: '"◀️"'
+          }
+        },
+
         ' .ruido': {
           color: 'transparent'
+        },
+
+        ' .signo-de-asignación': {
+
+          '::before': {
+            color: 'rgb(255, 100, 255)',
+            content: '" : "'
+          },
+
+          '> .ruido': {
+            marginLeft: '-2rem'
+          }
         }
       }
     }

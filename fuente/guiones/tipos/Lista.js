@@ -11,7 +11,7 @@ const { pre, span } = van.tags
 
 Estilo({
   nombre: 'Lista',
-  css: {
+  reglas: {
     '#visualización': {
 
       '.legi': {

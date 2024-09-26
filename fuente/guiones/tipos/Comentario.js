@@ -5,7 +5,7 @@ const { pre, span } = van.tags
 
 Estilo({
   nombre: 'Comentario',
-  css: {
+  reglas: {
     '#visualización': {
 
       '.legi': {

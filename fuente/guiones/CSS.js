@@ -1,19 +1,48 @@
 import { kebabCase } from 'lodash-es'
 
-const CSS = css => {
-  return Object.keys(css).map(selector => {
+const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
+  if (!reglasAnidadas) {
+    if (Object.keys(reglas).find(regla => typeof reglas[regla] === 'string')) {
+      return CSS({
+        identificadorDelComponente,
+        reglas: {
+          '': {
+            ...reglas
+          }
+        },
+        reglasAnidadas: true
+      })
+    }
+  }
+
+  if (!identificadorDelComponente) {
+    identificadorDelComponente = ''
+  }
+
+  return Object.keys(reglas).map(selector => {
+    let selectorConComponente = selector
+
+    if (identificadorDelComponente) {
+      selectorConComponente = `${selector}[data-componente="${identificadorDelComponente}"]`
+    }
+
     return `
-        ${selector} {
-          ${Object.keys(css[selector]).map(regla => {
-            if (typeof css[selector][regla] === 'object') {
-              const cssAnidado = {}
+        ${selectorConComponente} {
+          ${Object.keys(reglas[selector]).map(regla => {
+            if (typeof reglas[selector][regla] === 'object') {
+              let selectorAnidado = regla
+              const reglasAnidadas = {}
 
-              cssAnidado[`&${regla}`] = css[selector][regla]
+              if (identificadorDelComponente && !selectorAnidado.includes('::') && !selectorAnidado.startsWith('.')) {
+                selectorAnidado = `${selectorAnidado}[data-componente="${identificadorDelComponente}"]`
+              }
 
-              return CSS(cssAnidado)
+              reglasAnidadas[`&${selectorAnidado}`] = reglas[selector][regla]
+
+              return CSS({ reglas: reglasAnidadas, reglasAnidadas: true })
             }
 
-            return `${kebabCase(regla)}: ${css[selector][regla]};\n`
+            return `${kebabCase(regla)}: ${reglas[selector][regla]};\n`
           }).join('')}
         }
       `

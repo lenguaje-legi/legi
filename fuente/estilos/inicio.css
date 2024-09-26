@@ -28,17 +28,6 @@
     margin-left: 2.5rem;
 }
 
-
-#visualización .devolver {
-    color: rgb(255, 100, 100);
-}
-
-#visualización.legi .devolver::before {
-    filter: hue-rotate(150deg);
-    color: #fff;
-    content: "◀️";
-}
-
 #visualización .Función:hover:not(:has(.Función:hover)):not(:has(.Lista:hover)) {
     background-color: rgba(0, 0, 75, 0.2);
 }
@@ -53,11 +42,6 @@
     color: rgba(255, 255, 0, 0.2);
 }
 
-#visualización.legi .inicio-de-texto::before {
-    color: #fff;
-    content: "✏️";
-}
-
 #visualización.legi .final-de-texto {
     display: contents;
 }
@@ -66,34 +50,12 @@
     margin-left: -0.5rem;
 }
 
-#visualización.legi .signo-de-asignación::before {
-    color: rgb(255, 100, 255);
-    content: " : ";
-}
-
-#visualización .signo-de-asignación>.ruido {
-    margin-left: -2rem;
-}
-
-#visualización:not(.legi) .signo-de-asignación>.ruido {
-    margin-left: 0rem;
-    color: rgb(255, 100, 255);
-}
-
-#visualización .seleccionado {
-    background-color: #993800 !important;
-}
-
 #visualización .creado {
     transition: background-color 500ms linear;
 }
 
 #visualización .editado {
     transition: background-color 200ms linear;
-}
-
-#visualización .texto::after {
-    content: " ";
 }
 
 #visualización .Tipo div:first-of-type {
