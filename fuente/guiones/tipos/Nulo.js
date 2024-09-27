@@ -24,14 +24,7 @@ Estilo({
 })
 
 export default ({ bloquesDeEspacios, indicador }) => {
-  const legi = document.querySelector('#visualización').classList.contains('legi')
   const nulo = get(Código.val, indicador)
-
-  let clase = 'valor'
-
-  if (legi) {
-    clase = `${clase} nulo`
-  }
 
   return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
@@ -39,7 +32,10 @@ export default ({ bloquesDeEspacios, indicador }) => {
     SignoDeAsignación(nulo),
     _('span',
       {
-        class: clase
+        class: {
+          valor: true,
+          nulo: document.querySelector('#visualización').classList.contains('legi')
+        }
       },
       'null'
     ),

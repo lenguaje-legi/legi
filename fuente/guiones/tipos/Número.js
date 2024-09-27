@@ -24,14 +24,7 @@ Estilo({
 })
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
-  const legi = document.querySelector('#visualización').classList.contains('legi')
   const número = get(Código.val, indicador)
-
-  let clase = 'valor'
-
-  if (legi) {
-    clase = `${clase} legi`
-  }
 
   return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
@@ -39,7 +32,10 @@ export default ({ bloquesDeEspacios, indicador, valor }) => {
     SignoDeAsignación(número),
     _('span',
       {
-        class: clase
+        class: {
+          valor: true,
+          legi: document.querySelector('#visualización').classList.contains('legi')
+        }
       },
       valor
     ),

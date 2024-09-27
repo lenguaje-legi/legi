@@ -1,44 +1,37 @@
-import van from 'vanjs-core'
+import Componente from '../Componente.js'
+import Estilo from '../Estilo.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
-import Estilo from '../Estilo.js'
 import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
-const { pre, span } = van.tags
+
+const { identificadorDelComponente, elemento: _ } = Componente()
 
 Estilo({
-  nombre: 'Lógica',
+  identificadorDelComponente,
   reglas: {
-    '#visualización': {
+    color: 'rgb(255, 150, 100)',
 
-      ' .Lógica': {
-        color: 'rgb(255, 150, 100)'
-      },
+    '.valor': {
 
       '.legi': {
+        color: 'transparent',
 
-        ' .Lógica': {
+        '.falso': {
 
-          ' .valor': {
-            color: 'transparent'
-          },
+          '::before': {
+            content: '"❌"',
+            color: '#fff'
+          }
+        },
 
-          ' .falso': {
+        '.verdadero': {
 
-            '::before': {
-              content: '"❌"',
-              color: '#fff'
-            }
-          },
-
-          ' .verdadero': {
-
-            '::before': {
-              content: '"✔️"',
-              color: '#fff'
-            }
+          '::before': {
+            content: '"✔️"',
+            color: '#fff'
           }
         }
       }
@@ -49,19 +42,18 @@ Estilo({
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador)
 
-  return pre(
+  return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(lógica),
     SignoDeAsignación(lógica),
-    span(
+    _('span',
       {
-        class: `valor ${(() => {
-          if (valor) {
-            return 'verdadero'
-          }
-
-          return 'falso'
-        })()}`
+        class: {
+          valor: true,
+          legi: document.querySelector('#visualización').classList.contains('legi'),
+          verdadero: valor,
+          falso: !valor
+        }
       },
       valor
     ),

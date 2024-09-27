@@ -2070,7 +2070,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$5, div: div$7, input: input$4, span: span$g } = van.tags;
+const { p: p$5, div: div$7, input: input$4, span: span$f } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -2141,7 +2141,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$g({
+          span$f({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2154,7 +2154,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
   ]
 };
 
-const { p: p$4, div: div$6, span: span$f, fieldset: fieldset$1, input: input$3 } = van.tags;
+const { p: p$4, div: div$6, span: span$e, fieldset: fieldset$1, input: input$3 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
@@ -2186,7 +2186,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$f({
+        span$e({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2216,7 +2216,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$f({
+        span$e({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2300,7 +2300,7 @@ var PropiedadesDeAsignación = ({ indicador }) => {
   )
 };
 
-const { span: span$e } = van.tags;
+const { span: span$d } = van.tags;
 
 var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   if (bloquesDeEspacios === 0) {
@@ -2308,7 +2308,7 @@ var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   }
 
   return [...Array(bloquesDeEspacios).keys()].map(() => {
-    return span$e(
+    return span$d(
       {
         class: 'bloque-de-espacios'
       },
@@ -2317,7 +2317,7 @@ var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   })
 };
 
-const { span: span$d } = van.tags;
+const { span: span$c } = van.tags;
 
 var SignoDeDevolver = ({ devolver }) => {
   if (!devolver) {
@@ -2332,7 +2332,7 @@ var SignoDeDevolver = ({ devolver }) => {
     return null
   }
 
-  return span$d(
+  return span$c(
     {
       class: 'ruido devolver'
     },
@@ -2340,7 +2340,7 @@ var SignoDeDevolver = ({ devolver }) => {
   )
 };
 
-const { span: span$c } = van.tags;
+const { span: span$b } = van.tags;
 
 var SignoDeAsignación = ({ asignación }) => {
   if (!asignación) {
@@ -2348,23 +2348,23 @@ var SignoDeAsignación = ({ asignación }) => {
   }
 
   return [
-    span$c(
+    span$b(
       {
         class: 'ruido signo-de-dólar'
       },
       '$'
     ),
-    span$c(
+    span$b(
       {
         class: 'asignación'
       },
       `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
     ),
-    span$c(
+    span$b(
       {
         class: 'signo-de-asignación'
       },
-      span$c(
+      span$b(
         {
           class: 'ruido'
         },
@@ -2374,7 +2374,7 @@ var SignoDeAsignación = ({ asignación }) => {
   ]
 };
 
-const { span: span$b } = van.tags;
+const { span: span$a } = van.tags;
 
 var SignoDeCierre = ({ indicador }) => {
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2400,7 +2400,7 @@ var SignoDeCierre = ({ indicador }) => {
     if (esElÚltimoElemento) {
       return null
     }
-    return span$b(
+    return span$a(
       {
         class: 'ruido coma'
       },
@@ -2408,7 +2408,7 @@ var SignoDeCierre = ({ indicador }) => {
     )
   }
 
-  return span$b(
+  return span$a(
     {
       class: 'ruido punto-y-coma'
     },
@@ -2416,7 +2416,7 @@ var SignoDeCierre = ({ indicador }) => {
   )
 };
 
-const { pre: pre$8, span: span$a } = van.tags;
+const { pre: pre$7, span: span$9 } = van.tags;
 
 var imprimir = () => {
   return {
@@ -2433,41 +2433,41 @@ var imprimir = () => {
       const { contexto } = función;
 
       return [
-        pre$8(
+        pre$7(
           {
             class: 'instancia'
           },
-          pre$8(
+          pre$7(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
             SignoDeDevolver(función),
             SignoDeAsignación(función),
-            span$a('(function ($texto) {')
+            span$9('(function ($texto) {')
           ),
-          pre$8(
+          pre$7(
             {
               style: `margin-left: ${(bloquesDeEspacios - 1) * 2.5}rem;`
             },
             BloqueDeEspacios({ bloquesDeEspacios }),
-            span$a('print($texto);')
+            span$9('print($texto);')
           ),
-          pre$8(
+          pre$7(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-            span$a('})(...[')
+            span$9('})(...[')
           )
         ),
         (() => {
           return contexto.map((contexto, indicadorDelElemento) => {
-            return pre$8(
+            return pre$7(
               {
                 style: 'margin-left: 2.5rem;'
               },
               BloqueDeEspacios({ bloquesDeEspacios }),
-              span$a(`'${contexto.nombre}'`),
-              span$a(
+              span$9(`'${contexto.nombre}'`),
+              span$9(
                 {
                   class: 'signo-de-asignación'
                 },
-                span$a(
+                span$9(
                   {
                     class: 'ruido'
                   },
@@ -2482,9 +2482,9 @@ var imprimir = () => {
             )
           })
         })(),
-        pre$8(
+        pre$7(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$a('])'),
+          span$9('])'),
           SignoDeCierre({ indicador })
         )
       ]
@@ -2551,7 +2551,7 @@ var PropiedadesDeInstancia = ({ indicador }) => {
   ]
 };
 
-const { p: p$2, div: div$3, input: input$2, span: span$9 } = van.tags;
+const { p: p$2, div: div$3, input: input$2, span: span$8 } = van.tags;
 
 var PropiedadesDeFunción = ({ indicador }) => {
   let valor;
@@ -2583,7 +2583,7 @@ var PropiedadesDeFunción = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$9({
+          span$8({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2596,7 +2596,7 @@ var PropiedadesDeFunción = ({ indicador }) => {
   ]
 };
 
-const { p: p$1, span: span$8, div: div$2, fieldset, input: input$1 } = van.tags;
+const { p: p$1, span: span$7, div: div$2, fieldset, input: input$1 } = van.tags;
 
 var Elección = (opciones) => {
   return fieldset(
@@ -2614,7 +2614,7 @@ var Elección = (opciones) => {
           value: valor,
           onchange: (evento) => alSeleccionar(evento)
         }),
-        span$8({
+        span$7({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2675,7 +2675,7 @@ var Lenguaje = ({ indicador }) => {
 };
 
 const { add: add$2 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$7 } = van.tags;
+const { p, h2, div: div$1, input, textarea, span: span$6 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2801,7 +2801,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$7({
+          span$6({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2969,6 +2969,21 @@ var Componente = () => {
     elemento: (etiqueta, ...propiedades) => {
       if (typeof propiedades[0] === 'object' && !Array.isArray(propiedades[0])) {
         propiedades[0]['data-componente'] = identificadorDelComponente;
+        if (propiedades[0].class) {
+          if (Array.isArray(propiedades[0].class)) {
+            propiedades[0].class = propiedades[0].class.join(' ');
+          }
+
+          if (typeof propiedades[0].class === 'object' && !Array.isArray(propiedades[0].class)) {
+            propiedades[0].class = Object.keys(propiedades[0].class).reduce((acarreo, clase) => {
+              if (propiedades[0].class[clase]) {
+                return `${acarreo} ${clase}`
+              }
+
+              return acarreo
+            });
+          }
+        }
       }
 
       if (typeof propiedades[0] !== 'object' || Array.isArray(propiedades[0])) {
@@ -3054,10 +3069,10 @@ var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
   ));
 };
 
-const { identificadorDelComponente: identificadorDelComponente$1, elemento: _$1 } = Componente();
+const { identificadorDelComponente: identificadorDelComponente$2, elemento: _$2 } = Componente();
 
 Estilo({
-  identificadorDelComponente: identificadorDelComponente$1,
+  identificadorDelComponente: identificadorDelComponente$2,
   reglas: {
     '.nulo': {
       color: 'transparent',
@@ -3071,22 +3086,18 @@ Estilo({
 });
 
 var Nulo = ({ bloquesDeEspacios, indicador }) => {
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   const nulo = get(Código.val, indicador);
 
-  let clase = 'valor';
-
-  if (legi) {
-    clase = `${clase} nulo`;
-  }
-
-  return _$1('pre',
+  return _$2('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(nulo),
     SignoDeAsignación(nulo),
-    _$1('span',
+    _$2('span',
       {
-        class: clase
+        class: {
+          valor: true,
+          nulo: document.querySelector('#visualización').classList.contains('legi')
+        }
       },
       'null'
     ),
@@ -3094,7 +3105,7 @@ var Nulo = ({ bloquesDeEspacios, indicador }) => {
   )
 };
 
-const { pre: pre$7, span: span$6, style } = van.tags;
+const { pre: pre$6, span: span$5, style } = van.tags;
 
 const instancias = {
   imprimir
@@ -3172,23 +3183,23 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
     if (!instancias[instancia]) {
       return [
         estilo(),
-        pre$7(
+        pre$6(
           {
             class: 'instancia'
           },
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
           SignoDeDevolver(función),
           SignoDeAsignación(función),
-          span$6(
+          span$5(
             {
               class: 'ruido'
             },
             '# ('
           )
         ),
-        pre$7(
+        pre$6(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$6(
+          span$5(
             {
               class: 'ruido'
             },
@@ -3206,7 +3217,7 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
   })()
 };
 
-const { pre: pre$6, span: span$5 } = van.tags;
+const { pre: pre$5, span: span$4 } = van.tags;
 
 Estilo({
   nombre: 'Función',
@@ -3273,41 +3284,41 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$6(
+    pre$5(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(función),
       SignoDeAsignación(función),
-      span$5(
+      span$4(
         {
           class: 'ruido valor función'
         },
         'function'
       )
     ),
-    pre$6(
+    pre$5(
       {
         style: 'margin-left: 2.5rem;'
       },
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$5(
+      span$4(
         {
           class: 'contexto'
         },
-        span$5(
+        span$4(
           {
             class: 'ruido'
           },
           '/* '
         ),
         'contexto ',
-        span$5(
+        span$4(
           {
             class: 'ruido'
           },
           '*/ '
         )
       ),
-      span$5(
+      span$4(
         {
           class: 'paréntesis-de-apertura'
         },
@@ -3316,16 +3327,16 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
-    pre$6(
+    pre$5(
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$5(
+      span$4(
         {
           style: 'margin-left: 2.5rem;',
           class: 'paréntesis-de-cierre'
         },
         ')'
       ),
-      span$5(
+      span$4(
         {
           class: 'ruido llave'
         },
@@ -3334,9 +3345,9 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$6(
+    pre$5(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$5(
+      span$4(
         {
           class: 'ruido llave'
         },
@@ -3347,14 +3358,14 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { pre: pre$5, span: span$4 } = van.tags;
+const { pre: pre$4, span: span$3 } = van.tags;
 
 var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   const contexto = get(Código.val, indicador);
 
-  return pre$5(
+  return pre$4(
     BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
-    span$4(
+    span$3(
       {
         class: 'ruido signo-de-dólar'
       },
@@ -3364,7 +3375,7 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   )
 };
 
-const { pre: pre$4, span: span$3 } = van.tags;
+const { pre: pre$3, span: span$2 } = van.tags;
 
 Estilo({
   nombre: 'Lista',
@@ -3410,11 +3421,11 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$4(
+    pre$3(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(lista),
       SignoDeAsignación(lista),
-      span$3(
+      span$2(
         {
           class: 'ruido corchete'
         },
@@ -3423,9 +3434,9 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$4(
+    pre$3(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$3(
+      span$2(
         {
           class: 'ruido corchete'
         },
@@ -3436,39 +3447,31 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { pre: pre$3, span: span$2 } = van.tags;
+const { identificadorDelComponente: identificadorDelComponente$1, elemento: _$1 } = Componente();
 
 Estilo({
-  nombre: 'Lógica',
+  identificadorDelComponente: identificadorDelComponente$1,
   reglas: {
-    '#visualización': {
+    color: 'rgb(255, 150, 100)',
 
-      ' .Lógica': {
-        color: 'rgb(255, 150, 100)'
-      },
+    '.valor': {
 
       '.legi': {
+        color: 'transparent',
 
-        ' .Lógica': {
+        '.falso': {
 
-          ' .valor': {
-            color: 'transparent'
-          },
+          '::before': {
+            content: '"❌"',
+            color: '#fff'
+          }
+        },
 
-          ' .falso': {
+        '.verdadero': {
 
-            '::before': {
-              content: '"❌"',
-              color: '#fff'
-            }
-          },
-
-          ' .verdadero': {
-
-            '::before': {
-              content: '"✔️"',
-              color: '#fff'
-            }
+          '::before': {
+            content: '"✔️"',
+            color: '#fff'
           }
         }
       }
@@ -3479,19 +3482,18 @@ Estilo({
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  return pre$3(
+  return _$1('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
     SignoDeDevolver(lógica),
     SignoDeAsignación(lógica),
-    span$2(
+    _$1('span',
       {
-        class: `valor ${(() => {
-          if (valor) {
-            return 'verdadero'
-          }
-
-          return 'falso'
-        })()}`
+        class: {
+          valor: true,
+          legi: document.querySelector('#visualización').classList.contains('legi'),
+          verdadero: valor,
+          falso: !valor
+        }
       },
       valor
     ),
@@ -3516,14 +3518,7 @@ Estilo({
 });
 
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
-  const legi = document.querySelector('#visualización').classList.contains('legi');
   const número = get(Código.val, indicador);
-
-  let clase = 'valor';
-
-  if (legi) {
-    clase = `${clase} legi`;
-  }
 
   return _('pre',
     BloqueDeEspacios({ bloquesDeEspacios }),
@@ -3531,7 +3526,10 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
     SignoDeAsignación(número),
     _('span',
       {
-        class: clase
+        class: {
+          valor: true,
+          legi: document.querySelector('#visualización').classList.contains('legi')
+        }
       },
       valor
     ),
