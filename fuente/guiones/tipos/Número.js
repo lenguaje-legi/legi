@@ -1,5 +1,4 @@
 import Componente from '../Componente.js'
-import Estilo from '../Estilo.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
@@ -7,10 +6,9 @@ import SignoDeCierre from '../signos/SignoDeCierre.js'
 import { Código } from '../inicio.js'
 import { get } from 'lodash-es'
 
-const { identificadorDelComponente, elemento: _ } = Componente()
+const { estilo, elemento } = Componente()
 
-Estilo({
-  identificadorDelComponente,
+estilo({
   reglas: {
     color: 'rgb(100, 255, 255)',
 
@@ -26,19 +24,23 @@ Estilo({
 export default ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador)
 
-  return _('pre',
-    BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(número),
-    SignoDeAsignación(número),
-    _('span',
-      {
-        class: {
-          valor: true,
-          legi: document.querySelector('#visualización').classList.contains('legi')
-        }
-      },
-      valor
-    ),
-    SignoDeCierre({ indicador })
-  )
+  return elemento({
+    etiqueta: 'pre',
+    elementos: [
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(número),
+      SignoDeAsignación(número),
+      elemento({
+        etiqueta: 'span',
+        atributos: {
+          class: {
+            valor: true,
+            legi: document.querySelector('#visualización').classList.contains('legi')
+          }
+        },
+        elementos: valor
+      }),
+      SignoDeCierre({ indicador })
+    ]
+  })
 }

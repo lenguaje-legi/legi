@@ -1,35 +1,41 @@
 import van from 'vanjs-core'
+import Estilo from './Estilo'
 
 export default () => {
   const identificadorDelComponente = crypto.randomUUID()
 
   return {
     identificadorDelComponente,
-    elemento: (etiqueta, ...propiedades) => {
-      if (typeof propiedades[0] === 'object' && !Array.isArray(propiedades[0])) {
-        propiedades[0]['data-componente'] = identificadorDelComponente
-        if (propiedades[0].class) {
-          if (Array.isArray(propiedades[0].class)) {
-            propiedades[0].class = propiedades[0].class.join(' ')
-          }
+    elemento: ({ etiqueta, atributos, elementos }) => {
+      if (!atributos) {
+        atributos = {}
+      }
 
-          if (typeof propiedades[0].class === 'object' && !Array.isArray(propiedades[0].class)) {
-            propiedades[0].class = Object.keys(propiedades[0].class).reduce((acarreo, clase) => {
-              if (propiedades[0].class[clase]) {
-                return `${acarreo} ${clase}`
-              }
+      atributos['data-componente'] = identificadorDelComponente
 
-              return acarreo
-            })
-          }
+      if (atributos.class) {
+        if (Array.isArray(atributos.class)) {
+          atributos.class = atributos.class.join(' ')
+        }
+
+        if (typeof atributos.class === 'object' && !Array.isArray(atributos.class)) {
+          atributos.class = Object.keys(atributos.class).reduce((acarreo, clase) => {
+            if (atributos.class[clase]) {
+              return `${acarreo} ${clase}`
+            }
+
+            return acarreo
+          })
         }
       }
 
-      if (typeof propiedades[0] !== 'object' || Array.isArray(propiedades[0])) {
-        propiedades = [{ 'data-componente': identificadorDelComponente }].concat(propiedades)
-      }
-
-      return van.tags[etiqueta](...propiedades)
+      return van.tags[etiqueta](atributos, elementos)
+    },
+    estilo: ({ reglas }) => {
+      Estilo({
+        identificadorDelComponente,
+        reglas
+      })
     }
   }
 }

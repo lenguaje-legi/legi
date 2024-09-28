@@ -2961,40 +2961,6 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-var Componente = () => {
-  const identificadorDelComponente = crypto.randomUUID();
-
-  return {
-    identificadorDelComponente,
-    elemento: (etiqueta, ...propiedades) => {
-      if (typeof propiedades[0] === 'object' && !Array.isArray(propiedades[0])) {
-        propiedades[0]['data-componente'] = identificadorDelComponente;
-        if (propiedades[0].class) {
-          if (Array.isArray(propiedades[0].class)) {
-            propiedades[0].class = propiedades[0].class.join(' ');
-          }
-
-          if (typeof propiedades[0].class === 'object' && !Array.isArray(propiedades[0].class)) {
-            propiedades[0].class = Object.keys(propiedades[0].class).reduce((acarreo, clase) => {
-              if (propiedades[0].class[clase]) {
-                return `${acarreo} ${clase}`
-              }
-
-              return acarreo
-            });
-          }
-        }
-      }
-
-      if (typeof propiedades[0] !== 'object' || Array.isArray(propiedades[0])) {
-        propiedades = [{ 'data-componente': identificadorDelComponente }].concat(propiedades);
-      }
-
-      return van.tags[etiqueta](...propiedades)
-    }
-  }
-};
-
 const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
   if (!reglasAnidadas) {
     if (Object.keys(reglas).find(regla => typeof reglas[regla] === 'string')) {
@@ -3069,10 +3035,48 @@ var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
   ));
 };
 
-const { identificadorDelComponente: identificadorDelComponente$2, elemento: _$2 } = Componente();
+var Componente = () => {
+  const identificadorDelComponente = crypto.randomUUID();
 
-Estilo({
-  identificadorDelComponente: identificadorDelComponente$2,
+  return {
+    identificadorDelComponente,
+    elemento: ({ etiqueta, atributos, elementos }) => {
+      if (!atributos) {
+        atributos = {};
+      }
+
+      atributos['data-componente'] = identificadorDelComponente;
+
+      if (atributos.class) {
+        if (Array.isArray(atributos.class)) {
+          atributos.class = atributos.class.join(' ');
+        }
+
+        if (typeof atributos.class === 'object' && !Array.isArray(atributos.class)) {
+          atributos.class = Object.keys(atributos.class).reduce((acarreo, clase) => {
+            if (atributos.class[clase]) {
+              return `${acarreo} ${clase}`
+            }
+
+            return acarreo
+          });
+        }
+      }
+
+      return van.tags[etiqueta](atributos, elementos)
+    },
+    estilo: ({ reglas }) => {
+      Estilo({
+        identificadorDelComponente,
+        reglas
+      });
+    }
+  }
+};
+
+const { estilo: estilo$2, elemento: elemento$2 } = Componente();
+
+estilo$2({
   reglas: {
     '.nulo': {
       color: 'transparent',
@@ -3088,21 +3092,26 @@ Estilo({
 var Nulo = ({ bloquesDeEspacios, indicador }) => {
   const nulo = get(Código.val, indicador);
 
-  return _$2('pre',
-    BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(nulo),
-    SignoDeAsignación(nulo),
-    _$2('span',
-      {
-        class: {
-          valor: true,
-          nulo: document.querySelector('#visualización').classList.contains('legi')
-        }
-      },
-      'null'
-    ),
-    SignoDeCierre({ indicador })
-  )
+  return elemento$2({
+    etiqueta: 'pre',
+    elementos: [
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(nulo),
+      SignoDeAsignación(nulo),
+      elemento$2({
+        etiqueta: 'span',
+        atributos: {
+          class: {
+            valor: true,
+            nulo: document.querySelector('#visualización').classList.contains('legi')
+          }
+        },
+        elementos: 'null'
+      }),
+      SignoDeCierre({ indicador })
+
+    ]
+  })
 };
 
 const { pre: pre$6, span: span$5, style } = van.tags;
@@ -3447,10 +3456,9 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { identificadorDelComponente: identificadorDelComponente$1, elemento: _$1 } = Componente();
+const { estilo: estilo$1, elemento: elemento$1 } = Componente();
 
-Estilo({
-  identificadorDelComponente: identificadorDelComponente$1,
+estilo$1({
   reglas: {
     color: 'rgb(255, 150, 100)',
 
@@ -3482,29 +3490,32 @@ Estilo({
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  return _$1('pre',
-    BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(lógica),
-    SignoDeAsignación(lógica),
-    _$1('span',
-      {
-        class: {
-          valor: true,
-          legi: document.querySelector('#visualización').classList.contains('legi'),
-          verdadero: valor,
-          falso: !valor
-        }
-      },
-      valor
-    ),
-    SignoDeCierre({ indicador })
-  )
+  return elemento$1({
+    etiqueta: 'pre',
+    elementos: [
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(lógica),
+      SignoDeAsignación(lógica),
+      elemento$1({
+        etiqueta: 'span',
+        atributos: {
+          class: {
+            valor: true,
+            legi: document.querySelector('#visualización').classList.contains('legi'),
+            verdadero: valor,
+            falso: !valor
+          }
+        },
+        elementos: valor
+      }),
+      SignoDeCierre({ indicador })
+    ]
+  })
 };
 
-const { identificadorDelComponente, elemento: _ } = Componente();
+const { estilo, elemento } = Componente();
 
-Estilo({
-  identificadorDelComponente,
+estilo({
   reglas: {
     color: 'rgb(100, 255, 255)',
 
@@ -3520,21 +3531,25 @@ Estilo({
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
-  return _('pre',
-    BloqueDeEspacios({ bloquesDeEspacios }),
-    SignoDeDevolver(número),
-    SignoDeAsignación(número),
-    _('span',
-      {
-        class: {
-          valor: true,
-          legi: document.querySelector('#visualización').classList.contains('legi')
-        }
-      },
-      valor
-    ),
-    SignoDeCierre({ indicador })
-  )
+  return elemento({
+    etiqueta: 'pre',
+    elementos: [
+      BloqueDeEspacios({ bloquesDeEspacios }),
+      SignoDeDevolver(número),
+      SignoDeAsignación(número),
+      elemento({
+        etiqueta: 'span',
+        atributos: {
+          class: {
+            valor: true,
+            legi: document.querySelector('#visualización').classList.contains('legi')
+          }
+        },
+        elementos: valor
+      }),
+      SignoDeCierre({ indicador })
+    ]
+  })
 };
 
 const { pre: pre$2, span: span$1 } = van.tags;
