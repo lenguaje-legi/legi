@@ -1,6 +1,5 @@
 import van from 'vanjs-core'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 const { span } = van.tags
 
 export default ({ asignación }) => {
@@ -19,7 +18,9 @@ export default ({ asignación }) => {
       {
         class: 'asignación'
       },
-      `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
+      `${Código.obtener({
+        propiedad: [...JSON.parse(asignación), 'valor', 'nombre']
+      })}`
     ),
     span(
       {

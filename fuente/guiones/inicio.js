@@ -2,6 +2,7 @@ import Visualizar from './acciones/Visualizar.js'
 import van from 'vanjs-core'
 import Seleccionar from './acciones/Seleccionar.js'
 import Estilo from './Estilo.js'
+import Dato from './Dato.js'
 import { fromString } from 'php-array-reader'
 
 const leerArchivo = async () => {
@@ -51,7 +52,9 @@ if (!php) {
 ];`
 }
 
-export const Código = van.state(fromString(php))
+export const Código = Dato({
+  valor: fromString(php)
+})
 
 export const Acción = van.state('')
 

@@ -4,7 +4,6 @@ import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
 import Estilo from '../Estilo.js'
-import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
 const { pre, span } = van.tags
@@ -45,7 +44,9 @@ Estilo({
 export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
-  const función = get(Código.val, indicador)
+  const función = Código.obtener({
+    propiedad: indicador
+  })
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
     const código = []

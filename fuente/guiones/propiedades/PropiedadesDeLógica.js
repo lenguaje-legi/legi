@@ -1,11 +1,12 @@
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 import van from 'vanjs-core'
 const { p, div, span, fieldset, input } = van.tags
 
 export default ({ indicador }) => {
-  const Tipo = get(Código.val, indicador)
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  })
 
   return div(
     {

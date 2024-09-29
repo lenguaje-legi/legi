@@ -19,6 +19,6 @@ export default () => {
     linebreak: '\n',
     indent: '    ',
     shortArraySyntax: true
-  })(Código.val)};\n\n${visualización.innerText}\n`
+  })(Código.obtener())};\n\n${visualización.innerText}\n`
   document.querySelector('#visualización').classList.remove('salida')
 }

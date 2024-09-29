@@ -6,7 +6,7 @@ import PropiedadesDeAsignación from '../propiedades/PropiedadesDeAsignación.js
 import PropiedadesDeInstancia from '../propiedades/PropiedadesDeInstancia.js'
 import PropiedadesDeFunción from '../propiedades/PropiedadesDeFunción.js'
 import van from 'vanjs-core'
-import { capitalize, get } from 'lodash-es'
+import { capitalize } from 'lodash-es'
 import { Código } from '../inicio.js'
 import Lenguaje from '../propiedades/Lenguaje.js'
 const { add } = van
@@ -18,12 +18,18 @@ export default ({ tipo, indicador } = {}) => {
 
   let editarPropiedades
 
-  let Tipo = get(Código.val, indicador)
+  let Tipo = Código.obtener({
+    propiedad: indicador
+  })
+
   if (!Tipo) {
     Tipo = {}
   }
 
-  let últimoElemento = get(Código.val, indicador.slice(0, -1))
+  let últimoElemento = Código.obtener({
+    propiedad: indicador.slice(0, -1)
+  })
+
   if (últimoElemento) {
     últimoElemento = últimoElemento.at(-1)
   }
@@ -39,8 +45,13 @@ export default ({ tipo, indicador } = {}) => {
   let esLaÚltimaNuevaLínea
 
   if (!esLaRaíz && JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
-    esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1
-    esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1)
+    esElÚltimoElemento = Código.obtener({
+      propiedad: indicador.slice(0, -1)
+    }).length === indicador.at(-1) + 1
+
+    esLaÚltimaNuevaLínea = Código.obtener({
+      propiedad: indicador.slice(0, -1)
+    }).length === indicador.at(-1)
   }
 
   if (tipo === undefined) {
@@ -106,7 +117,10 @@ export default ({ tipo, indicador } = {}) => {
           return null
         }
 
-        const elementoSuperior = get(Código.val, indicador.slice(0, -2))
+        const elementoSuperior = Código.obtener({
+          propiedad: indicador.slice(0, -2)
+        })
+
         let elElementoSuperiorEsUnaLista = false
         if (elementoSuperior.tipo === 'Lista') {
           elElementoSuperiorEsUnaLista = true

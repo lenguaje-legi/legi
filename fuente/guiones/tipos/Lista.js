@@ -1,4 +1,3 @@
-import { get } from 'lodash-es'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
@@ -37,7 +36,9 @@ Estilo({
 export default ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1
 
-  const lista = get(Código.val, indicador)
+  const lista = Código.obtener({
+    propiedad: indicador
+  })
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = []

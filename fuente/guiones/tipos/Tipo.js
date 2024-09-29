@@ -1,6 +1,5 @@
 import Seleccionar from '../acciones/Seleccionar.js'
 import van from 'vanjs-core'
-import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import Nulo from './Nulo.js'
 import Instancia from './Instancia.js'
@@ -42,7 +41,9 @@ Estilo({
 
 export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
-    tipo = get(Código.val, indicador).tipo
+    tipo = Código.obtener({
+      propiedad: indicador
+    }).tipo
   }
 
   if (asignación) {

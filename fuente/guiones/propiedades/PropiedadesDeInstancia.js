@@ -2,7 +2,6 @@ import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import Visualizar from '../acciones/Visualizar.js'
 import imprimir from '../funciones/imprimir.js'
 import { Código } from '../inicio.js'
-import { get, set } from 'lodash-es'
 import van from 'vanjs-core'
 const { p, div, select, option } = van.tags
 
@@ -14,7 +13,9 @@ export default ({ indicador }) => {
     }
   ]
 
-  const { instancia } = get(Código.val, indicador)
+  const { instancia } = Código.obtener({
+    propiedad: indicador
+  })
 
   if (instancia) {
     const { devuelve } = funciones.find(función => función.nombre === instancia)
@@ -34,18 +35,20 @@ export default ({ indicador }) => {
           onchange: ({ target }) => {
             console.log('Se confirmó un cambio')
             ActualizarPropiedad({ indicador, target })
-            const { instancia } = get(Código.val, indicador)
+            const { instancia } = Código.obtener({
+              propiedad: indicador
+            })
+
             const { devuelve, contexto } = funciones.find(función => función.nombre === instancia)
-            set(
-              Código.val,
-              [...indicador, 'devuelve'],
-              devuelve
-            )
-            set(
-              Código.val,
-              [...indicador, 'contexto'],
-              contexto
-            )
+            Código.establecer({
+              propiedad: [...indicador, 'devuelve'],
+              valor: devuelve
+            })
+
+            Código({
+              propiedad: [...indicador, 'contexto'],
+              valor: contexto
+            })
             Visualizar()
           }
         },

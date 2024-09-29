@@ -4,7 +4,6 @@ import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 
 const { estilo, elemento } = Componente()
 
@@ -22,7 +21,9 @@ estilo({
 })
 
 export default ({ bloquesDeEspacios, indicador }) => {
-  const nulo = get(Código.val, indicador)
+  const nulo = Código.obtener({
+    propiedad: indicador
+  })
 
   return elemento({
     etiqueta: 'pre',

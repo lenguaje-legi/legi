@@ -1,6 +1,5 @@
 import EditarPropiedades from './EditarPropiedades.js'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 
 let selección
 
@@ -27,7 +26,9 @@ export default ({ click, indicador, tipo }) => {
   }
 
   if (!tipo) {
-    tipo = get(Código.val, indicador)
+    tipo = Código.obtener({
+      propiedad: indicador
+    })
   }
 
   const esLaRaíz = JSON.stringify(indicador) === '[]'

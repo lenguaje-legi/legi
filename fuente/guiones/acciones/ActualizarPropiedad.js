@@ -1,12 +1,14 @@
 import Visualizar from './Visualizar.js'
 import { Código } from '../inicio.js'
-import { set, get } from 'lodash-es'
 const visualización = document.querySelector('#visualización')
 
 export default ({ indicador, valor, target }) => {
   const esLaRaíz = JSON.stringify(indicador) === '[]'
 
-  let Tipo = get(Código.val, indicador)
+  let Tipo = Código.obtener({
+    propiedad: indicador
+  })
+
   if (!Tipo) {
     Tipo = {}
   }
@@ -24,11 +26,10 @@ export default ({ indicador, valor, target }) => {
     }
 
     if (!esLaRaíz) {
-      set(
-        Código.val,
-        JSON.parse(target.dataset.propiedad),
-        target.value === 'true'
-      )
+      Código.establecer({
+        propiedad: JSON.parse(target.dataset.propiedad),
+        valor: target.value === 'true'
+      })
     }
   }
 
@@ -47,11 +48,10 @@ export default ({ indicador, valor, target }) => {
       return null
     }
 
-    set(
-      Código.val,
-      JSON.parse(target.dataset.propiedad),
-      target.value
-    )
+    Código.establecer({
+      propiedad: JSON.parse(target.dataset.propiedad),
+      valor: target.value
+    })
   }
 
   Visualizar()

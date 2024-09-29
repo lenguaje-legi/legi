@@ -3,7 +3,6 @@ import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from '../tipos/Tipo.js'
-import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 import van from 'vanjs-core'
 const { pre, span } = van.tags
@@ -19,7 +18,10 @@ export default () => {
       }
     ],
     valor: ({ bloquesDeEspacios, indicador }) => {
-      const función = get(Código.val, indicador)
+      const función = Código.obtener({
+        propiedad: indicador
+      })
+
       const { contexto } = función
 
       return [

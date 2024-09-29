@@ -1,13 +1,17 @@
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 
 export default ({ indicador }) => {
-  const { tipo, asignación, devuelve } = get(Código.val, indicador)
+  const { tipo, asignación, devuelve } = Código.obtener({
+    propiedad: indicador
+  })
+
   if (!asignación) {
     return
   }
 
-  const contexto = get(Código.val, JSON.parse(asignación))
+  const contexto = Código.obtener({
+    propiedad: JSON.parse(asignación)
+  })
 
   if (contexto) {
     if (tipo === 'Instancia') {

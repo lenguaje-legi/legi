@@ -1,10 +1,12 @@
 import van from 'vanjs-core'
-import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { span } = van.tags
 
 export default ({ indicador }) => {
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2))
+  const elementoSuperior = Código.obtener({
+    propiedad: indicador.slice(0, -2)
+  })
+
   let elElementoSuperiorEsUnaLista = false
   if (elementoSuperior && (elementoSuperior.tipo === 'Lista' || elementoSuperior.tipo === 'Instancia')) {
     elElementoSuperiorEsUnaLista = true
@@ -17,11 +19,17 @@ export default ({ indicador }) => {
         return elemento.tipo !== 'Comentario'
       })
 
-      esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1)
+      esElÚltimoElemento = Código.obtener({
+        propiedad: indicador
+      }) === elementosEnLaLista.at(-1)
     }
 
     if (elementoSuperior.tipo === 'Instancia') {
-      esElÚltimoElemento = get(Código.val, indicador) === get(Código.val, indicador.slice(0, -2)).contexto.at(-1)
+      esElÚltimoElemento = Código.obtener({
+        propiedad: indicador
+      }) === Código.obtener({
+        propiedad: indicador.slice(0, -2)
+      }).contexto.at(-1)
     }
 
     if (esElÚltimoElemento) {

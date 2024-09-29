@@ -1979,9 +1979,14 @@ var AgregarTipo = ({ tipo, indicador }) => {
           propiedades.valor = '';
         }
 
-        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, propiedades);
+        const nuevoTipo = Código.obtener({
+          propiedad: indicador.toSpliced(-1)
+        }).toSpliced(indicador.at(-1), 0, propiedades);
 
-        set(Código.val, indicador.toSpliced(-1), nuevoTipo);
+        Código.establecer({
+          propiedad: indicador.toSpliced(-1),
+          valor: nuevoTipo
+        });
 
         Visualizar();
         EditarPropiedades({ tipo, indicador });
@@ -2006,7 +2011,10 @@ const visualización$2 = document.querySelector('#visualización');
 var ActualizarPropiedad = ({ indicador, valor, target }) => {
   const esLaRaíz = JSON.stringify(indicador) === '[]';
 
-  let Tipo = get(Código.val, indicador);
+  let Tipo = Código.obtener({
+    propiedad: indicador
+  });
+
   if (!Tipo) {
     Tipo = {};
   }
@@ -2024,11 +2032,10 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
     }
 
     if (!esLaRaíz) {
-      set(
-        Código.val,
-        JSON.parse(target.dataset.propiedad),
-        target.value === 'true'
-      );
+      Código.establecer({
+        propiedad: JSON.parse(target.dataset.propiedad),
+        valor: target.value === 'true'
+      });
     }
   }
 
@@ -2047,11 +2054,10 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
       return null
     }
 
-    set(
-      Código.val,
-      JSON.parse(target.dataset.propiedad),
-      target.value
-    );
+    Código.establecer({
+      propiedad: JSON.parse(target.dataset.propiedad),
+      valor: target.value
+    });
   }
 
   Visualizar();
@@ -2076,7 +2082,9 @@ var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
   let confirmado = false;
 
-  const Tipo = get(Código.val, indicador);
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  });
 
   return [
     div$7(
@@ -2157,7 +2165,9 @@ var PropiedadesDeContexto = ({ indicador }) => {
 const { p: p$4, div: div$6, span: span$c, fieldset: fieldset$1, input: input$3 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
-  const Tipo = get(Código.val, indicador);
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  });
 
   return div$6(
     {
@@ -2229,12 +2239,17 @@ var PropiedadesDeLógica = ({ indicador }) => {
 };
 
 var ErrorDeAsignación = ({ indicador }) => {
-  const { tipo, asignación, devuelve } = get(Código.val, indicador);
+  const { tipo, asignación, devuelve } = Código.obtener({
+    propiedad: indicador
+  });
+
   if (!asignación) {
     return
   }
 
-  const contexto = get(Código.val, JSON.parse(asignación));
+  const contexto = Código.obtener({
+    propiedad: JSON.parse(asignación)
+  });
 
   if (contexto) {
     if (tipo === 'Instancia') {
@@ -2248,9 +2263,14 @@ var ErrorDeAsignación = ({ indicador }) => {
 const { div: div$5, select: select$1, option: option$1 } = van.tags;
 
 var PropiedadesDeAsignación = ({ indicador }) => {
-  const Tipo = get(Código.val, indicador);
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  });
+
   const { tipo } = Tipo;
-  const { contexto } = get(Código.val, indicador.slice(0, -2));
+  const { contexto } = Código.obtener({
+    propiedad: indicador.slice(0, -2)
+  });
 
   if (!contexto) {
     return
@@ -2282,7 +2302,9 @@ var PropiedadesDeAsignación = ({ indicador }) => {
             {
               value: valor,
               selected: (() => {
-                return valor === get(Código.val, [...indicador, 'asignación'])
+                return valor === Código.obtener({
+                  propiedad: [...indicador, 'asignación']
+                })
               })(),
               disabled: (() => {
                 if (tipo === 'Instancia') {
@@ -2374,6 +2396,25 @@ var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
   ));
 };
 
+const anidarElementos = ({ elemento, elementos }) => {
+  if (elementos instanceof HTMLElement) {
+    elemento.append(elementos);
+  }
+
+  if (typeof elementos === 'string') {
+    elemento.append(document.createTextNode(elementos));
+  }
+
+  if (Array.isArray(elementos)) {
+    elementos.forEach(elementoHijo => {
+      anidarElementos({
+        elemento,
+        elementos: elementoHijo
+      });
+    });
+  }
+};
+
 var Componente = () => {
   const identificadorDelComponente = crypto.randomUUID();
 
@@ -2402,7 +2443,19 @@ var Componente = () => {
         }
       }
 
-      return van.tags[etiqueta](atributos, elementos)
+      const elemento = document.createElement(etiqueta);
+
+      if (atributos) {
+        Object.keys(atributos).forEach(atributo => {
+          elemento.setAttribute(atributo, atributos[atributo]);
+        });
+      }
+
+      if (elementos) {
+        anidarElementos({ elemento, elementos });
+      }
+
+      return elemento
     },
     estilo: ({ reglas }) => {
       Estilo({
@@ -2479,7 +2532,9 @@ var SignoDeAsignación = ({ asignación }) => {
       {
         class: 'asignación'
       },
-      `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
+      `${Código.obtener({
+        propiedad: [...JSON.parse(asignación), 'valor', 'nombre']
+      })}`
     ),
     span$a(
       {
@@ -2498,7 +2553,10 @@ var SignoDeAsignación = ({ asignación }) => {
 const { span: span$9 } = van.tags;
 
 var SignoDeCierre = ({ indicador }) => {
-  const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+  const elementoSuperior = Código.obtener({
+    propiedad: indicador.slice(0, -2)
+  });
+
   let elElementoSuperiorEsUnaLista = false;
   if (elementoSuperior && (elementoSuperior.tipo === 'Lista' || elementoSuperior.tipo === 'Instancia')) {
     elElementoSuperiorEsUnaLista = true;
@@ -2511,11 +2569,17 @@ var SignoDeCierre = ({ indicador }) => {
         return elemento.tipo !== 'Comentario'
       });
 
-      esElÚltimoElemento = get(Código.val, indicador) === elementosEnLaLista.at(-1);
+      esElÚltimoElemento = Código.obtener({
+        propiedad: indicador
+      }) === elementosEnLaLista.at(-1);
     }
 
     if (elementoSuperior.tipo === 'Instancia') {
-      esElÚltimoElemento = get(Código.val, indicador) === get(Código.val, indicador.slice(0, -2)).contexto.at(-1);
+      esElÚltimoElemento = Código.obtener({
+        propiedad: indicador
+      }) === Código.obtener({
+        propiedad: indicador.slice(0, -2)
+      }).contexto.at(-1);
     }
 
     if (esElÚltimoElemento) {
@@ -2550,7 +2614,10 @@ var imprimir = () => {
       }
     ],
     valor: ({ bloquesDeEspacios, indicador }) => {
-      const función = get(Código.val, indicador);
+      const función = Código.obtener({
+        propiedad: indicador
+      });
+
       const { contexto } = función;
 
       return [
@@ -2623,7 +2690,9 @@ var PropiedadesDeInstancia = ({ indicador }) => {
     }
   ];
 
-  const { instancia } = get(Código.val, indicador);
+  const { instancia } = Código.obtener({
+    propiedad: indicador
+  });
 
   if (instancia) {
     const { devuelve } = funciones.find(función => función.nombre === instancia);
@@ -2643,18 +2712,20 @@ var PropiedadesDeInstancia = ({ indicador }) => {
           onchange: ({ target }) => {
             console.log('Se confirmó un cambio');
             ActualizarPropiedad({ indicador, target });
-            const { instancia } = get(Código.val, indicador);
+            const { instancia } = Código.obtener({
+              propiedad: indicador
+            });
+
             const { devuelve, contexto } = funciones.find(función => función.nombre === instancia);
-            set(
-              Código.val,
-              [...indicador, 'devuelve'],
-              devuelve
-            );
-            set(
-              Código.val,
-              [...indicador, 'contexto'],
-              contexto
-            );
+            Código.establecer({
+              propiedad: [...indicador, 'devuelve'],
+              valor: devuelve
+            });
+
+            Código({
+              propiedad: [...indicador, 'contexto'],
+              valor: contexto
+            });
             Visualizar();
           }
         },
@@ -2677,7 +2748,9 @@ const { p: p$2, div: div$3, input: input$2, span: span$7 } = van.tags;
 var PropiedadesDeFunción = ({ indicador }) => {
   let valor;
 
-  const Tipo = get(Código.val, indicador);
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  });
 
   return [
     (() => {
@@ -2804,12 +2877,18 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
 
   let editarPropiedades;
 
-  let Tipo = get(Código.val, indicador);
+  let Tipo = Código.obtener({
+    propiedad: indicador
+  });
+
   if (!Tipo) {
     Tipo = {};
   }
 
-  let últimoElemento = get(Código.val, indicador.slice(0, -1));
+  let últimoElemento = Código.obtener({
+    propiedad: indicador.slice(0, -1)
+  });
+
   if (últimoElemento) {
     últimoElemento = últimoElemento.at(-1);
   }
@@ -2825,8 +2904,13 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
   let esLaÚltimaNuevaLínea;
 
   if (!esLaRaíz && JSON.stringify(indicador) !== '[0]' && JSON.stringify(indicador) !== '[0,"contexto",0]') {
-    esElÚltimoElemento = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1) + 1;
-    esLaÚltimaNuevaLínea = get(Código.val, indicador.slice(0, -1)).length === indicador.at(-1);
+    esElÚltimoElemento = Código.obtener({
+      propiedad: indicador.slice(0, -1)
+    }).length === indicador.at(-1) + 1;
+
+    esLaÚltimaNuevaLínea = Código.obtener({
+      propiedad: indicador.slice(0, -1)
+    }).length === indicador.at(-1);
   }
 
   if (tipo === undefined) {
@@ -2892,7 +2976,10 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
           return null
         }
 
-        const elementoSuperior = get(Código.val, indicador.slice(0, -2));
+        const elementoSuperior = Código.obtener({
+          propiedad: indicador.slice(0, -2)
+        });
+
         let elElementoSuperiorEsUnaLista = false;
         if (elementoSuperior.tipo === 'Lista') {
           elElementoSuperiorEsUnaLista = true;
@@ -3070,7 +3157,9 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   }
 
   if (!tipo) {
-    tipo = get(Código.val, indicador);
+    tipo = Código.obtener({
+      propiedad: indicador
+    });
   }
 
   const esLaRaíz = JSON.stringify(indicador) === '[]';
@@ -3098,7 +3187,9 @@ estilo$3({
 });
 
 var Nulo = ({ bloquesDeEspacios, indicador }) => {
-  const nulo = get(Código.val, indicador);
+  const nulo = Código.obtener({
+    propiedad: indicador
+  });
 
   return elemento$3({
     etiqueta: 'pre',
@@ -3179,7 +3270,9 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
 
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
-  const función = get(Código.val, indicador);
+  const función = Código.obtener({
+    propiedad: indicador
+  });
   const { instancia } = función;
 
   return (() => {
@@ -3272,7 +3365,9 @@ Estilo({
 var Función = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
-  const función = get(Código.val, indicador);
+  const función = Código.obtener({
+    propiedad: indicador
+  });
 
   const contexto = función.contexto.map(({ valor }, indicadorDelElemento) => {
     const código = [];
@@ -3378,7 +3473,9 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
 const { pre: pre$3, span: span$2 } = van.tags;
 
 var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
-  const contexto = get(Código.val, indicador);
+  const contexto = Código.obtener({
+    propiedad: indicador
+  });
 
   return pre$3(
     BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
@@ -3422,7 +3519,9 @@ Estilo({
 var Lista = ({ bloquesDeEspacios, indicador }) => {
   bloquesDeEspacios = bloquesDeEspacios + 1;
 
-  const lista = get(Código.val, indicador);
+  const lista = Código.obtener({
+    propiedad: indicador
+  });
 
   const código = lista.valor.map(({ valor }, indicadorDelElemento) => {
     const código = [];
@@ -3496,7 +3595,9 @@ estilo$2({
 });
 
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
-  const lógica = get(Código.val, indicador);
+  const lógica = Código.obtener({
+    propiedad: indicador
+  });
 
   return elemento$2({
     etiqueta: 'pre',
@@ -3537,7 +3638,9 @@ estilo$1({
 });
 
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
-  const número = get(Código.val, indicador);
+  const número = Código.obtener({
+    propiedad: indicador
+  });
 
   return elemento$1({
     etiqueta: 'pre',
@@ -3594,7 +3697,9 @@ estilo({
 });
 
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
-  const texto = get(Código.val, indicador);
+  const texto = Código.obtener({
+    propiedad: indicador
+  });
   const legi = document.querySelector('#visualización').classList.contains('legi');
 
   return [
@@ -3730,7 +3835,9 @@ Estilo({
 
 var Tipo = ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
   if (!tipo) {
-    tipo = get(Código.val, indicador).tipo;
+    tipo = Código.obtener({
+      propiedad: indicador
+    }).tipo;
   }
 
   if (asignación) {
@@ -3893,8 +4000,48 @@ var Visualizar = () => {
     linebreak: '\n',
     indent: '    ',
     shortArraySyntax: true
-  })(Código.val)};\n\n${visualización.innerText}\n`;
+  })(Código.obtener())};\n\n${visualización.innerText}\n`;
   document.querySelector('#visualización').classList.remove('salida');
+};
+
+var Dato = ({ valor }) => {
+  let valorDelDato = valor;
+  const indicadorDelDato = crypto.randomUUID();
+  let propiedadActualizada;
+  const evento = new CustomEvent(`actualización-${indicadorDelDato}`, {
+    propiedadActualizada: () => propiedadActualizada
+  });
+
+  return {
+    indicadorDelDato,
+    obtener: (propiedades) => {
+      let propiedad;
+
+      if (propiedades) {
+        propiedad = propiedades.propiedad;
+      }
+      if (propiedad) {
+        return get(valorDelDato, propiedad)
+      }
+
+      if (!propiedad) {
+        return valorDelDato
+      }
+    },
+    establecer: ({ propiedad, valor }) => {
+      if (propiedad) {
+        set(valorDelDato, propiedad, valor);
+        propiedadActualizada = propiedad;
+      }
+
+      if (!propiedad) {
+        valorDelDato = valor;
+      }
+
+      const blanco = new EventTarget();
+      blanco.dispatchEvent(evento);
+    }
+  }
 };
 
 var src = {exports: {}};
@@ -15856,7 +16003,9 @@ if (!php) {
 ];`;
 }
 
-const Código = van.state(phpArrayReader.fromString(php));
+const Código = Dato({
+  valor: phpArrayReader.fromString(php)
+});
 
 const Acción = van.state('');
 

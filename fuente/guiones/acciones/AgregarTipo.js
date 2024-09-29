@@ -1,7 +1,7 @@
 import EditarPropiedades from './EditarPropiedades.js'
 import Visualizar from './Visualizar.js'
 import van from 'vanjs-core'
-import { get, set, lowerFirst } from 'lodash-es'
+import { lowerFirst } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { div, button } = van.tags
 
@@ -73,9 +73,14 @@ export default ({ tipo, indicador }) => {
           propiedades.valor = ''
         }
 
-        const nuevoTipo = get(Código.val, indicador.toSpliced(-1)).toSpliced(indicador.at(-1), 0, propiedades)
+        const nuevoTipo = Código.obtener({
+          propiedad: indicador.toSpliced(-1)
+        }).toSpliced(indicador.at(-1), 0, propiedades)
 
-        set(Código.val, indicador.toSpliced(-1), nuevoTipo)
+        Código.establecer({
+          propiedad: indicador.toSpliced(-1),
+          valor: nuevoTipo
+        })
 
         Visualizar()
         EditarPropiedades({ tipo, indicador })

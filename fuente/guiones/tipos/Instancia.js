@@ -5,7 +5,6 @@ import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Estilo from '../Estilo.js'
 import van from 'vanjs-core'
-import { get } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { pre, span, style } = van.tags
 
@@ -64,7 +63,9 @@ export default ({ bloquesDeEspacios, indicador }) => {
 
   bloquesDeEspacios = bloquesDeEspacios + 1
 
-  const función = get(Código.val, indicador)
+  const función = Código.obtener({
+    propiedad: indicador
+  })
   const { instancia } = función
 
   return (() => {

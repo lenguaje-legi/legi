@@ -4,7 +4,6 @@ import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 
 const { estilo, elemento } = Componente()
 
@@ -40,7 +39,9 @@ estilo({
 })
 
 export default ({ bloquesDeEspacios, indicador, valor }) => {
-  const texto = get(Código.val, indicador)
+  const texto = Código.obtener({
+    propiedad: indicador
+  })
   const legi = document.querySelector('#visualización').classList.contains('legi')
 
   return [

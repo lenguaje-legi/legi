@@ -1,14 +1,18 @@
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
 import { Código } from '../inicio.js'
-import { get } from 'lodash-es'
 import van from 'vanjs-core'
 const { div, select, option } = van.tags
 
 export default ({ indicador }) => {
-  const Tipo = get(Código.val, indicador)
+  const Tipo = Código.obtener({
+    propiedad: indicador
+  })
+
   const { tipo } = Tipo
-  const { contexto } = get(Código.val, indicador.slice(0, -2))
+  const { contexto } = Código.obtener({
+    propiedad: indicador.slice(0, -2)
+  })
 
   if (!contexto) {
     return
@@ -40,7 +44,9 @@ export default ({ indicador }) => {
             {
               value: valor,
               selected: (() => {
-                return valor === get(Código.val, [...indicador, 'asignación'])
+                return valor === Código.obtener({
+                  propiedad: [...indicador, 'asignación']
+                })
               })(),
               disabled: (() => {
                 if (tipo === 'Instancia') {
