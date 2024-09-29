@@ -2070,7 +2070,7 @@ var ActualizarPropiedad = ({ indicador, valor, target }) => {
   }
 };
 
-const { p: p$5, div: div$7, input: input$4, span: span$f } = van.tags;
+const { p: p$5, div: div$7, input: input$4, span: span$d } = van.tags;
 
 var PropiedadesDeContexto = ({ indicador }) => {
   let valor;
@@ -2141,7 +2141,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$f({
+          span$d({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2154,7 +2154,7 @@ var PropiedadesDeContexto = ({ indicador }) => {
   ]
 };
 
-const { p: p$4, div: div$6, span: span$e, fieldset: fieldset$1, input: input$3 } = van.tags;
+const { p: p$4, div: div$6, span: span$c, fieldset: fieldset$1, input: input$3 } = van.tags;
 
 var PropiedadesDeLógica = ({ indicador }) => {
   const Tipo = get(Código.val, indicador);
@@ -2186,7 +2186,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$e({
+        span$c({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2216,7 +2216,7 @@ var PropiedadesDeLógica = ({ indicador }) => {
             ActualizarPropiedad({ indicador, target });
           }
         }),
-        span$e({
+        span$c({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2300,7 +2300,126 @@ var PropiedadesDeAsignación = ({ indicador }) => {
   )
 };
 
-const { span: span$d } = van.tags;
+const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
+  if (!reglasAnidadas) {
+    if (Object.keys(reglas).find(regla => typeof reglas[regla] === 'string')) {
+      return CSS({
+        identificadorDelComponente,
+        reglas: {
+          '': {
+            ...reglas
+          }
+        },
+        reglasAnidadas: true
+      })
+    }
+  }
+
+  if (!identificadorDelComponente) {
+    identificadorDelComponente = '';
+  }
+
+  return Object.keys(reglas).map(selector => {
+    let selectorConComponente = selector;
+
+    if (identificadorDelComponente) {
+      selectorConComponente = `${selector}[data-componente="${identificadorDelComponente}"]`;
+    }
+
+    return `
+        ${selectorConComponente} {
+          ${Object.keys(reglas[selector]).map(regla => {
+            if (typeof reglas[selector][regla] === 'object') {
+              let selectorAnidado = regla;
+              const reglasAnidadas = {};
+
+              if (identificadorDelComponente && !selectorAnidado.includes('::') && !selectorAnidado.startsWith('.')) {
+                selectorAnidado = `${selectorAnidado}[data-componente="${identificadorDelComponente}"]`;
+              }
+
+              reglasAnidadas[`&${selectorAnidado}`] = reglas[selector][regla];
+
+              return CSS({ reglas: reglasAnidadas, reglasAnidadas: true })
+            }
+
+            return `${kebabCase(regla)}: ${reglas[selector][regla]};\n`
+          }).join('')}
+        }
+      `
+  }).join('')
+};
+
+const { add: add$2 } = van;
+const { style: style$1 } = van.tags;
+
+var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
+  const estilo = document.querySelector(`#estilo-${nombre}`);
+
+  if (identificadorDelComponente) {
+    nombre = identificadorDelComponente;
+  }
+
+  if (estilo) {
+    return null
+  }
+
+  add$2(document.body, style$1(
+    {
+      id: `estilo-${nombre}`
+    },
+    CSS({
+      reglas,
+      identificadorDelComponente
+    })
+  ));
+};
+
+var Componente = () => {
+  const identificadorDelComponente = crypto.randomUUID();
+
+  return {
+    identificadorDelComponente,
+    elemento: ({ etiqueta, atributos, elementos }) => {
+      if (!atributos) {
+        atributos = {};
+      }
+
+      atributos['data-componente'] = identificadorDelComponente;
+
+      if (atributos.class) {
+        if (Array.isArray(atributos.class)) {
+          atributos.class = atributos.class.join(' ');
+        }
+
+        if (typeof atributos.class === 'object' && !Array.isArray(atributos.class)) {
+          atributos.class = Object.keys(atributos.class).reduce((acarreo, clase) => {
+            if (atributos.class[clase]) {
+              return `${acarreo} ${kebabCase(clase)}`
+            }
+
+            return acarreo
+          });
+        }
+      }
+
+      return van.tags[etiqueta](atributos, elementos)
+    },
+    estilo: ({ reglas }) => {
+      Estilo({
+        identificadorDelComponente,
+        reglas
+      });
+    }
+  }
+};
+
+const { estilo: estilo$4, elemento: elemento$4 } = Componente();
+
+estilo$4({
+  reglas: {
+    marginLeft: '-2.5rem'
+  }
+});
 
 var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   if (bloquesDeEspacios === 0) {
@@ -2308,16 +2427,18 @@ var BloqueDeEspacios = ({ bloquesDeEspacios }) => {
   }
 
   return [...Array(bloquesDeEspacios).keys()].map(() => {
-    return span$d(
-      {
+    return elemento$4({
+      etiqueta: 'span',
+      atributos: {
         class: 'bloque-de-espacios'
       },
-      '    '
+      elementos: '    '
+    }
     )
   })
 };
 
-const { span: span$c } = van.tags;
+const { span: span$b } = van.tags;
 
 var SignoDeDevolver = ({ devolver }) => {
   if (!devolver) {
@@ -2332,7 +2453,7 @@ var SignoDeDevolver = ({ devolver }) => {
     return null
   }
 
-  return span$c(
+  return span$b(
     {
       class: 'ruido devolver'
     },
@@ -2340,7 +2461,7 @@ var SignoDeDevolver = ({ devolver }) => {
   )
 };
 
-const { span: span$b } = van.tags;
+const { span: span$a } = van.tags;
 
 var SignoDeAsignación = ({ asignación }) => {
   if (!asignación) {
@@ -2348,23 +2469,23 @@ var SignoDeAsignación = ({ asignación }) => {
   }
 
   return [
-    span$b(
+    span$a(
       {
         class: 'ruido signo-de-dólar'
       },
       '$'
     ),
-    span$b(
+    span$a(
       {
         class: 'asignación'
       },
       `${get(Código.val, [...JSON.parse(asignación), 'valor', 'nombre'])}`
     ),
-    span$b(
+    span$a(
       {
         class: 'signo-de-asignación'
       },
-      span$b(
+      span$a(
         {
           class: 'ruido'
         },
@@ -2374,7 +2495,7 @@ var SignoDeAsignación = ({ asignación }) => {
   ]
 };
 
-const { span: span$a } = van.tags;
+const { span: span$9 } = van.tags;
 
 var SignoDeCierre = ({ indicador }) => {
   const elementoSuperior = get(Código.val, indicador.slice(0, -2));
@@ -2400,7 +2521,7 @@ var SignoDeCierre = ({ indicador }) => {
     if (esElÚltimoElemento) {
       return null
     }
-    return span$a(
+    return span$9(
       {
         class: 'ruido coma'
       },
@@ -2408,7 +2529,7 @@ var SignoDeCierre = ({ indicador }) => {
     )
   }
 
-  return span$a(
+  return span$9(
     {
       class: 'ruido punto-y-coma'
     },
@@ -2416,7 +2537,7 @@ var SignoDeCierre = ({ indicador }) => {
   )
 };
 
-const { pre: pre$7, span: span$9 } = van.tags;
+const { pre: pre$6, span: span$8 } = van.tags;
 
 var imprimir = () => {
   return {
@@ -2433,41 +2554,41 @@ var imprimir = () => {
       const { contexto } = función;
 
       return [
-        pre$7(
+        pre$6(
           {
             class: 'instancia'
           },
-          pre$7(
+          pre$6(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
             SignoDeDevolver(función),
             SignoDeAsignación(función),
-            span$9('(function ($texto) {')
+            span$8('(function ($texto) {')
           ),
-          pre$7(
+          pre$6(
             {
               style: `margin-left: ${(bloquesDeEspacios - 1) * 2.5}rem;`
             },
             BloqueDeEspacios({ bloquesDeEspacios }),
-            span$9('print($texto);')
+            span$8('print($texto);')
           ),
-          pre$7(
+          pre$6(
             BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-            span$9('})(...[')
+            span$8('})(...[')
           )
         ),
         (() => {
           return contexto.map((contexto, indicadorDelElemento) => {
-            return pre$7(
+            return pre$6(
               {
                 style: 'margin-left: 2.5rem;'
               },
               BloqueDeEspacios({ bloquesDeEspacios }),
-              span$9(`'${contexto.nombre}'`),
-              span$9(
+              span$8(`'${contexto.nombre}'`),
+              span$8(
                 {
                   class: 'signo-de-asignación'
                 },
-                span$9(
+                span$8(
                   {
                     class: 'ruido'
                   },
@@ -2482,9 +2603,9 @@ var imprimir = () => {
             )
           })
         })(),
-        pre$7(
+        pre$6(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$9('])'),
+          span$8('])'),
           SignoDeCierre({ indicador })
         )
       ]
@@ -2551,7 +2672,7 @@ var PropiedadesDeInstancia = ({ indicador }) => {
   ]
 };
 
-const { p: p$2, div: div$3, input: input$2, span: span$8 } = van.tags;
+const { p: p$2, div: div$3, input: input$2, span: span$7 } = van.tags;
 
 var PropiedadesDeFunción = ({ indicador }) => {
   let valor;
@@ -2583,7 +2704,7 @@ var PropiedadesDeFunción = ({ indicador }) => {
               ActualizarPropiedad({ indicador, valor, target });
             }
           }),
-          span$8({
+          span$7({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2596,7 +2717,7 @@ var PropiedadesDeFunción = ({ indicador }) => {
   ]
 };
 
-const { p: p$1, span: span$7, div: div$2, fieldset, input: input$1 } = van.tags;
+const { p: p$1, span: span$6, div: div$2, fieldset, input: input$1 } = van.tags;
 
 var Elección = (opciones) => {
   return fieldset(
@@ -2614,7 +2735,7 @@ var Elección = (opciones) => {
           value: valor,
           onchange: (evento) => alSeleccionar(evento)
         }),
-        span$7({
+        span$6({
           class: 'marca',
           onclick: ({ target }) => {
             target.parentNode.childNodes[0].click();
@@ -2674,8 +2795,8 @@ var Lenguaje = ({ indicador }) => {
   ]
 };
 
-const { add: add$2 } = van;
-const { p, h2, div: div$1, input, textarea, span: span$6 } = van.tags;
+const { add: add$1 } = van;
+const { p, h2, div: div$1, input, textarea, span: span$5 } = van.tags;
 
 var EditarPropiedades = ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades');
@@ -2801,7 +2922,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
               ActualizarPropiedad({ indicador, valor, propiedad, target });
             }
           }),
-          span$6({
+          span$5({
             class: 'marca',
             onclick: ({ target }) => {
               target.parentNode.childNodes[0].click();
@@ -2921,7 +3042,7 @@ var EditarPropiedades = ({ tipo, indicador } = {}) => {
     });
   }
 
-  add$2(propiedades, editarPropiedades);
+  add$1(propiedades, editarPropiedades);
 };
 
 let selección;
@@ -2961,122 +3082,9 @@ var Seleccionar = ({ click, indicador, tipo }) => {
   EditarPropiedades({ tipo, indicador });
 };
 
-const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
-  if (!reglasAnidadas) {
-    if (Object.keys(reglas).find(regla => typeof reglas[regla] === 'string')) {
-      return CSS({
-        identificadorDelComponente,
-        reglas: {
-          '': {
-            ...reglas
-          }
-        },
-        reglasAnidadas: true
-      })
-    }
-  }
+const { estilo: estilo$3, elemento: elemento$3 } = Componente();
 
-  if (!identificadorDelComponente) {
-    identificadorDelComponente = '';
-  }
-
-  return Object.keys(reglas).map(selector => {
-    let selectorConComponente = selector;
-
-    if (identificadorDelComponente) {
-      selectorConComponente = `${selector}[data-componente="${identificadorDelComponente}"]`;
-    }
-
-    return `
-        ${selectorConComponente} {
-          ${Object.keys(reglas[selector]).map(regla => {
-            if (typeof reglas[selector][regla] === 'object') {
-              let selectorAnidado = regla;
-              const reglasAnidadas = {};
-
-              if (identificadorDelComponente && !selectorAnidado.includes('::') && !selectorAnidado.startsWith('.')) {
-                selectorAnidado = `${selectorAnidado}[data-componente="${identificadorDelComponente}"]`;
-              }
-
-              reglasAnidadas[`&${selectorAnidado}`] = reglas[selector][regla];
-
-              return CSS({ reglas: reglasAnidadas, reglasAnidadas: true })
-            }
-
-            return `${kebabCase(regla)}: ${reglas[selector][regla]};\n`
-          }).join('')}
-        }
-      `
-  }).join('')
-};
-
-const { add: add$1 } = van;
-const { style: style$1 } = van.tags;
-
-var Estilo = ({ identificadorDelComponente, nombre, reglas }) => {
-  const estilo = document.querySelector(`#estilo-${nombre}`);
-
-  if (identificadorDelComponente) {
-    nombre = identificadorDelComponente;
-  }
-
-  if (estilo) {
-    return null
-  }
-
-  add$1(document.body, style$1(
-    {
-      id: `estilo-${nombre}`
-    },
-    CSS({
-      reglas,
-      identificadorDelComponente
-    })
-  ));
-};
-
-var Componente = () => {
-  const identificadorDelComponente = crypto.randomUUID();
-
-  return {
-    identificadorDelComponente,
-    elemento: ({ etiqueta, atributos, elementos }) => {
-      if (!atributos) {
-        atributos = {};
-      }
-
-      atributos['data-componente'] = identificadorDelComponente;
-
-      if (atributos.class) {
-        if (Array.isArray(atributos.class)) {
-          atributos.class = atributos.class.join(' ');
-        }
-
-        if (typeof atributos.class === 'object' && !Array.isArray(atributos.class)) {
-          atributos.class = Object.keys(atributos.class).reduce((acarreo, clase) => {
-            if (atributos.class[clase]) {
-              return `${acarreo} ${clase}`
-            }
-
-            return acarreo
-          });
-        }
-      }
-
-      return van.tags[etiqueta](atributos, elementos)
-    },
-    estilo: ({ reglas }) => {
-      Estilo({
-        identificadorDelComponente,
-        reglas
-      });
-    }
-  }
-};
-
-const { estilo: estilo$2, elemento: elemento$2 } = Componente();
-
-estilo$2({
+estilo$3({
   reglas: {
     '.nulo': {
       color: 'transparent',
@@ -3092,13 +3100,13 @@ estilo$2({
 var Nulo = ({ bloquesDeEspacios, indicador }) => {
   const nulo = get(Código.val, indicador);
 
-  return elemento$2({
+  return elemento$3({
     etiqueta: 'pre',
     elementos: [
       BloqueDeEspacios({ bloquesDeEspacios }),
       SignoDeDevolver(nulo),
       SignoDeAsignación(nulo),
-      elemento$2({
+      elemento$3({
         etiqueta: 'span',
         atributos: {
           class: {
@@ -3114,7 +3122,7 @@ var Nulo = ({ bloquesDeEspacios, indicador }) => {
   })
 };
 
-const { pre: pre$6, span: span$5, style } = van.tags;
+const { pre: pre$5, span: span$4, style } = van.tags;
 
 const instancias = {
   imprimir
@@ -3192,23 +3200,23 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
     if (!instancias[instancia]) {
       return [
         estilo(),
-        pre$6(
+        pre$5(
           {
             class: 'instancia'
           },
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
           SignoDeDevolver(función),
           SignoDeAsignación(función),
-          span$5(
+          span$4(
             {
               class: 'ruido'
             },
             '# ('
           )
         ),
-        pre$6(
+        pre$5(
           BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-          span$5(
+          span$4(
             {
               class: 'ruido'
             },
@@ -3226,7 +3234,7 @@ var Instancia = ({ bloquesDeEspacios, indicador }) => {
   })()
 };
 
-const { pre: pre$5, span: span$4 } = van.tags;
+const { pre: pre$4, span: span$3 } = van.tags;
 
 Estilo({
   nombre: 'Función',
@@ -3293,41 +3301,41 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$5(
+    pre$4(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(función),
       SignoDeAsignación(función),
-      span$4(
+      span$3(
         {
           class: 'ruido valor función'
         },
         'function'
       )
     ),
-    pre$5(
+    pre$4(
       {
         style: 'margin-left: 2.5rem;'
       },
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$4(
+      span$3(
         {
           class: 'contexto'
         },
-        span$4(
+        span$3(
           {
             class: 'ruido'
           },
           '/* '
         ),
         'contexto ',
-        span$4(
+        span$3(
           {
             class: 'ruido'
           },
           '*/ '
         )
       ),
-      span$4(
+      span$3(
         {
           class: 'paréntesis-de-apertura'
         },
@@ -3336,16 +3344,16 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
-    pre$5(
+    pre$4(
       BloqueDeEspacios({ bloquesDeEspacios }),
-      span$4(
+      span$3(
         {
           style: 'margin-left: 2.5rem;',
           class: 'paréntesis-de-cierre'
         },
         ')'
       ),
-      span$4(
+      span$3(
         {
           class: 'ruido llave'
         },
@@ -3354,9 +3362,9 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$5(
+    pre$4(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$4(
+      span$3(
         {
           class: 'ruido llave'
         },
@@ -3367,14 +3375,14 @@ var Función = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { pre: pre$4, span: span$3 } = van.tags;
+const { pre: pre$3, span: span$2 } = van.tags;
 
 var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   const contexto = get(Código.val, indicador);
 
-  return pre$4(
+  return pre$3(
     BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
-    span$3(
+    span$2(
       {
         class: 'ruido signo-de-dólar'
       },
@@ -3384,7 +3392,7 @@ var Contexto = ({ bloquesDeEspacios, indicador, valor }) => {
   )
 };
 
-const { pre: pre$3, span: span$2 } = van.tags;
+const { pre: pre$2, span: span$1 } = van.tags;
 
 Estilo({
   nombre: 'Lista',
@@ -3430,11 +3438,11 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   });
 
   return [
-    pre$3(
+    pre$2(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
       SignoDeDevolver(lista),
       SignoDeAsignación(lista),
-      span$2(
+      span$1(
         {
           class: 'ruido corchete'
         },
@@ -3443,9 +3451,9 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
     ),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre$3(
+    pre$2(
       BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span$2(
+      span$1(
         {
           class: 'ruido corchete'
         },
@@ -3456,9 +3464,9 @@ var Lista = ({ bloquesDeEspacios, indicador }) => {
   ]
 };
 
-const { estilo: estilo$1, elemento: elemento$1 } = Componente();
+const { estilo: estilo$2, elemento: elemento$2 } = Componente();
 
-estilo$1({
+estilo$2({
   reglas: {
     color: 'rgb(255, 150, 100)',
 
@@ -3490,13 +3498,13 @@ estilo$1({
 var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   const lógica = get(Código.val, indicador);
 
-  return elemento$1({
+  return elemento$2({
     etiqueta: 'pre',
     elementos: [
       BloqueDeEspacios({ bloquesDeEspacios }),
       SignoDeDevolver(lógica),
       SignoDeAsignación(lógica),
-      elemento$1({
+      elemento$2({
         etiqueta: 'span',
         atributos: {
           class: {
@@ -3513,9 +3521,9 @@ var Lógica = ({ bloquesDeEspacios, indicador, valor }) => {
   })
 };
 
-const { estilo, elemento } = Componente();
+const { estilo: estilo$1, elemento: elemento$1 } = Componente();
 
-estilo({
+estilo$1({
   reglas: {
     color: 'rgb(100, 255, 255)',
 
@@ -3531,13 +3539,13 @@ estilo({
 var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   const número = get(Código.val, indicador);
 
-  return elemento({
+  return elemento$1({
     etiqueta: 'pre',
     elementos: [
       BloqueDeEspacios({ bloquesDeEspacios }),
       SignoDeDevolver(número),
       SignoDeAsignación(número),
-      elemento({
+      elemento$1({
         etiqueta: 'span',
         atributos: {
           class: {
@@ -3552,80 +3560,104 @@ var Número = ({ bloquesDeEspacios, indicador, valor }) => {
   })
 };
 
-const { pre: pre$2, span: span$1 } = van.tags;
+const { estilo, elemento } = Componente();
 
-Estilo({
-  nombre: 'Texto',
+estilo({
   reglas: {
-    '#visualización': {
+    color: 'rgb(255, 255, 100)',
 
-      ' .Texto': {
-        color: 'rgb(255, 255, 100)'
-      },
+    '.inicio-de-texto': {
+      color: 'rgba(255, 255, 0, 0.2)',
 
       '.legi': {
 
-        ' .inicio-de-texto': {
-
-          '::before': {
-            color: '#fff',
-            content: '"✏️"'
-          }
-        },
-
-        ' .Texto': {
-
-          ' .texto': {
-            borderBottom: '1px solid rgba(150, 150, 0, 0.2)'
-          }
+        '::before': {
+          color: '#fff',
+          content: '"✏️"'
         }
       }
+    },
+
+    '.texto': {
+      marginLeft: '2.5rem',
+
+      '.legi': {
+        borderBottom: '1px solid rgba(150, 150, 0, 0.2)'
+      }
+    },
+
+    '.final-de-texto': {
+      color: 'rgba(255, 255, 0, 0.2)',
+      marginLeft: '2.5rem'
     }
   }
 });
 
 var Texto = ({ bloquesDeEspacios, indicador, valor }) => {
   const texto = get(Código.val, indicador);
+  const legi = document.querySelector('#visualización').classList.contains('legi');
 
   return [
-    pre$2(
-      BloqueDeEspacios({ bloquesDeEspacios }),
-      SignoDeDevolver(texto),
-      SignoDeAsignación(texto),
-      span$1(
-        {
-          class: 'ruido valor inicio-de-texto'
-        },
-        '<<<_'
-      )
-    ),
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios }),
+        SignoDeDevolver(texto),
+        SignoDeAsignación(texto),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: {
+              ruido: true,
+              valor: true,
+              inicioDeTexto: true,
+              legi
+            }
+          },
+          elementos: '<<<_'
+        })
+      ]
+    }),
     (() => {
       if (valor === '' || valor === undefined) {
         return ''
       }
 
       valor = valor.split('\n').map(valor => {
-        return pre$2(
-          {
-            class: 'texto'
+        return elemento({
+          etiqueta: 'pre',
+          atributos: {
+            class: {
+              texto: true,
+              legi
+            }
           },
-          BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
-          valor
-        )
+          elementos: [
+            BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
+            valor
+          ]
+        })
       });
 
       return valor
     })(),
-    pre$2(
-      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
-      span$1(
-        {
-          class: 'ruido final-de-texto'
-        },
-        '_'
-      ),
-      SignoDeCierre({ indicador })
-    )
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios + 1 }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'final-de-texto'
+            ]
+          },
+          elementos: '_'
+        }),
+        SignoDeCierre({ indicador })
+      ]
+    })
   ]
 };
 
@@ -3683,10 +3715,6 @@ Estilo({
       ' .Tipo': {
         padding: '0 0.5rem',
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
-
-        ' .bloque-de-espacios': {
-          marginLeft: '-2.5rem'
-        },
 
         ' .Tipo': {
           marginLeft: '2rem'

@@ -28,10 +28,6 @@ Estilo({
         padding: '0 0.5rem',
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
 
-        ' .bloque-de-espacios': {
-          marginLeft: '-2.5rem'
-        },
-
         ' .Tipo': {
           marginLeft: '2rem'
         },

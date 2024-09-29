@@ -19,11 +19,6 @@
     margin-right: -1.8rem;
 }
 
-#visualización .texto,
-#visualización .final-de-texto {
-    margin-left: 2.5rem;
-}
-
 #visualización .Contexto pre {
     margin-left: 2.5rem;
 }
@@ -36,14 +31,8 @@
     background-color: rgba(0, 0, 75, 0.2);
 }
 
-#visualización .llave,
-#visualización .inicio-de-texto,
-#visualización .final-de-texto {
+#visualización .llave {
     color: rgba(255, 255, 0, 0.2);
-}
-
-#visualización.legi .final-de-texto {
-    display: contents;
 }
 
 #visualización.legi .signo-de-dólar {

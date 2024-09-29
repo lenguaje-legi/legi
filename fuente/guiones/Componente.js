@@ -1,5 +1,6 @@
 import van from 'vanjs-core'
 import Estilo from './Estilo'
+import { kebabCase } from 'lodash-es'
 
 export default () => {
   const identificadorDelComponente = crypto.randomUUID()
@@ -21,7 +22,7 @@ export default () => {
         if (typeof atributos.class === 'object' && !Array.isArray(atributos.class)) {
           atributos.class = Object.keys(atributos.class).reduce((acarreo, clase) => {
             if (atributos.class[clase]) {
-              return `${acarreo} ${clase}`
+              return `${acarreo} ${kebabCase(clase)}`
             }
 
             return acarreo

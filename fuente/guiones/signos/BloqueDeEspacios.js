@@ -1,5 +1,12 @@
-import van from 'vanjs-core'
-const { span } = van.tags
+import Componente from '../Componente'
+
+const { estilo, elemento } = Componente()
+
+estilo({
+  reglas: {
+    marginLeft: '-2.5rem'
+  }
+})
 
 export default ({ bloquesDeEspacios }) => {
   if (bloquesDeEspacios === 0) {
@@ -7,11 +14,13 @@ export default ({ bloquesDeEspacios }) => {
   }
 
   return [...Array(bloquesDeEspacios).keys()].map(() => {
-    return span(
-      {
+    return elemento({
+      etiqueta: 'span',
+      atributos: {
         class: 'bloque-de-espacios'
       },
-      '    '
+      elementos: '    '
+    }
     )
   })
 }
