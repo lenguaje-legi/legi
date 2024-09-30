@@ -1,4 +1,4 @@
-import van from 'vanjs-core'
+import van from '../módulos-de-node/vanjs/van.js'
 import CSS from './CSS.js'
 const { add } = van
 const { style } = van.tags

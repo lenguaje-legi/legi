@@ -1,6 +1,6 @@
-import van from 'vanjs-core'
+import van from '../../módulos-de-node/vanjs/van.js'
+import json2php from '../../módulos-de-node/json2php/json2php.js'
 import Tipo from '../tipos/Tipo.js'
-import json2php from 'json2php'
 import { Código } from '../inicio.js'
 const { add } = van
 

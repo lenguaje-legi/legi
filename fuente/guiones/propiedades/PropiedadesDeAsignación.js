@@ -1,7 +1,7 @@
+import van from '../../módulos-de-node/vanjs/van.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
 import { Código } from '../inicio.js'
-import van from 'vanjs-core'
 const { div, select, option } = van.tags
 
 export default ({ indicador }) => {

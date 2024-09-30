@@ -1,8 +1,8 @@
+import van from '../../módulos-de-node/vanjs/van.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import Visualizar from '../acciones/Visualizar.js'
 import imprimir from '../funciones/imprimir.js'
 import { Código } from '../inicio.js'
-import van from 'vanjs-core'
 const { p, div, select, option } = van.tags
 
 export default ({ indicador }) => {

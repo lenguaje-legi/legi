@@ -1,7 +1,7 @@
+import van from '../../módulos-de-node/vanjs/van.js'
+import lowerFirst from '../../módulos-de-node/lodash/lowerFirst.js'
 import EditarPropiedades from './EditarPropiedades.js'
 import Visualizar from './Visualizar.js'
-import van from 'vanjs-core'
-import { lowerFirst } from 'lodash-es'
 import { Código } from '../inicio.js'
 const { div, button } = van.tags
 

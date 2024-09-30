@@ -1,5 +1,5 @@
+import van from '../../módulos-de-node/vanjs/van.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
-import van from 'vanjs-core'
 import Elección from '../componentes/Elección.js'
 const { h2 } = van.tags
 const visualización = document.querySelector('#visualización')

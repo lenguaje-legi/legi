@@ -1,6 +1,6 @@
+import van from '../../módulos-de-node/vanjs/van.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import { Código } from '../inicio.js'
-import van from 'vanjs-core'
 const { p, div, span, fieldset, input } = van.tags
 
 export default ({ indicador }) => {

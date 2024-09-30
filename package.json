@@ -18,7 +18,7 @@
   },
   "scripts": {
     "servidor": "node ./fuente/guiones/servidor.js",
-    "compilar": "rollup -c --watch",
+    "compilar": "rollup -c",
     "desarrollar": "concurrently \"npm:servidor\" \"npm:compilar\""
   },
   "dependencies": {

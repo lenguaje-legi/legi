@@ -1,4 +1,5 @@
-import { get, set } from 'lodash-es'
+import get from '../módulos-de-node/lodash/get.js'
+import set from '../módulos-de-node/lodash/set.js'
 
 export default ({ valor }) => {
   let valorDelDato = valor

@@ -1,9 +1,9 @@
+import van from '../módulos-de-node/vanjs/van.js'
+import fromString from '../módulos-de-node/php-array-reader/fromString.js'
 import Visualizar from './acciones/Visualizar.js'
-import van from 'vanjs-core'
 import Seleccionar from './acciones/Seleccionar.js'
 import Estilo from './Estilo.js'
 import Dato from './Dato.js'
-import { fromString } from 'php-array-reader'
 
 const leerArchivo = async () => {
   try {

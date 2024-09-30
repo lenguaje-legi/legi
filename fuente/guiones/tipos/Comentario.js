@@ -1,4 +1,4 @@
-import van from 'vanjs-core'
+import van from '../../módulos-de-node/vanjs/van.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import Estilo from '../Estilo.js'
 const { pre, span } = van.tags

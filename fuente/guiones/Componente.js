@@ -1,5 +1,5 @@
-import Estilo from './Estilo'
-import { kebabCase } from 'lodash-es'
+import Estilo from './Estilo.js'
+import kebabCase from '../módulos-de-node/lodash/kebabCase.js'
 
 const anidarElementos = ({ elemento, elementos }) => {
   if (elementos instanceof HTMLElement) {

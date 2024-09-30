@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash-es'
+import kebabCase from '../módulos-de-node/lodash/kebabCase.js'
 
 const CSS = ({ reglas, identificadorDelComponente, reglasAnidadas }) => {
   if (!reglasAnidadas) {

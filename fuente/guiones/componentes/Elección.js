@@ -1,4 +1,4 @@
-import van from 'vanjs-core'
+import van from '../../módulos-de-node/vanjs/van.js'
 const { p, span, div, fieldset, input } = van.tags
 
 export default (opciones) => {

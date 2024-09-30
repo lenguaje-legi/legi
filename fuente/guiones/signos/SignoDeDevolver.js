@@ -1,4 +1,4 @@
-import van from 'vanjs-core'
+import van from '../../módulos-de-node/vanjs/van.js'
 const { span } = van.tags
 
 export default ({ devolver }) => {

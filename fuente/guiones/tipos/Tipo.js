@@ -1,5 +1,5 @@
+import van from '../../módulos-de-node/vanjs/van.js'
 import Seleccionar from '../acciones/Seleccionar.js'
-import van from 'vanjs-core'
 import { Código } from '../inicio.js'
 import Nulo from './Nulo.js'
 import Instancia from './Instancia.js'

@@ -1,4 +1,4 @@
-import van from 'vanjs-core'
+import van from '../../módulos-de-node/vanjs/van.js'
 import { Código } from '../inicio.js'
 const { span } = van.tags
 
