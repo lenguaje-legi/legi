@@ -4,21 +4,23 @@ import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
-import Estilo from '../Estilo.js'
+import Componente from '../Componente.js'
 import { Código } from '../inicio.js'
 const { pre, span, style } = van.tags
+
+const { estilo } = Componente()
 
 const instancias = {
   imprimir
 }
 
-Estilo({
-  nombre: 'Instancia',
+estilo({
+  global: true,
   reglas: {
     '#visualización': {
 
       ' .Instancia': {
-        paddingBottom: '1.2rem !important',
+        paddingBottom: '1.3rem !important',
 
         ' .instancia': {
           color: 'rgb(100, 100, 255)'

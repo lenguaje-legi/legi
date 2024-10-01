@@ -5,11 +5,13 @@ import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
 import { Código } from '../inicio.js'
-import Estilo from '../Estilo.js'
+import Componente from '../Componente.js'
 const { pre, span } = van.tags
 
-Estilo({
-  nombre: 'Lista',
+const { estilo } = Componente()
+
+estilo({
+  global: true,
   reglas: {
     '#visualización': {
 

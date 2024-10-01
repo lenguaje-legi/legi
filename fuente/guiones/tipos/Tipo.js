@@ -11,11 +11,13 @@ import Número from './Número.js'
 import Texto from './Texto.js'
 import Comentario from './Comentario.js'
 import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
-import Estilo from '../Estilo.js'
+import Componente from '../Componente.js'
 const { div } = van.tags
 
-Estilo({
-  nombre: 'Tipo',
+const { estilo } = Componente()
+
+estilo({
+  global: true,
   reglas: {
     '#visualización': {
 

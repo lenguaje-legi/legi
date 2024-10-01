@@ -1,42 +1,60 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
-import Estilo from '../Estilo.js'
-const { pre, span } = van.tags
 
-Estilo({
-  nombre: 'Comentario',
+const { estilo, elemento } = Componente()
+
+estilo({
   reglas: {
-    '#visualización': {
+    '.legi': {
+      paddingBottom: '1.3rem',
 
-      '.legi': {
+      '& .comentario': {
+        marginLeft: '-1.3rem'
+      },
 
-        ' .Comentario': {
-          paddingBottom: '1.3rem',
+      '::before': {
+        content: '"💬"'
+      },
 
-          '::before': {
-            content: '"💬"'
-          },
-
-          ' pre': {
-            borderBottom: '1px solid rgba(100, 100, 100, 0.2)'
-          }
-        }
+      ' pre': {
+        borderBottom: '1px solid rgba(100, 100, 100, 0.2)',
+        marginLeft: '1.3rem'
       }
     }
   }
 })
 
 export default ({ bloquesDeEspacios, valor }) => {
-  return valor.split('\n').map(valor => {
-    return pre(
-      BloqueDeEspacios({ bloquesDeEspacios }),
-      span(
-        {
-          class: 'ruido signo-de-número'
-        },
-        '# '
-      ),
-      valor
-    )
+  return elemento({
+    etiqueta: 'pre',
+    atributos: {
+      class: {
+        legi: document.querySelector('#visualización').classList.contains('legi')
+      }
+    },
+    elementos: (() => {
+      return valor.split('\n').map(valor => {
+        return elemento({
+          etiqueta: 'pre',
+          elementos: [
+            BloqueDeEspacios({ bloquesDeEspacios }),
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'ruido signo-de-número'
+              },
+              elementos: '# '
+            }),
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'comentario'
+              },
+              elementos: valor
+            })
+          ]
+        })
+      })
+    })()
   })
 }

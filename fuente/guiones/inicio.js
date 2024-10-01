@@ -2,8 +2,10 @@ import van from '../módulos-de-node/vanjs/van.js'
 import fromString from '../módulos-de-node/php-array-reader/fromString.js'
 import Visualizar from './acciones/Visualizar.js'
 import Seleccionar from './acciones/Seleccionar.js'
-import Estilo from './Estilo.js'
+import Componente from './Componente.js'
 import Dato from './Dato.js'
+
+const { estilo } = Componente()
 
 const leerArchivo = async () => {
   try {
@@ -65,8 +67,8 @@ visualización.onclick = click => {
 
 Visualizar()
 
-Estilo({
-  nombre: 'Visualización',
+estilo({
+  global: true,
   reglas: {
     body: {
       fontFamily: '"0xProto"',
