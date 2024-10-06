@@ -1,5 +1,5 @@
-import van from '../../módulos-de-node/vanjs/van.js'
-import capitalize from '../../módulos-de-node/lodash/capitalize.js'
+import Componente from '../Componente.js'
+import { capitalize } from '../../módulos-de-node/lodash.js'
 import AgregarTipo from './AgregarTipo.js'
 import ActualizarPropiedad from './ActualizarPropiedad.js'
 import PropiedadesDeContexto from '../propiedades/PropiedadesDeContexto.js'
@@ -9,8 +9,8 @@ import PropiedadesDeInstancia from '../propiedades/PropiedadesDeInstancia.js'
 import PropiedadesDeFunción from '../propiedades/PropiedadesDeFunción.js'
 import { Código } from '../inicio.js'
 import Lenguaje from '../propiedades/Lenguaje.js'
-const { add } = van
-const { p, h2, div, input, textarea, span } = van.tags
+
+const { elemento, anidarElementos } = Componente()
 
 export default ({ tipo, indicador } = {}) => {
   const propiedades = document.querySelector('#propiedades')
@@ -64,8 +64,9 @@ export default ({ tipo, indicador } = {}) => {
     }
 
     if (indicador.slice(0, -1).at(-1) !== 'contexto') {
-      editarPropiedades = div(
-        [
+      editarPropiedades = elemento({
+        etiqueta: 'div',
+        elementos: [
           'Nulo',
           'Instancia',
           'Función',
@@ -80,16 +81,17 @@ export default ({ tipo, indicador } = {}) => {
             indicador
           })
         })
-      )
+      })
     }
 
     if (indicador.slice(0, -1).at(-1) === 'contexto') {
-      editarPropiedades = div(
-        AgregarTipo({
+      editarPropiedades = elemento({
+        etiqueta: 'div',
+        elementos: AgregarTipo({
           tipo: 'Contexto',
           indicador
         })
-      )
+      })
     }
   }
 
@@ -104,12 +106,13 @@ export default ({ tipo, indicador } = {}) => {
       }
 
       if (propiedad === 'tipo') {
-        return h2(
-          {
+        return elemento({
+          etiqueta: 'h2',
+          atributos: {
             class: 'tipo'
           },
-          Tipo[propiedad]
-        )
+          elementos: Tipo[propiedad]
+        })
       }
 
       if (propiedad === 'devolver') {
@@ -130,34 +133,50 @@ export default ({ tipo, indicador } = {}) => {
           return null
         }
 
-        return div(
-          {
+        return elemento({
+          etiqueta: 'div',
+          atributos: {
             class: 'verificación'
           },
-          input({
-            'data-propiedad': JSON.stringify([...indicador, propiedad]),
-            type: 'checkbox',
-            checked: Tipo[propiedad],
-            value: Tipo[propiedad],
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio')
-              if (target.checked) {
-                target.value = true
+          elementos: [
+            elemento({
+              etiqueta: 'input',
+              atributos: {
+                dataPropiedad: JSON.stringify([...indicador, propiedad]),
+                type: 'checkbox',
+                checked: Tipo[propiedad],
+                value: Tipo[propiedad]
+              },
+              eventos: {
+                change: ({ target }) => {
+                  console.log('Se confirmó un cambio')
+                  if (target.checked) {
+                    target.value = true
+                  }
+                  if (!target.checked) {
+                    target.value = false
+                  }
+                  ActualizarPropiedad({ indicador, valor, propiedad, target })
+                }
               }
-              if (!target.checked) {
-                target.value = false
+            }),
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'marca'
+              },
+              eventos: {
+                click: ({ target }) => {
+                  target.parentNode.childNodes[0].click()
+                }
               }
-              ActualizarPropiedad({ indicador, valor, propiedad, target })
-            }
-          }),
-          span({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click()
-            }
-          }),
-          p(capitalize(propiedad))
-        )
+            }),
+            elemento({
+              etiqueta: 'p',
+              elementos: capitalize(propiedad)
+            })
+          ]
+        })
       }
 
       if (tipo === 'Contexto') {
@@ -196,10 +215,28 @@ export default ({ tipo, indicador } = {}) => {
         return PropiedadesDeLógica({ indicador })
       }
 
-      let casilla = input
+      let casilla = propiedades => {
+        return elemento({
+          etiqueta: 'input',
+          atributos: {
+            value: Tipo[propiedad],
+            dataPropiedad: JSON.stringify([...indicador, propiedad])
+          },
+          ...propiedades
+        })
+      }
 
       if (tipo === 'Texto' || tipo === 'Comentario') {
-        casilla = textarea
+        casilla = propiedades => {
+          return elemento({
+            etiqueta: 'textarea',
+            atributos: {
+              dataPropiedad: JSON.stringify([...indicador, propiedad])
+            },
+            ...propiedades,
+            elementos: Tipo[propiedad]
+          })
+        }
       }
 
       setTimeout(() => {
@@ -210,65 +247,76 @@ export default ({ tipo, indicador } = {}) => {
         }
       }, 0)
 
-      return div(
-        {
+      return elemento({
+        etiqueta: 'div',
+        atributos: {
           class: 'propiedad'
         },
-        p(capitalize(propiedad)),
-        casilla({
-          value: Tipo[propiedad],
-          'data-propiedad': JSON.stringify([...indicador, propiedad]),
-          oninput: ({ target }) => {
-            if (tipo === 'Texto' && propiedad === 'valor') {
-              target.style.height = ''
-              target.style.height = `${target.scrollHeight}px`
-            }
-          },
-          onfocus: ({ target }) => {
-            valor = target.value
-            console.log('Se inició un cambio')
-          },
-          onfocusout: ({ target }) => {
-            if (valor === target.value) {
-              return
-            }
-            if (confirmado) {
-              confirmado = false
-              return
-            }
-            console.log('Se aplicó un cambio')
-            ActualizarPropiedad({ indicador, valor, propiedad, target })
-          },
-          onkeydown: event => {
-            if (tipo !== 'Texto' && tipo !== 'Comentario') {
-              return
-            }
+        elementos: [
+          elemento({
+            etiqueta: 'p',
+            elementos: capitalize(propiedad)
+          }),
+          casilla({
+            eventos: {
+              input: ({ target }) => {
+                if (tipo === 'Texto' && propiedad === 'valor') {
+                  target.style.height = ''
+                  target.style.height = `${target.scrollHeight}px`
+                }
+              },
+              focus: ({ target }) => {
+                valor = target.value
+                console.log('Se inició un cambio')
+              },
+              focusout: ({ target }) => {
+                if (valor === target.value) {
+                  return
+                }
+                if (confirmado) {
+                  confirmado = false
+                  return
+                }
+                console.log('Se aplicó un cambio')
+                ActualizarPropiedad({ indicador, valor, propiedad, target })
+              },
+              keydown: event => {
+                if (tipo !== 'Texto' && tipo !== 'Comentario') {
+                  return
+                }
 
-            const { key, shiftKey } = event
-            if (key === 'Enter' && shiftKey) {
-              event.preventDefault()
-            }
-          },
-          onkeyup: ({ target, key, shiftKey }) => {
-            if ((tipo === 'Texto' || tipo === 'Comentario') && (key === 'Enter' && !shiftKey)) {
-              return
-            }
+                const { key, shiftKey } = event
+                if (key === 'Enter' && shiftKey) {
+                  event.preventDefault()
+                }
+              },
+              keyup: ({ target, key, shiftKey }) => {
+                if ((tipo === 'Texto' || tipo === 'Comentario') && (key === 'Enter' && !shiftKey)) {
+                  return
+                }
 
-            if (key !== undefined && key !== 'Enter') {
-              return
+                if (key !== undefined && key !== 'Enter') {
+                  return
+                }
+
+                confirmado = true
+
+                target.blur()
+                if (valor === target.value) {
+                  return
+                }
+                console.log('Se confirmó un cambio')
+                ActualizarPropiedad({ indicador, valor, target })
+              }
             }
-            confirmado = true
-            target.blur()
-            if (valor === target.value) {
-              return
-            }
-            console.log('Se confirmó un cambio')
-            ActualizarPropiedad({ indicador, valor, target })
-          }
-        })
-      )
+          })
+        ]
+      })
     })
   }
 
-  add(propiedades, editarPropiedades)
+  anidarElementos({
+    elemento: propiedades,
+    elementos: editarPropiedades
+  })
 }

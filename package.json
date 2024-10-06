@@ -13,8 +13,7 @@
     "php-array-reader": "^2.1.2",
     "rollup": "^4.18.0",
     "rollup-plugin-node-globals": "^1.4.0",
-    "standard": "^17.1.0",
-    "vanjs-core": "^1.5.0"
+    "standard": "^17.1.0"
   },
   "scripts": {
     "servidor": "node ./fuente/guiones/servidor.js",

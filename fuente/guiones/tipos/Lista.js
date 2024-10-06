@@ -1,14 +1,12 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
 import { Código } from '../inicio.js'
-import Componente from '../Componente.js'
-const { pre, span } = van.tags
 
-const { estilo } = Componente()
+const { estilo, elemento } = Componente()
 
 estilo({
   global: true,
@@ -56,28 +54,42 @@ export default ({ bloquesDeEspacios, indicador }) => {
   })
 
   return [
-    pre(
-      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      SignoDeDevolver(lista),
-      SignoDeAsignación(lista),
-      span(
-        {
-          class: 'ruido corchete'
-        },
-        '['
-      )
-    ),
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+        SignoDeDevolver(lista),
+        SignoDeAsignación(lista),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'corchete'
+            ]
+          },
+          elementos: '['
+        })
+      ]
+    }),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre(
-      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span(
-        {
-          class: 'ruido corchete'
-        },
-        ']'
-      ),
-      SignoDeCierre({ indicador })
-    )
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'corchete'
+            ]
+          },
+          elementos: ']'
+        }),
+        SignoDeCierre({ indicador })
+      ]
+    })
   ]
 }

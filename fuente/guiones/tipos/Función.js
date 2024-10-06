@@ -1,14 +1,12 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import BloqueDeEspacios from '../signos/BloqueDeEspacios.js'
 import SignoDeDevolver from '../signos/SignoDeDevolver.js'
 import SignoDeAsignación from '../signos/SignoDeAsignación.js'
 import SignoDeCierre from '../signos/SignoDeCierre.js'
 import Tipo from './Tipo.js'
-import Componente from '../Componente.js'
 import { Código } from '../inicio.js'
-const { pre, span } = van.tags
 
-const { estilo } = Componente()
+const { estilo, elemento } = Componente()
 
 estilo({
   global: true,
@@ -77,76 +75,108 @@ export default ({ bloquesDeEspacios, indicador }) => {
   })
 
   return [
-    pre(
-      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      SignoDeDevolver(función),
-      SignoDeAsignación(función),
-      span(
-        {
-          class: 'ruido valor función'
-        },
-        'function'
-      )
-    ),
-    pre(
-      {
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+        SignoDeDevolver(función),
+        SignoDeAsignación(función),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'valor',
+              'función'
+            ]
+          },
+          elementos: 'function'
+        })
+      ]
+    }),
+    elemento({
+      etiqueta: 'pre',
+      atributos: {
         style: 'margin-left: 2.5rem;'
       },
-      BloqueDeEspacios({ bloquesDeEspacios }),
-      span(
-        {
-          class: 'contexto'
-        },
-        span(
-          {
-            class: 'ruido'
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: 'contexto'
           },
-          '/* '
-        ),
-        'contexto ',
-        span(
-          {
-            class: 'ruido'
+          elementos: [
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'ruido'
+              },
+              elementos: '/* '
+            }),
+            'contexto ',
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'ruido'
+              },
+              elementos: '*/ '
+            })
+          ]
+        }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: 'paréntesis-de-apertura'
           },
-          '*/ '
-        )
-      ),
-      span(
-        {
-          class: 'paréntesis-de-apertura'
-        },
-        '('
-      )
-    ),
+          elementos: '('
+        })
+      ]
+    }),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'contexto', 0] }),
     contexto,
-    pre(
-      BloqueDeEspacios({ bloquesDeEspacios }),
-      span(
-        {
-          style: 'margin-left: 2.5rem;',
-          class: 'paréntesis-de-cierre'
-        },
-        ')'
-      ),
-      span(
-        {
-          class: 'ruido llave'
-        },
-        ' {'
-      )
-    ),
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            style: 'margin-left: 2.5rem;',
+            class: 'paréntesis-de-cierre'
+          },
+          elementos: ')'
+        }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'llave'
+            ]
+          },
+          elementos: ' {'
+        })
+      ]
+    }),
     Tipo({ tipo: 'Nueva línea', indicador: [...indicador, 'valor', 0] }),
     código,
-    pre(
-      BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
-      span(
-        {
-          class: 'ruido llave'
-        },
-        '}'
-      ),
-      SignoDeCierre({ indicador })
-    )
+    elemento({
+      etiqueta: 'pre',
+      elementos: [
+        BloqueDeEspacios({ bloquesDeEspacios: bloquesDeEspacios - 1 }),
+        elemento({
+          etiqueta: 'span',
+          atributos: {
+            class: [
+              'ruido',
+              'llave'
+            ]
+          },
+          elementos: '}'
+        }),
+        SignoDeCierre({ indicador })
+      ]
+    })
   ]
 }

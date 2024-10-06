@@ -1,6 +1,7 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import { Código } from '../inicio.js'
-const { span } = van.tags
+
+const { elemento } = Componente()
 
 export default ({ asignación }) => {
   if (!asignación) {
@@ -8,30 +9,37 @@ export default ({ asignación }) => {
   }
 
   return [
-    span(
-      {
-        class: 'ruido signo-de-dólar'
+    elemento({
+      etiqueta: 'span',
+      atributos: {
+        class: [
+          'ruido',
+          'signo-de-dólar'
+        ]
       },
-      '$'
-    ),
-    span(
-      {
+      elementos: '$'
+    }),
+    elemento({
+      etiqueta: 'span',
+      atributos: {
         class: 'asignación'
       },
-      `${Código.obtener({
+      elementos: `${Código.obtener({
         propiedad: [...JSON.parse(asignación), 'valor', 'nombre']
       })}`
-    ),
-    span(
-      {
+    }),
+    elemento({
+      etiqueta: 'span',
+      atributos: {
         class: 'signo-de-asignación'
       },
-      span(
-        {
+      elementos: elemento({
+        etiqueta: 'span',
+        atributos: {
           class: 'ruido'
         },
-        ' = '
-      )
-    )
+        elementos: ' = '
+      })
+    })
   ]
 }

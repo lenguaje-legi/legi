@@ -1,30 +1,50 @@
-import van from '../../módulos-de-node/vanjs/van.js'
-const { p, span, div, fieldset, input } = van.tags
+import Componente from '../Componente.js'
+
+const { elemento } = Componente()
 
 export default (opciones) => {
-  return fieldset(
-    opciones.map(opción => {
-      const { nombre, valor, seleccionado, alSeleccionar } = opción
+  return elemento({
+    etiqueta: 'fieldset',
+    elementos: [
+      opciones.map(opción => {
+        const { nombre, valor, seleccionado, alSeleccionar } = opción
 
-      return div(
-        {
-          class: 'elección'
-        },
-        input({
-          type: 'radio',
-          name: 'visualización',
-          checked: seleccionado,
-          value: valor,
-          onchange: (evento) => alSeleccionar(evento)
-        }),
-        span({
-          class: 'marca',
-          onclick: ({ target }) => {
-            target.parentNode.childNodes[0].click()
-          }
-        }),
-        p(nombre)
-      )
-    })
-  )
+        return elemento({
+          etiqueta: 'div',
+          atributos: {
+            class: 'elección'
+          },
+          elementos: [
+            elemento({
+              etiqueta: 'input',
+              atributos: {
+                type: 'radio',
+                name: 'visualización',
+                checked: seleccionado,
+                value: valor
+              },
+              eventos: {
+                change: (evento) => alSeleccionar(evento)
+              }
+            }),
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'marca'
+              },
+              eventos: {
+                click: ({ target }) => {
+                  target.parentNode.childNodes[0].click()
+                }
+              }
+            }),
+            elemento({
+              etiqueta: 'p',
+              elementos: nombre
+            })
+          ]
+        })
+      })
+    ]
+  })
 }

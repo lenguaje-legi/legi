@@ -8,7 +8,7 @@ estilo({
     '.legi': {
       paddingBottom: '1.3rem',
 
-      '& .comentario': {
+      ' .comentario': {
         marginLeft: '-1.3rem'
       },
 

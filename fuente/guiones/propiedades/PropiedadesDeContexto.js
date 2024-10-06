@@ -1,7 +1,8 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import { Código } from '../inicio.js'
-const { p, div, input, span } = van.tags
+
+const { elemento } = Componente()
 
 export default ({ indicador }) => {
   let valor
@@ -12,44 +13,55 @@ export default ({ indicador }) => {
   })
 
   return [
-    div(
-      {
+    elemento({
+      etiqueta: 'div',
+      atributos: {
         class: 'propiedad'
       },
-      p('Nombre'),
-      input({
-        value: Tipo.valor.nombre,
-        'data-propiedad': JSON.stringify([...indicador, 'valor', 'nombre']),
-        onfocus: ({ target }) => {
-          valor = target.value
-          console.log('Se inició un cambio')
-        },
-        onfocusout: ({ target }) => {
-          if (valor === target.value) {
-            return
-          }
-          if (confirmado) {
-            confirmado = false
-            return
-          }
-          console.log('Se aplicó un cambio')
-          ActualizarPropiedad({ indicador, valor, target })
-        },
-        onkeyup: ({ target, key }) => {
-          if (key !== undefined && key !== 'Enter') {
-            return
-          }
+      elementos: [
+        elemento({
+          etiqueta: 'p',
+          elementos: 'Nombre'
+        }),
+        elemento({
+          etiqueta: 'input',
+          atributos: {
+            value: Tipo.valor.nombre,
+            dataPropiedad: JSON.stringify([...indicador, 'valor', 'nombre'])
+          },
+          eventos: {
+            focus: ({ target }) => {
+              valor = target.value
+              console.log('Se inició un cambio')
+            },
+            focusout: ({ target }) => {
+              if (valor === target.value) {
+                return
+              }
+              if (confirmado) {
+                confirmado = false
+                return
+              }
+              console.log('Se aplicó un cambio')
+              ActualizarPropiedad({ indicador, valor, target })
+            },
+            keyup: ({ target, key }) => {
+              if (key !== undefined && key !== 'Enter') {
+                return
+              }
 
-          confirmado = true
-          target.blur()
-          if (valor === target.value) {
-            return
+              confirmado = true
+              target.blur()
+              if (valor === target.value) {
+                return
+              }
+              console.log('Se confirmó un cambio')
+              ActualizarPropiedad({ indicador, valor, target })
+            }
           }
-          console.log('Se confirmó un cambio')
-          ActualizarPropiedad({ indicador, valor, target })
-        }
-      })
-    ),
+        })
+      ]
+    }),
     (() => {
       return [
         'Función',
@@ -59,29 +71,45 @@ export default ({ indicador }) => {
         'Texto',
         'Nulo'
       ].map((tipo) => {
-        return div(
-          {
+        return elemento({
+          etiqueta: 'div',
+          atributos: {
             class: 'elección'
           },
-          input({
-            type: 'radio',
-            name: 'tipo',
-            checked: Tipo.valor.tipo === tipo,
-            value: tipo,
-            'data-propiedad': JSON.stringify([...indicador, 'valor', 'tipo']),
-            onchange: ({ target }) => {
-              console.log('Se confirmó un cambio')
-              ActualizarPropiedad({ indicador, valor, target })
-            }
-          }),
-          span({
-            class: 'marca',
-            onclick: ({ target }) => {
-              target.parentNode.childNodes[0].click()
-            }
-          }),
-          p(tipo)
-        )
+          elementos: [
+            elemento({
+              etiqueta: 'input',
+              atributos: {
+                type: 'radio',
+                name: 'tipo',
+                checked: Tipo.valor.tipo === tipo,
+                value: tipo,
+                dataPropiedad: JSON.stringify([...indicador, 'valor', 'tipo'])
+              },
+              eventos: {
+                change: ({ target }) => {
+                  console.log('Se confirmó un cambio')
+                  ActualizarPropiedad({ indicador, valor, target })
+                }
+              }
+            }),
+            elemento({
+              etiqueta: 'span',
+              atributos: {
+                class: 'marca'
+              },
+              eventos: {
+                click: ({ target }) => {
+                  target.parentNode.childNodes[0].click()
+                }
+              }
+            }),
+            elemento({
+              etiqueta: 'p',
+              elementos: tipo
+            })
+          ]
+        })
       })
     })()
   ]

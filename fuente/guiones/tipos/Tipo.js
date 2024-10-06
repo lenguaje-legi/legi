@@ -1,4 +1,4 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import Seleccionar from '../acciones/Seleccionar.js'
 import { Código } from '../inicio.js'
 import Nulo from './Nulo.js'
@@ -11,10 +11,8 @@ import Número from './Número.js'
 import Texto from './Texto.js'
 import Comentario from './Comentario.js'
 import ErrorDeAsignación from '../errores/ErrorDeAsignación.js'
-import Componente from '../Componente.js'
-const { div } = van.tags
 
-const { estilo } = Componente()
+const { estilo, elemento } = Componente()
 
 estilo({
   global: true,
@@ -94,19 +92,22 @@ export default ({ tipo, bloquesDeEspacios, indicador, valor, asignación }) => {
     error = 'error '
   }
 
-  return div(
-    {
-      'data-indicador': (() => {
+  return elemento({
+    etiqueta: 'div',
+    atributos: {
+      dataIndicador: (() => {
         if (tipo === 'Nueva línea') {
           return ''
         }
         return JSON.stringify(indicador)
       })(),
-      class: `${error}Tipo ${tipo.replaceAll(' ', '-')}`,
-      onclick: (click) => {
+      class: `${error}Tipo ${tipo.replaceAll(' ', '-')}`
+    },
+    eventos: {
+      click: (click) => {
         Seleccionar({ click, indicador, tipo })
       }
     },
-    valor
-  )
+    elementos: valor
+  })
 }

@@ -1,17 +1,20 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import ActualizarPropiedad from '../acciones/ActualizarPropiedad.js'
 import Elección from '../componentes/Elección.js'
-const { h2 } = van.tags
-const visualización = document.querySelector('#visualización')
+
+const { elemento } = Componente()
 
 export default ({ indicador }) => {
+  const visualización = document.querySelector('#visualización')
+
   return [
-    h2(
-      {
+    elemento({
+      etiqueta: 'h2',
+      atributos: {
         class: 'tipo'
       },
-      'Visualización'
-    ),
+      elementos: 'Visualización'
+    }),
     Elección([
       {
         nombre: 'Legi',

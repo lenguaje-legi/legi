@@ -1,6 +1,7 @@
-import van from '../../módulos-de-node/vanjs/van.js'
+import Componente from '../Componente.js'
 import { Código } from '../inicio.js'
-const { span } = van.tags
+
+const { elemento } = Componente()
 
 export default ({ indicador }) => {
   const elementoSuperior = Código.obtener({
@@ -35,18 +36,20 @@ export default ({ indicador }) => {
     if (esElÚltimoElemento) {
       return null
     }
-    return span(
-      {
+    return elemento({
+      etiqueta: 'span',
+      atributos: {
         class: 'ruido coma'
       },
-      ','
-    )
+      elementos: ','
+    })
   }
 
-  return span(
-    {
+  return elemento({
+    etiqueta: 'span',
+    atributos: {
       class: 'ruido punto-y-coma'
     },
-    ';'
-  )
+    elementos: ';'
+  })
 }

@@ -1,5 +1,6 @@
-import van from '../../módulos-de-node/vanjs/van.js'
-const { span } = van.tags
+import Componente from '../Componente.js'
+
+const { elemento } = Componente()
 
 export default ({ devolver }) => {
   if (!devolver) {
@@ -14,10 +15,11 @@ export default ({ devolver }) => {
     return null
   }
 
-  return span(
-    {
+  return elemento({
+    etiqueta: 'span',
+    atributos: {
       class: 'ruido devolver'
     },
-    devolver
-  )
+    elementos: devolver
+  })
 }

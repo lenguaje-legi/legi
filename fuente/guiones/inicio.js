@@ -1,5 +1,4 @@
-import van from '../módulos-de-node/vanjs/van.js'
-import fromString from '../módulos-de-node/php-array-reader/fromString.js'
+import { fromString } from '../módulos-de-node/php-array-reader.js'
 import Visualizar from './acciones/Visualizar.js'
 import Seleccionar from './acciones/Seleccionar.js'
 import Componente from './Componente.js'
@@ -57,8 +56,6 @@ if (!php) {
 export const Código = Dato({
   valor: fromString(php)
 })
-
-export const Acción = van.state('')
 
 const visualización = document.querySelector('#visualización')
 visualización.onclick = click => {
